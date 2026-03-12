@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smartwatch Customer Segmentation — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #152438;
+  --navy2:   #1e3a5f;
+  --teal:    #1a7a6e;
+  --teal2:   #25a99a;
+  --teal3:   #7dd8d0;
+  --sand:    #f7f4ef;
+  --paper:   #fafaf8;
+  --ink:     #1a1a1a;
+  --mid:     #4a4a4a;
+  --muted:   #888;
+  --border:  #e2ddd6;
+  --light:   #e8f5f3;
+  --amber:   #c8821a;
+  --amberbg: #fdf3e3;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(21, 36, 56, 0.97);
+  backdrop-filter: blur(8px);
+  padding: 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--teal3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+
+.nav-links a:hover { color: var(--teal3); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 120px 80px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(26,122,110,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-glow2 {
+  position: absolute;
+  bottom: -100px; left: 5%;
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(26,122,110,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal2);
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: var(--teal2);
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--teal3);
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 560px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 1;
+  font-weight: 300;
+}
+
+.hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.stats-row {
+  display: flex;
+  gap: 0;
+}
+
+.stat {
+  padding: 20px 32px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: none;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+.stat:last-child { border-right: 1px solid rgba(255,255,255,0.08); }
+
+.stat strong {
+  display: block;
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  color: var(--teal3);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.hero-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.hero-link:hover {
+  border-color: var(--teal2);
+  color: var(--teal3);
+  background: rgba(26,122,110,0.08);
+}
+
+.hero-link svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── SECTION WRAPPERS ── */
+.section {
+  padding: 100px 80px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.section-sm {
+  padding: 80px 80px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--teal);
+}
+
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  color: var(--navy);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.section-intro {
+  font-size: 1rem;
+  color: var(--mid);
+  max-width: 640px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  font-weight: 300;
+}
+
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── DARK BAND ── */
+.dark-band {
+  background: var(--navy);
+  padding: 100px 0;
+}
+
+.dark-band-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+.dark-band .section-label { color: var(--teal2); }
+.dark-band .section-label::before { background: var(--teal2); }
+.dark-band .section-title { color: #fff; }
+.dark-band .section-intro { color: rgba(255,255,255,0.45); }
+
+/* ── SAND BAND ── */
+.sand-band {
+  background: var(--sand);
+  padding: 100px 0;
+}
+.sand-band-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+/* ── METHODOLOGY STEPS ── */
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.method-item {
+  background: var(--paper);
+  padding: 36px;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.method-item:hover { background: #f0ede7; }
+
+.method-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  color: var(--border);
+  line-height: 1;
+  position: absolute;
+  top: 20px; right: 24px;
+  pointer-events: none;
+}
+
+.method-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+
+.method-item h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.method-item p {
+  font-size: 0.9rem;
+  color: var(--mid);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 420px;
+}
+
+.method-callout {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--amberbg);
+  border-left: 2px solid var(--amber);
+  font-size: 0.82rem;
+  color: #7a5010;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.method-callout strong { color: var(--amber); }
+
+.method-win {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--light);
+  border-left: 2px solid var(--teal);
+  font-size: 0.82rem;
+  color: #0e5048;
+  line-height: 1.55;
+}
+
+/* ── PERSONA CARDS ── */
+.group-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  margin-top: 56px;
+}
+
+.group-divider:first-of-type { margin-top: 0; }
+
+.group-divider h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--navy2);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.group-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.group-divider .group-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.persona-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.persona-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.persona-card:hover::after { transform: scaleX(1); }
+
+.persona-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(21,36,56,0.08);
+}
+
+.persona-card.wide { grid-column: span 2; }
+.persona-card.full { grid-column: 1 / -1; }
+
+.persona-emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.persona-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+
+.persona-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.35rem;
+  color: var(--navy);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.persona-size {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.persona-desc {
+  font-size: 0.88rem;
+  color: var(--mid);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+
+.persona-signals {
+  font-size: 0.82rem;
+  color: var(--teal);
+  font-weight: 400;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.persona-signals strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.persona-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  background: var(--light);
+  color: var(--teal);
+  border-radius: 1px;
+}
+
+/* ── INSIGHTS ── */
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.insight-item {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.insight-item:last-child { border-bottom: none; }
+.insight-item:hover { background: rgba(26,122,110,0.03); }
+
+.insight-num {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 28px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  color: var(--teal3);
+  border-right: 1px solid var(--border);
+  background: rgba(26,122,110,0.02);
+}
+
+.insight-body {
+  padding: 28px 32px;
+}
+
+.insight-body h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.insight-body p {
+  font-size: 0.92rem;
+  color: var(--mid);
+  line-height: 1.72;
+  font-weight: 300;
+}
+
+/* ── FURTHER WORK ── */
+.further-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.further-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 28px;
+  transition: background 0.2s;
+}
+
+.further-card:hover { background: rgba(26,122,110,0.06); }
+
+.further-card .icon {
+  font-size: 1.4rem;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.further-card h4 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.further-card p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── CAVEATS ── */
+.caveats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.caveat-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  background: var(--sand);
+}
+
+.caveat-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caveat-card p {
+  font-size: 0.87rem;
+  color: var(--mid);
+  line-height: 1.68;
+  font-weight: 300;
+}
+
+/* ── PIPELINE ── */
+.pipeline {
+  background: #0d1e30;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 32px 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.55);
+  overflow-x: auto;
+}
+
+.pipeline .comment { color: rgba(125,216,208,0.4); }
+.pipeline .step-num { color: var(--teal2); }
+.pipeline .step-name { color: rgba(255,255,255,0.85); font-weight: 500; }
+.pipeline .step-note { color: rgba(255,255,255,0.35); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-info p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 4px;
+}
+
+.footer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tool-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border: 1px solid rgba(26,169,154,0.25);
+  color: var(--teal2);
+  border-radius: 1px;
+}
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+.stagger > *:nth-child(7) { transition-delay: 0.40s; }
+.stagger > *:nth-child(8) { transition-delay: 0.46s; }
+.stagger > *:nth-child(9) { transition-delay: 0.52s; }
+
+.hero-left-anim > * {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: fadeup 0.8s ease forwards;
+}
+
+.hero-left-anim > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-left-anim > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-left-anim > *:nth-child(3) { animation-delay: 0.4s; }
+.hero-left-anim > *:nth-child(4) { animation-delay: 0.55s; }
+
+@keyframes fadeup {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 32px 64px; }
+  .section, .section-sm { padding: 60px 32px; }
+  .dark-band-inner, .sand-band-inner { padding: 0 32px; }
+  .dark-band, .sand-band { padding: 60px 0; }
+  .stats-row { flex-wrap: wrap; }
+  .method-grid { grid-template-columns: 1fr; }
+  .personas-grid { grid-template-columns: 1fr; }
+  .persona-card.wide, .persona-card.full { grid-column: 1; }
+  .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════ -->
+<nav>
+  <span class="nav-brand">klaire03 / customer_segmentation</span>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#personas">Personas</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#further">Further work</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ═════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-left-anim">
+    <p class="hero-tag">Unsupervised Machine Learning · K-Means Clustering · UK Survey Data</p>
+
+    <h1>Who actually<br>buys a <em>smartwatch</em><br>— and why?</h1>
+
+    <p class="hero-desc">A customer segmentation project using K-Means clustering to identify nine distinct buyer personas from 996 UK survey responses. Separate pipelines for current owners and prospective buyers, with lift-based profiling and actionable marketing recommendations.</p>
+
+    <div class="hero-bottom">
+      <div class="stats-row">
+        <div class="stat"><strong>996</strong><span>respondents</span></div>
+        <div class="stat"><strong>51</strong><span>features</span></div>
+        <div class="stat"><strong>5</strong><span>owner personas</span></div>
+        <div class="stat"><strong>4</strong><span>non-owner personas</span></div>
+      </div>
+
+      <div class="hero-links">
+        <a class="hero-link" href="https://github.com/klaire03/customer_segmentation" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="hero-link" href="https://colab.research.google.com/drive/1po0sIJqAcT6uBuUUTzLUf7dlGn1Lwt5W" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+          Notebook
+        </a>
+        <a class="hero-link" href="https://drive.google.com/drive/u/0/folders/1nZ7nxV3WkidgFCSJhVVUrjXPdzZFMQvc" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M6.6 0L0 11l3.3 5.7h6.6L3.3 5.7 6.6 0zm5.4 0h-4l8.4 14.6h4L12 0zm-8.7 12l-3.3 6h16.8l3.3-6H3.3z"/></svg>
+          Drive
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ OVERVIEW ══════════════════════════════════════════════ -->
+<div id="overview" class="section">
+  <p class="section-label">Project overview</p>
+  <h2 class="section-title">What this project does</h2>
+  <p class="section-intro">Smartwatch customers are not a single homogeneous group. Fitness enthusiasts, connectivity-focused professionals, and casual users have entirely different motivations, expectations, and price sensitivities. Treating them as one audience leads to ineffective marketing and product positioning.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
+    <div style="background:var(--paper);padding:36px;">
+      <p class="method-step" style="margin-bottom:12px;">Owners · n=769</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Identify distinct user types and the behavioural and attitudinal signals that drive satisfaction or predict churn. Each persona was profiled using lift analysis — how it deviates from the population average across all 51 features.</p>
+    </div>
+    <div style="background:var(--paper);padding:36px;">
+      <p class="method-step" style="margin-bottom:12px;">Non-owners · n=227</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Identify prospective buyer segments and the specific motivations, lifestyle signals, and brand interests that distinguish each group — and what messaging would most likely convert them.</p>
+    </div>
+    <div style="background:var(--paper);padding:36px;grid-column:1/-1;">
+      <p class="method-step" style="margin-bottom:12px;">Dataset — 5 areas</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:4px;">
+        <div><p style="font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:4px;">Demographics</p><p style="font-size:.78rem;color:var(--muted);line-height:1.5;">Age group, living situation</p></div>
+        <div><p style="font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:4px;">Device profile</p><p style="font-size:.78rem;color:var(--muted);line-height:1.5;">Brand, OS, spend, purchase year</p></div>
+        <div><p style="font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:4px;">Attitudes</p><p style="font-size:.78rem;color:var(--muted);line-height:1.5;">11 feature ratings, 6 brand interests</p></div>
+        <div><p style="font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:4px;">Lifestyle</p><p style="font-size:.78rem;color:var(--muted);line-height:1.5;">6 activities, 5 goals, transport habits</p></div>
+        <div><p style="font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:4px;">Behaviour</p><p style="font-size:.78rem;color:var(--muted);line-height:1.5;">Satisfaction, wear frequency, churn reasons, purchase intent</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ METHODOLOGY ═══════════════════════════════════════════ -->
+<div id="methodology" class="sand-band">
+  <div class="sand-band-inner">
+    <p class="section-label">Methodology</p>
+    <h2 class="section-title">How it was built</h2>
+    <p class="section-intro">K-Means is unsupervised — it finds natural groupings without pre-labelled training data, making it well-suited for exploratory segmentation. Several deliberate decisions were made to get the best possible clusters from survey data.</p>
+
+    <div class="method-grid stagger">
+
+      <div class="method-item fade-up">
+        <span class="method-num">01</span>
+        <p class="method-step">Setup</p>
+        <h4>Split owners and non-owners</h4>
+        <p>Non-owners had no data at all for watch satisfaction, spend, wear frequency, or churn — those questions simply weren't asked of them. Clustering both groups together would mean inventing values for 23% of the sample. The two groups also answer different analytical questions: owners → loyalty and churn risk; non-owners → barriers to first purchase.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> Splitting leaves only 227 non-owners. Three of the four non-owner clusters have ~28 people each — findings are directional, not definitive.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">02</span>
+        <p class="method-step">Encoding</p>
+        <h4>Ordinal encoding over one-hot</h4>
+        <p>35+ survey columns use Likert scales with a real order — <em>Not at all important</em> through to <em>Extremely important</em>. One-hot encoding destroys that structure: the model would treat each response as an unrelated category with no sense of proximity. Ordinal encoding (0–4) preserves rank, giving K-Means something meaningful to measure distance against.</p>
+        <div class="method-win">✦ This single change raised the silhouette score from 0.06 → 0.22, a 3.5× improvement in cluster quality.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">Encoding</p>
+        <h4>Ordinal vs one-hot — knowing which to use</h4>
+        <p>Not all categorical columns deserve the same treatment. Brand names (phone brand, watch brand, OS, churn reason, living situation) have no natural order — they're just different labels. These were one-hot encoded. The key decision is knowing which method applies to which column, not applying the same approach to everything.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> <code>drop_first=False</code> is intentional. Dropping a dummy column prevents multicollinearity in regression — irrelevant for clustering. Keeping all categories gives the model more complete information.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">04</span>
+        <p class="method-step">Imputation & Scaling</p>
+        <h4>Median imputation, not zero</h4>
+        <p>K-Means cannot handle NaN values. Zero means <em>lowest possible answer</em> on an ordinal scale — filling missing values with zero would falsely imply every gap was a worst-case response. The column median is neutral and doesn't push clusters toward extremes. StandardScaler was then applied: without it, a column ranging 2017–2021 (purchase year) would dominate one ranging 0–4 (importance rating) purely due to numeric scale.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> The scaler was fit separately on owners and non-owners. Fitting on the combined dataset before splitting would be data leakage.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">05</span>
+        <p class="method-step">Clustering</p>
+        <h4>Choosing K — interpretability over metric peak</h4>
+        <p>Both the elbow method (inertia) and silhouette score were tested across K=2–8 for owners and K=2–6 for non-owners. K=5 (owners) and K=4 (non-owners) were chosen — not because they had the best scores. K=8 scored 0.290 vs K=5's 0.217 for owners, but produced clusters as small as 15 people. For non-owners, K=5 scored 0.620 vs K=4's 0.514, but created one group of 114 surrounded by four groups of 28 — outlier artefacts, not real segments.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> Silhouette score alone is misleading. Always check cluster sizes alongside the metric before committing to K.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">06</span>
+        <p class="method-step">Profiling & Naming</p>
+        <h4>Lift analysis + manual naming</h4>
+        <p>Each cluster was profiled by subtracting the overall population mean from the cluster mean on every feature. A lift of +1.89 on <code>spent_watch</code> means that cluster spends nearly 2 standard deviations above average — instantly interpretable. Features were ranked by mean absolute lift across all clusters to identify the main drivers. Persona names were then assigned manually based on the full combination of positive and negative signals, not just the single highest-lift feature.</p>
+      </div>
+
+      <div class="method-item fade-up" style="grid-column:1/-1;">
+        <span class="method-num">07</span>
+        <p class="method-step">Visualisation</p>
+        <h4>Four complementary charts — PCA + UMAP, heatmap, bar chart, radar</h4>
+        <p style="max-width:none;">With 80 features for owners and 47 for non-owners, clusters can't be plotted directly. PCA reduced dimensionality to 30 components, then UMAP projected to 2D for scatter plotting — each dot one respondent, coloured by cluster. A lift heatmap (15 features × 5 clusters, red/blue centred at 0) shows all personas simultaneously. A horizontal bar chart ranks the top 10 features by mean absolute lift. A normalised radar chart (MinMaxScaler to 0–1) shows the overall shape of each persona across the 6 most differentiating features.</p>
+        <div class="method-callout" style="max-width:600px;"><strong>⚠ Note:</strong> UMAP axes have no interpretable meaning. It's a visual sanity check — do the clusters look separated or do they blur together? Different random seeds produce different-looking layouts from identical clusters.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px;">
+      <p class="method-step" style="margin-bottom:16px;">Full pipeline</p>
+      <div class="pipeline">
+        <span class="comment"># Pipeline — owners and non-owners run separately through identical steps</span><br>
+        <span class="step-num">1.</span>  <span class="step-name">Load &amp; clean</span>         <span class="step-note">— convert string 'NA' to nulls; fix UTF-8 encoding bug in frequency_wear</span><br>
+        <span class="step-num">2.</span>  <span class="step-name">Split groups</span>          <span class="step-note">— owners (n=769) and non-owners (n=227) analysed independently</span><br>
+        <span class="step-num">3.</span>  <span class="step-name">Ordinal encoding</span>      <span class="step-note">— 13 custom scale maps preserving rank order across 35+ columns</span><br>
+        <span class="step-num">4.</span>  <span class="step-name">One-hot encoding</span>      <span class="step-note">— nominal columns only: brand, OS, churn reason, living situation</span><br>
+        <span class="step-num">5.</span>  <span class="step-name">Median imputation</span>     <span class="step-note">— neutral fill; avoids implying worst-case responses for missing values</span><br>
+        <span class="step-num">6.</span>  <span class="step-name">StandardScaler</span>        <span class="step-note">— fit separately per group to avoid data leakage</span><br>
+        <span class="step-num">7.</span>  <span class="step-name">K selection</span>           <span class="step-note">— elbow + silhouette tested; final K chosen on interpretability, not metric peak</span><br>
+        <span class="step-num">8.</span>  <span class="step-name">KMeans fit</span>            <span class="step-note">— random_state=42, n_init='auto'</span><br>
+        <span class="step-num">9.</span>  <span class="step-name">Lift analysis</span>         <span class="step-note">— cluster mean − population mean; ranked by mean absolute lift</span><br>
+        <span class="step-num">10.</span> <span class="step-name">Manual naming</span>         <span class="step-note">— based on top positive + negative lift signals per cluster</span><br>
+        <span class="step-num">11.</span> <span class="step-name">Visualisation</span>         <span class="step-note">— PCA→UMAP scatter, lift heatmap, bar chart, normalised radar</span><br>
+        <span class="step-num">12.</span> <span class="step-name">Export</span>                <span class="step-note">— owners_segmented.csv · nonowners_segmented.csv</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ PERSONAS ══════════════════════════════════════════════ -->
+<div id="personas" class="section">
+  <p class="section-label">Results</p>
+  <h2 class="section-title">Nine customer personas</h2>
+  <p class="section-intro">Each persona is defined by its lift profile — how it scores above or below the population average across all features. Names reflect the overall combination of signals, not just the single highest-lift feature.</p>
+
+  <!-- Owner personas -->
+  <div class="group-divider">
+    <h3>Current owners</h3>
+    <span class="group-count">n=769 · 5 segments · K=5 · silhouette 0.217</span>
+    <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+  </div>
+
+  <div class="fade-up" style="margin-bottom:40px;">
+    <img src="https://klaire03.github.io/images/watch1.png" alt="Persona Profiles — Current Owners (Normalised 0–1)" style="width:100%;max-width:780px;display:block;margin:0 auto;border:1px solid var(--border);" />
+  </div>
+
+  <div class="personas-grid stagger">
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">🏋️</span>
+      <p class="persona-meta">Owner</p>
+      <h3 class="persona-name">Active Brand Explorers</h3>
+      <p class="persona-size">n=172 · 22.4%</p>
+      <p class="persona-desc">Active and health-conscious, but low satisfaction and below-average spend suggest they bought cheap and are ready to upgrade. Interested in both Fossil and Samsung — still figuring out what they want next. Younger demographic, mindfulness-oriented.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Fossil interest (+1.56), strength training (+1.40), vigorous activity (+0.78), mindfulness goals (+0.76), Samsung interest (+0.75) · Low: spend (−1.27), target price (−1.27)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">upgrade-ready</span><span class="tag">brand-curious</span><span class="tag">active</span><span class="tag">budget device now</span>
+      </div>
+    </div>
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">🚉</span>
+      <p class="persona-meta">Owner</p>
+      <h3 class="persona-name">Passive & Disengaged</h3>
+      <p class="persona-size">n=29 · 3.8%</p>
+      <p class="persona-desc">Happy with their Ticwatch, use it to tap-to-pay and check notifications on the train. Fitness, sleep tracking, and health goals are completely irrelevant — satisfaction is above average despite zero health engagement. A reminder that not everyone buys a smartwatch to exercise.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Train commuter (+1.33), payment (+1.00), satisfaction (+1.00), Ticwatch (+0.96) · Low: fitness tracking (−3.33), fitness goals (−3.30), sleep (−3.11), Apple interest (−2.52)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">satisfied</span><span class="tag">non-fitness</span><span class="tag">commuter</span><span class="tag">payment-first</span>
+      </div>
+    </div>
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">😌</span>
+      <p class="persona-meta">Owner</p>
+      <h3 class="persona-name">Satisfied Casual Users</h3>
+      <p class="persona-size">n=56 · 7.3%</p>
+      <p class="persona-desc">Recent buyers, high satisfaction. Navigation and phone connectivity are the use case — not fitness. Samsung phone users who want something practical. Low churn risk in the short term, but resistant to health-feature upsells.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Recent purchase (+1.30), navigation (+1.11), satisfaction (+1.00), phone disconnect (+0.91), Samsung phone (+0.85) · Low: all activity types (−1.76 to −1.89), Apple interest (−1.52)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">satisfied</span><span class="tag">samsung ecosystem</span><span class="tag">low-churn</span><span class="tag">non-fitness</span>
+      </div>
+    </div>
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">🤖</span>
+      <p class="persona-meta">Owner</p>
+      <h3 class="persona-name">Android Everyday Users</h3>
+      <p class="persona-size">n=201 · 26.1%</p>
+      <p class="persona-desc">Defined almost entirely by their Android ecosystem. Google Pixel users who cycle to work and care about navigation. Lowest watch spend and lowest target upgrade price of any group — they want affordable and functional, not premium. Not an upsell audience.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Samsung interest (+0.78), cycle commute (+0.58), Google Pixel (+0.56), navigation (+0.53), Android OS (+0.52) · Low: watch spend (−1.60), target price (−1.60)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">android-first</span><span class="tag">budget</span><span class="tag">navigation</span><span class="tag">value-conscious</span>
+      </div>
+    </div>
+
+    <div class="persona-card wide fade-up">
+      <span class="persona-emoji">💎</span>
+      <p class="persona-meta">Owner · Largest segment</p>
+      <h3 class="persona-name">Premium & Connected Buyers</h3>
+      <p class="persona-size">n=311 · 40.4%</p>
+      <p class="persona-desc">The largest and most commercially valuable segment. Highest watch spend and highest target upgrade budget. Emergency SOS and smart device integration matter — they use the watch as a hub, not just a step counter. Apple/iOS ecosystem. Not drawn to budget or fashion brands. The natural audience for flagship Apple Watch and Samsung Galaxy Ultra positioning.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Highest spend (+1.89), target price (+1.89), emergency features (+0.55), smart device integration (+0.54), mindfulness (+0.51) · Low: Fossil interest (−1.14), Samsung interest (−0.80), Android (−0.48)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">premium</span><span class="tag">apple ecosystem</span><span class="tag">high intent</span><span class="tag">connected hub</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Non-owner personas -->
+  <div class="group-divider">
+    <h3>Non-owners</h3>
+    <span class="group-count">n=227 · 4 segments · K=4 · silhouette 0.514</span>
+    <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+  </div>
+
+  <div class="personas-grid stagger">
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">💪</span>
+      <p class="persona-meta">Non-owner</p>
+      <h3 class="persona-name">Tech-Curious Gym-Goers</h3>
+      <p class="persona-size">n=28 · 12.3%</p>
+      <p class="persona-desc">Heavy strength trainers with low cardio and meditation. Care about fashion and lean toward Samsung — design matters alongside function. Emergency features score highly, possibly a gym safety concern. Haven't bought yet, but it feels like a product-fit problem rather than category resistance.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Strength training (+2.39), emergency (+1.89), Samsung interest (+1.88), fashion (+1.25), train commuter (+1.12) · Low: moderate activity (−3.00), vigorous activity (−2.62), meditation (−2.49)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">gym-focused</span><span class="tag">samsung-leaning</span><span class="tag">fashion-aware</span><span class="tag">safety-conscious</span>
+      </div>
+    </div>
+
+    <div class="persona-card wide fade-up">
+      <span class="persona-emoji">🏃</span>
+      <p class="persona-meta">Non-owner · Largest segment</p>
+      <h3 class="persona-name">Health-Motivated Actives</h3>
+      <p class="persona-size">n=142 · 62.6%</p>
+      <p class="persona-desc">The majority of non-owners. Already active and health-conscious — above-average vigorous activity and clear health goals — so they're not resistant to the category. But no single clear barrier stands out. Modest lift values across the board suggest the issue is general: price uncertainty, unclear product fit, or simply not having been given a compelling enough reason to commit. The broadest conversion opportunity, but the least targeted one.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Vigorous activity (+1.17), bus commuter (+0.79), health goals (+0.60), strength training (+0.58), Fossil interest (+0.48) · Low: Samsung interest (−0.72), smart devices (−0.70)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">health-aware</span><span class="tag">already active</span><span class="tag">undecided</span><span class="tag">price-sensitive</span>
+      </div>
+    </div>
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">🧘</span>
+      <p class="persona-meta">Non-owner</p>
+      <h3 class="persona-name">Mindful & Mobile</h3>
+      <p class="persona-size">n=28 · 12.3%</p>
+      <p class="persona-desc">The clearest lifestyle profile in the non-owner group. High meditation, moderate exercise, drives or cycles. Interested in smart device integration but not fitness performance tracking, fashion, or emergency features. A wellness pitch — sleep, stress, breathing, smart home — maps directly onto this group.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Meditation (+3.51), moderate activity (+3.00), drives to work (+2.63), smart devices (+1.49), cycles (+1.38) · Low: strength training (−2.61), fitness tracking (−2.13), fashion (−1.75)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">mindfulness-first</span><span class="tag">wellness</span><span class="tag">smart home</span><span class="tag">independent</span>
+      </div>
+    </div>
+
+    <div class="persona-card fade-up">
+      <span class="persona-emoji">💼</span>
+      <p class="persona-meta">Non-owner</p>
+      <h3 class="persona-name">Productivity-Driven Professionals</h3>
+      <p class="persona-size">n=29 · 12.8%</p>
+      <p class="persona-desc">Want a watch to stay reachable and productive — notifications, phone independence, smart device control. Fitness is entirely absent from their signals. Already interested in Apple. The product fit is obvious; conversion is mainly a messaging problem. Apple Watch SE with a professional pitch would land directly.</p>
+      <div class="persona-signals">
+        <strong>Key signals:</strong> Productivity (+2.62), reachability (+2.11), smart devices (+1.49), Apple interest (+1.37), phone disconnect (+1.11) · Low: vigorous activity (−2.62), strength training (−2.61), meditation (−2.49)
+      </div>
+      <div class="persona-tags">
+        <span class="tag">productivity-first</span><span class="tag">apple-leaning</span><span class="tag">professional</span><span class="tag">non-fitness</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ INSIGHTS ══════════════════════════════════════════════ -->
+<div id="insights" class="dark-band">
+  <div class="dark-band-inner">
+    <p class="section-label">Key insights & recommendations</p>
+    <h2 class="section-title">What the data actually says</h2>
+    <p class="section-intro">Insights and marketing recommendations are combined here — each finding leads directly to what should be done about it.</p>
+
+    <div class="insights-list stagger">
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">1</div>
+        <div class="insight-body">
+          <h4>Most owners are premium-oriented, not value-driven</h4>
+          <p>40% of owners are Premium & Connected Buyers — the highest-spending, highest-intent segment — and another 22% are Active Brand Explorers actively looking to upgrade from a budget device. Over 60% of owners have genuine upgrade potential. The narrative that the smartwatch market is dominated by price-sensitive buyers doesn't hold up in this data. <strong style="color:var(--teal3);">→ Lead with ecosystem and safety (emergency SOS, smart home, Apple/Android sync) for the premium segment. Run trade-in campaigns comparing budget devices to mid-range alternatives for upgraders eyeing Fossil and Samsung.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">2</div>
+        <div class="insight-body">
+          <h4>Fitness is not a universal motivation — not even close</h4>
+          <p>Three of five owner clusters and two of four non-owner clusters show weak or negative fitness signals. Passive & Disengaged owners are satisfied without any health engagement; Productivity-Driven Professionals actively reject the fitness angle. A fitness-first marketing strategy reaches maybe 30–40% of this market. <strong style="color:var(--teal3);">→ Passive & Disengaged respond only to tap-to-pay and commuter messaging. Productivity-Driven Professionals convert on calendar alerts, Siri, and hands-free calls — not step counts.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">3</div>
+        <div class="insight-body">
+          <h4>The biggest non-owner group has no single clear barrier</h4>
+          <p>Health-Motivated Actives (63% of non-owners) are already doing the activities a smartwatch is designed to support. Their modest lift values — nothing above +1.17 — suggest no dominant pain point. The issue is general: awareness, price uncertainty, and unclear product fit. <strong style="color:var(--teal3);">→ Broad benefit-led campaigns across brands and price points. Simple value messaging: 'here's what tracking actually does for your health.' Free trials or money-back guarantees reduce commitment friction.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">4</div>
+        <div class="insight-body">
+          <h4>Two non-owner groups are ready to convert right now</h4>
+          <p>Productivity-Driven Professionals already want Apple and already value the features Apple Watch delivers best. Mindful & Mobile have a clear wellness use case that maps directly onto Fitbit Sense or Garmin wellness features. Together these two groups are 25% of non-owners — and they don't need convincing on the category, just the right product message. <strong style="color:var(--teal3);">→ Professionals: Apple Watch SE, positioned as a professional tool, via LinkedIn. Mindful & Mobile: wellness positioning (sleep, stress, breathing, smart home) via Garmin/Fitbit channels. No performance messaging.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">5</div>
+        <div class="insight-body">
+          <h4>Android Everyday Users are a retention problem, not an upsell one</h4>
+          <p>The second-largest owner segment (26%) has the lowest spend, the lowest target upgrade price, and the lowest engagement with premium features of any group. Upsell campaigns on this segment will cost more than they return. <strong style="color:var(--teal3);">→ Practical, ecosystem-focused retention messaging (Pixel compatibility, navigation, Google Maps integration) with a loyalty offer at renewal. Don't invest in premium campaign spend on this group.</strong></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FURTHER WORK ═══════════════════════════════════════════ -->
+<div id="further" class="dark-band" style="background:#0f1e30;padding-top:80px;padding-bottom:80px;">
+  <div class="dark-band-inner">
+    <p class="section-label">Further work</p>
+    <h2 class="section-title" style="color:#fff;">What I'd build next</h2>
+    <p class="section-intro">Three directions that would sharpen and extend these findings.</p>
+
+    <div class="further-grid stagger">
+
+      <div class="further-card fade-up">
+        <span class="icon">🎯</span>
+        <h4>Cluster membership classifier</h4>
+        <p>Train a logistic regression or Random Forest on the cluster labels to identify the features most predictive of segment membership. The output would be a lightweight scoring model that could classify new survey respondents into a persona without running the full clustering pipeline — useful for real-time segmentation at scale.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">📉</span>
+        <h4>Churn prediction model</h4>
+        <p>Use <code style="background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:2px;font-size:.8rem;">frequency_wear</code> and <code style="background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:2px;font-size:.8rem;">watch_satisfaction</code> as target variables for a churn model within the owner group. Which individual features best predict a customer becoming Passive & Disengaged? This would turn the segmentation from descriptive to predictive.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">🧪</span>
+        <h4>A/B test the conversion hypotheses</h4>
+        <p>The Productivity-Driven Professional and Mindful & Mobile conversion hypotheses are directional — they're based on stated preference data, not behavioural outcomes. A/B testing persona-targeted messaging (professional tool vs. wellness device framing) against the Health-Motivated Actives control would validate whether the segmentation translates to real conversion lift.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ CAVEATS ═══════════════════════════════════════════════ -->
+<div class="section-sm">
+  <p class="section-label">Limitations</p>
+  <h2 class="section-title">Caveats worth knowing</h2>
+
+  <div class="caveats-row stagger">
+    <div class="caveat-card fade-up">
+      <h4>📊 Silhouette scores are moderate</h4>
+      <p>Owner clusters score 0.217 at K=5 — not high, but typical for real-world survey data where people naturally sit somewhere between archetypes. Treat personas as dominant tendencies, not rigid boxes. Real people overlap at the boundaries.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>🔬 Non-owner sample is small</h4>
+      <p>227 non-owners split into four groups leaves three clusters with only ~28 people each. The directional findings are valid, but decisions involving significant budget should wait for a larger sample. A follow-up survey targeted at non-owners would strengthen confidence significantly.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>💬 Stated preference data</h4>
+      <p>People overstate feature interest and understate price sensitivity in surveys. Behavioural data — actual purchases, return rates, app usage, wear frequency from device logs — would sharpen and validate these findings. This analysis is a strong starting point, not a finished picture.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-info">
+    <p>Smartwatch Customer Segmentation · klaire03</p>
+    <p>996 respondents · UK survey · K-Means clustering</p>
+  </div>
+  <div class="footer-tools">
+    <span class="tool-pill">Python</span>
+    <span class="tool-pill">pandas</span>
+    <span class="tool-pill">scikit-learn</span>
+    <span class="tool-pill">K-Means</span>
+    <span class="tool-pill">PCA</span>
+    <span class="tool-pill">UMAP</span>
+    <span class="tool-pill">matplotlib</span>
+    <span class="tool-pill">seaborn</span>
+    <span class="tool-pill">Google Colab</span>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
