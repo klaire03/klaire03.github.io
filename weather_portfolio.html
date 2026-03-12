@@ -609,7 +609,7 @@ footer {
   <div class="fade-up" style="margin-top:48px;">
     <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block;">Live app — select city, get forecast & outfit</p>
     <div style="display:grid;grid-template-columns:340px 1fr;gap:32px;align-items:start;">
-      <img src="https://klaire03.github.io/images/whattowear.png" alt="What To Wear Today — app interface" style="width:100%;border:1px solid var(--border);display:block;" />
+      <img src="https://klaire03.github.io/images/whattowear2.png" alt="What To Wear Today — app interface" style="width:100%;border:1px solid var(--border);display:block;" />
       <div>
         <p style="font-size:.95rem;color:var(--mid);line-height:1.8;font-weight:300;margin-bottom:16px;">The deployed FastAPI app accepts a city selection and returns the full pipeline output in a single view: live weather conditions, a Leaflet.js map, a 12-hour LSTM temperature forecast chart, and a categorised outfit recommendation grid with product images pulled from the clothing catalogue.</p>
         <p style="font-size:.95rem;color:var(--mid);line-height:1.8;font-weight:300;">Each recommendation includes category, item name, and a confidence score derived from cosine similarity — so the output is both actionable and explainable.</p>
@@ -763,7 +763,7 @@ footer {
           <p class="tc-desc">Clothing descriptions are encoded once into 384-dimensional vectors and saved as <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">embeddings_{category}.npy</code> per category. At inference, only the weather sentence is encoded live. The model is cached locally in <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">/models/all-MiniLM-L6-v2/</code> to avoid download latency in production.</p>
           <div class="tc-warn"><strong>⚠</strong> Random sampling of 200 items per category introduces non-determinism — results vary between calls on large catalogues. Consider FAISS approximate nearest-neighbour search for deterministic, scalable retrieval at production catalogue sizes.</div>
         </div>
-        <img src="https://klaire03.github.io/images/whattowear2.png" alt="Outfit recommendation output grid" style="width:100%;display:block;border:1px solid var(--border);" />
+        <img src="https://klaire03.github.io/images/whattowear.png" alt="Outfit recommendation output grid" style="width:100%;display:block;border:1px solid var(--border);" />
       </div>
     </div>
 
