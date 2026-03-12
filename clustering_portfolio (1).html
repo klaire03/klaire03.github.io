@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK & Spain City Clustering — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #152438;
+  --navy2:   #1e3a5f;
+  --teal:    #1a7a6e;
+  --teal2:   #25a99a;
+  --teal3:   #7dd8d0;
+  --sand:    #f7f4ef;
+  --paper:   #fafaf8;
+  --ink:     #1a1a1a;
+  --mid:     #4a4a4a;
+  --muted:   #888;
+  --border:  #e2ddd6;
+  --light:   #e8f5f3;
+  --amber:   #c8821a;
+  --amberbg: #fdf3e3;
+  --blue:    #1f77b4;
+  --bluebg:  #e8f1f8;
+  --green:   #2e7d4f;
+  --greenbg: #eaf6ee;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(21,36,56,0.97);
+  backdrop-filter: blur(8px);
+  padding: 0 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-brand { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--teal3); letter-spacing: 0.12em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { font-size: 12px; color: rgba(255,255,255,0.5); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; font-weight: 400; }
+.nav-links a:hover { color: var(--teal3); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 120px 80px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-grid-lines {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+}
+.hero-glow  { position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(ellipse, rgba(26,122,110,0.15) 0%, transparent 65%); pointer-events: none; }
+.hero-glow2 { position: absolute; bottom: -100px; left: 5%; width: 500px; height: 400px; background: radial-gradient(ellipse, rgba(31,119,180,0.08) 0%, transparent 60%); pointer-events: none; }
+.hero-glow3 { position: absolute; top: 30%; left: 55%; width: 400px; height: 300px; background: radial-gradient(ellipse, rgba(26,122,110,0.06) 0%, transparent 60%); pointer-events: none; }
+
+.hero-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal2); margin-bottom: 32px; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; }
+.hero-tag::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--teal2); }
+
+.hero h1 { font-family: 'Instrument Serif', serif; font-size: clamp(3rem,6vw,6rem); color: #fff; line-height: 1.05; margin-bottom: 32px; position: relative; z-index: 1; max-width: 820px; }
+.hero h1 em { font-style: italic; color: var(--teal3); }
+.hero h1 .blue-em { font-style: italic; color: #7ab8e0; }
+
+.hero-desc { font-size: 1.05rem; color: rgba(255,255,255,0.5); max-width: 560px; line-height: 1.75; margin-bottom: 56px; position: relative; z-index: 1; font-weight: 300; }
+
+.hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; position: relative; z-index: 1; flex-wrap: wrap; }
+.stats-row { display: flex; gap: 0; }
+.stat { padding: 20px 32px; border: 1px solid rgba(255,255,255,0.08); border-right: none; text-align: center; background: rgba(255,255,255,0.02); }
+.stat:last-child { border-right: 1px solid rgba(255,255,255,0.08); }
+.stat strong { display: block; font-family: 'Instrument Serif', serif; font-size: 2.4rem; color: var(--teal3); line-height: 1; margin-bottom: 4px; }
+.stat span { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+.hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.2s; border-radius: 2px; }
+.hero-link:hover { border-color: var(--teal2); color: var(--teal3); background: rgba(26,122,110,0.08); }
+.hero-link svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── SECTIONS ── */
+.section { padding: 100px 80px; max-width: 1160px; margin: 0 auto; }
+.section-sm { padding: 80px 80px; max-width: 1160px; margin: 0 auto; }
+.section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.section-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
+.section-title { font-family: 'Instrument Serif', serif; font-size: clamp(1.9rem,3vw,2.8rem); color: var(--navy); line-height: 1.15; margin-bottom: 14px; }
+.section-intro { font-size: 1rem; color: var(--mid); max-width: 640px; line-height: 1.75; margin-bottom: 56px; font-weight: 300; }
+.divider { border: none; border-top: 1px solid var(--border); }
+
+.dark-band { background: var(--navy); padding: 100px 0; }
+.dark-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+.dark-band .section-label { color: var(--teal2); }
+.dark-band .section-label::before { background: var(--teal2); }
+.dark-band .section-title { color: #fff; }
+.dark-band .section-intro { color: rgba(255,255,255,0.45); }
+
+.sand-band { background: var(--sand); padding: 100px 0; }
+.sand-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+
+/* ── COUNTRY CARDS ── */
+.country-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+.country-card { background: #fff; border: 1px solid var(--border); padding: 32px; position: relative; overflow: hidden; transition: transform 0.22s ease, box-shadow 0.22s ease; }
+.country-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+.country-card.uk::after    { background: var(--blue); }
+.country-card.spain::after { background: #e74c3c; }
+.country-card:hover::after { transform: scaleX(1); }
+.country-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(21,36,56,0.08); }
+.country-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: middle; }
+.dot-uk { background: var(--blue); }
+.dot-es { background: #e74c3c; }
+.country-meta { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; display: flex; align-items: center; }
+.country-name { font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 4px; line-height: 1.2; }
+.country-source { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 18px; letter-spacing: 0.06em; }
+.country-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.7; font-weight: 300; margin-bottom: 16px; }
+.country-signals { font-size: 0.82rem; color: var(--teal); font-weight: 400; padding-top: 14px; border-top: 1px solid var(--border); line-height: 1.5; }
+.country-signals strong { color: var(--navy); font-weight: 600; }
+.country-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.06em; padding: 4px 8px; background: var(--light); color: var(--teal); border-radius: 1px; }
+
+/* ── METHOD GRID ── */
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.method-item { background: var(--paper); padding: 36px; transition: background 0.2s; position: relative; }
+.method-item:hover { background: #f0ede7; }
+.method-num { font-family: 'Instrument Serif', serif; font-size: 3rem; color: var(--border); line-height: 1; position: absolute; top: 20px; right: 24px; pointer-events: none; }
+.method-step { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+.method-item h4 { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.method-item p { font-size: 0.9rem; color: var(--mid); line-height: 1.7; font-weight: 300; max-width: 420px; }
+.method-callout { margin-top: 14px; padding: 10px 14px; background: var(--amberbg); border-left: 2px solid var(--amber); font-size: 0.82rem; color: #7a5010; line-height: 1.55; font-weight: 400; }
+.method-callout strong { color: var(--amber); }
+.method-win { margin-top: 14px; padding: 10px 14px; background: var(--light); border-left: 2px solid var(--teal); font-size: 0.82rem; color: #0e5048; line-height: 1.55; }
+
+/* ── MAP CARDS ── */
+.map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.map-card { background: #fff; border: 1px solid var(--border); padding: 28px; transition: transform 0.22s ease, box-shadow 0.22s ease; position: relative; overflow: hidden; }
+.map-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(21,36,56,0.07); }
+.map-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--teal); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+.map-card:hover::after { transform: scaleX(1); }
+.map-emoji { font-size: 1.8rem; display: block; margin-bottom: 14px; line-height: 1; }
+.map-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+.map-name { font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: var(--navy); margin-bottom: 8px; line-height: 1.25; }
+.map-desc { font-size: 0.87rem; color: var(--mid); line-height: 1.7; font-weight: 300; }
+.map-note { margin-top: 12px; padding: 9px 12px; background: var(--light); border-left: 2px solid var(--teal); font-size: 0.81rem; color: #0e5048; line-height: 1.55; }
+
+/* ── INSIGHTS ── */
+.insights-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+.insight-item { display: grid; grid-template-columns: 64px 1fr; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+.insight-item:last-child { border-bottom: none; }
+.insight-item:hover { background: rgba(26,122,110,0.03); }
+.insight-num { display: flex; align-items: flex-start; justify-content: center; padding-top: 28px; font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: var(--teal3); border-right: 1px solid var(--border); background: rgba(26,122,110,0.02); }
+.insight-body { padding: 28px 32px; }
+.insight-body h4 { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.3; }
+.insight-body p { font-size: 0.92rem; color: var(--mid); line-height: 1.72; font-weight: 300; }
+
+/* ── FURTHER WORK ── */
+.further-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.further-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 28px; transition: background 0.2s; }
+.further-card:hover { background: rgba(26,122,110,0.06); }
+.further-card .icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+.further-card h4 { font-size: 0.92rem; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.3; }
+.further-card p { font-size: 0.85rem; color: rgba(255,255,255,0.42); line-height: 1.7; font-weight: 300; }
+
+/* ── CAVEATS ── */
+.caveats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.caveat-card { padding: 28px; border: 1px solid var(--border); background: var(--sand); }
+.caveat-card h4 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.caveat-card p { font-size: 0.87rem; color: var(--mid); line-height: 1.68; font-weight: 300; }
+
+/* ── PIPELINE ── */
+.pipeline { background: #0d1e30; border: 1px solid rgba(255,255,255,0.06); padding: 32px 36px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; color: rgba(255,255,255,0.55); overflow-x: auto; }
+.pipeline .comment  { color: rgba(125,216,208,0.4); }
+.pipeline .step-num { color: var(--teal2); }
+.pipeline .step-name { color: rgba(255,255,255,0.85); font-weight: 500; }
+.pipeline .step-note { color: rgba(255,255,255,0.35); }
+
+/* ── CLUSTER BADGE ── */
+.cluster-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 1px; font-weight: 500; }
+.badge-uk { background: var(--bluebg); color: var(--blue); border: 1px solid rgba(31,119,180,0.2); }
+.badge-es { background: #fceaea; color: #9a1a1a; border: 1px solid rgba(231,76,60,0.2); }
+.badge-mix { background: var(--light); color: var(--teal); border: 1px solid rgba(26,122,110,0.2); }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 80px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.footer-info p { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.25); margin-bottom: 4px; }
+.footer-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-pill { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.06em; padding: 5px 10px; border: 1px solid rgba(26,169,154,0.25); color: var(--teal2); border-radius: 1px; }
+
+/* ── ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.10s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+.hero-left-anim > * { opacity: 0; transform: translateY(22px); animation: fadeup 0.8s ease forwards; }
+.hero-left-anim > *:nth-child(1) { animation-delay: 0.10s; }
+.hero-left-anim > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-left-anim > *:nth-child(3) { animation-delay: 0.40s; }
+.hero-left-anim > *:nth-child(4) { animation-delay: 0.55s; }
+@keyframes fadeup { to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 32px 64px; }
+  .section, .section-sm { padding: 60px 32px; }
+  .dark-band-inner, .sand-band-inner { padding: 0 32px; }
+  .dark-band, .sand-band { padding: 60px 0; }
+  .stats-row { flex-wrap: wrap; }
+  .country-split, .method-grid, .map-grid, .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <span class="nav-brand">portfolio / uk_spain_city_clustering</span>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#maps">Visualisation</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#further">Further work</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="top">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-glow3"></div>
+
+  <div class="hero-left-anim">
+    <p class="hero-tag">K-Means Clustering · Geospatial Analysis · Foursquare API</p>
+
+    <h1>What kind of city<br>is <em>your</em> city<br><span class="blue-em">really?</span></h1>
+
+    <p class="hero-desc">An unsupervised machine learning pipeline that collects venue data for cities across the UK and Spain via the Foursquare Places API, builds frequency profiles for each city, and clusters them by similarity — revealing that city type matters more than country of origin.</p>
+
+    <div class="hero-bottom">
+      <div class="stats-row">
+        <div class="stat"><strong>2</strong><span>countries</span></div>
+        <div class="stat"><strong>8</strong><span>clusters</span></div>
+        <div class="stat"><strong>100</strong><span>venues / city</span></div>
+        <div class="stat"><strong>5km</strong><span>radius</span></div>
+      </div>
+
+      <div class="hero-links">
+        <a class="hero-link" href="https://github.com" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="hero-link" href="https://colab.research.google.com" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+          Notebook
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ OVERVIEW ══ -->
+<div id="overview" class="section">
+  <p class="section-label">Project overview</p>
+  <h2 class="section-title">What this project does</h2>
+  <p class="section-intro">Where you live shapes what surrounds you — but does the same kind of city feel the same regardless of which country it's in? This project uses Foursquare venue data to answer that question, clustering UK and Spanish cities by their venue fingerprint rather than their geography.</p>
+
+  <div class="country-split stagger">
+
+    <div class="country-card uk fade-up">
+      <p class="country-meta"><span class="country-dot dot-uk"></span>Country 1 · United Kingdom</p>
+      <h3 class="country-name">United Kingdom</h3>
+      <p class="country-source">UK and Spain.csv · cities with lat/lng · 5 km radius</p>
+      <p class="country-desc">A mix of major English cities, coastal towns, and smaller market towns. The UK's urban variety — from London's dense cultural offering to smaller northern industrial cities — creates a wide range of venue profiles within a single country label.</p>
+      <div class="country-signals">
+        <strong>Data detail:</strong> Up to 100 Foursquare venues per city within 5 km. All venue categories included — no pre-filtering applied before encoding.
+      </div>
+      <div class="country-tags">
+        <span class="tag">urban variety</span><span class="tag">foursquare v2</span><span class="tag">5km radius</span>
+      </div>
+    </div>
+
+    <div class="country-card spain fade-up">
+      <p class="country-meta"><span class="country-dot dot-es"></span>Country 2 · Spain</p>
+      <h3 class="country-name">Spain</h3>
+      <p class="country-source">UK and Spain.csv · cities with lat/lng · 5 km radius</p>
+      <p class="country-desc">Spanish cities in the dataset span coastal Mediterranean cities, inland cultural capitals, and smaller regional centres. Spain's stronger café and restaurant culture — and its more compact old-town architecture — may produce systematically different venue frequency profiles from UK counterparts.</p>
+      <div class="country-signals">
+        <strong>Data detail:</strong> Same API parameters applied identically. No country-specific adjustments — deliberate, so any differences emerge from the data rather than collection bias.
+      </div>
+      <div class="country-tags">
+        <span class="tag">coastal cities</span><span class="tag">cultural capitals</span><span class="tag">same api params</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Research question</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Do UK and Spanish cities cluster by country — or by city type? Does the dominant venue category (cultural, gastronomic, outdoor) override national geography as a grouping signal?</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Key methodological decision</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Using <strong>mean frequency</strong> rather than raw venue counts to represent each city normalises for the fact that larger cities return more total venues. A city with 98 venues and one with 40 are compared proportionally, not by absolute volume.</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">No labelled training data</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">K-Means discovers cluster structure from the venue frequency matrix alone — no pre-assigned city type labels, no demographic variables. The cluster character emerges entirely from the first most common venue type per group.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ METHODOLOGY ══ -->
+<div id="methodology" class="sand-band">
+  <div class="sand-band-inner">
+    <p class="section-label">Methodology</p>
+    <h2 class="section-title">How it was built</h2>
+    <p class="section-intro">Five stages transform a city coordinate file into a clustered, colour-coded interactive map. Each decision is documented with its analytical rationale.</p>
+
+    <div class="method-grid stagger">
+
+      <div class="method-item fade-up">
+        <span class="method-num">01</span>
+        <p class="method-step">Data collection</p>
+        <h4>Foursquare API — getVenues()</h4>
+        <p>A custom <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">getVenues()</code> function loops through every city in the CSV, calls the Foursquare Explore endpoint, and returns the name, coordinates, and category of up to 100 nearby venues. Results are collected into a flat list and assembled into a single venues DataFrame.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> Foursquare Places API v2 (legacy) is deprecated. The endpoint and <code style="font-size:.8rem;">CLIENT_ID</code>/<code style="font-size:.8rem;">CLIENT_SECRET</code> auth model no longer work with new credentials. Migrate to Foursquare Places API v3 for live re-runs.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">02</span>
+        <p class="method-step">Feature engineering</p>
+        <h4>One-hot encode → group by city → mean frequency</h4>
+        <p><code style="font-size:.8rem;background:var(--light);padding:1px 4px;">pd.get_dummies()</code> expands the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">Venue Category</code> column into binary indicator columns — one per unique category. Rows are then grouped by city and the mean of each binary column is computed, giving each city a fractional venue profile.</p>
+        <div class="method-win">✦ Mean frequency normalises for venue count differences between cities. Without this step, large cities would dominate the clustering simply because they return more venues — not because their profile is more extreme.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">Venue ranking</p>
+        <h4>Top 10 most common venues per city</h4>
+        <p>A helper function <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">return_most_common_venues()</code> sorts each city's feature vector in descending frequency order and extracts the top 10 venue type labels. This creates a ranked venue table — the primary human-readable output used to interpret what each cluster actually represents.</p>
+        <div class="method-win">✦ The 1st Most Common Venue becomes the de-facto cluster label. Inspecting its value_counts() per cluster is faster and more interpretable than examining centroid coordinates in high-dimensional space.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">04</span>
+        <p class="method-step">Clustering</p>
+        <h4>K-Means (k=8, random_state=1)</h4>
+        <p>Scikit-learn <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">KMeans</code> is fit to the city venue frequency matrix with the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">city</code> column dropped. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">random_state=1</code> ensures reproducibility. Labels are joined back to the cities DataFrame to carry coordinates for mapping.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> k=8 is a deliberate choice, not data-derived. No elbow curve or silhouette analysis is performed. A natural extension is to plot inertia across k=2 to 15 and select the inflection point empirically.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">05</span>
+        <p class="method-step">Interpretation</p>
+        <h4>Cluster composition — cities and venue signatures</h4>
+        <p>After fitting, two analysis passes run: first, the count of cities per cluster (<code style="font-size:.8rem;background:var(--light);padding:1px 4px;">value_counts</code> on labels); second, the most common 1st venue type per cluster (value_counts on the ranked venue column filtered by cluster label). A grouped display lists every city in each cluster.</p>
+        <div class="method-win">✦ Cross-referencing cluster membership with country reveals whether UK and Spanish cities mix within clusters — a direct answer to the core research question without any additional statistical test.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">06</span>
+        <p class="method-step">Targeted analysis</p>
+        <h4>River venue filter — category as geographic signal</h4>
+        <p>A second focused analysis drops all columns except <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">River</code> and <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">city</code>, merges coordinates back, and filters to cities where River frequency is non-zero. This demonstrates how a single venue category column can act as a geographic filter — surfacing cities with active riverfront activity in Foursquare data.</p>
+        <div class="method-win">✦ This pattern generalises: any venue category column can become a filter. "Cities where Museum frequency &gt; 0.1" or "Cities where Beach frequency &gt; 0.05" would answer tourism-relevant questions with no additional data collection.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px;">
+      <p class="method-step" style="margin-bottom:16px;">Full pipeline</p>
+      <div class="pipeline">
+        <span class="comment"># End-to-end pipeline — coordinate CSV through to dual interactive maps</span><br>
+        <span class="step-num"> 1.</span>  <span class="step-name">Install & import</span>        <span class="step-note">— geopy, folium, scikit-learn, pandas, numpy, requests, json, matplotlib</span><br>
+        <span class="step-num"> 2.</span>  <span class="step-name">API credentials</span>         <span class="step-note">— CLIENT_ID, CLIENT_SECRET, VERSION=20180604, LIMIT=100, radius=5000</span><br>
+        <span class="step-num"> 3.</span>  <span class="step-name">Load CSV</span>                <span class="step-note">— df = pd.read_csv('UK and Spain.csv'); city / country / lat / lng</span><br>
+        <span class="step-num"> 4.</span>  <span class="step-name">Preview map</span>             <span class="step-note">— folium.Map(); CircleMarker per city; blue fill; popup = city name</span><br>
+        <span class="step-num"> 5.</span>  <span class="step-name">getVenues()</span>             <span class="step-note">— loop cities; Foursquare Explore endpoint; returns flat venues DataFrame</span><br>
+        <span class="step-num"> 6.</span>  <span class="step-name">Inspect venues</span>          <span class="step-note">— venues.shape; venues.head(); groupby city count</span><br>
+        <span class="step-num"> 7.</span>  <span class="step-name">One-hot encode</span>          <span class="step-note">— pd.get_dummies(venues['Venue Category']); re-attach city column</span><br>
+        <span class="step-num"> 8.</span>  <span class="step-name">Group by city</span>           <span class="step-note">— eu_onehot.groupby('city').mean().reset_index() → groupedvenues</span><br>
+        <span class="step-num"> 9.</span>  <span class="step-name">Top 5 per city</span>          <span class="step-note">— print loop: sort by freq desc, head(5) per city</span><br>
+        <span class="step-num">10.</span>  <span class="step-name">Top 10 table</span>            <span class="step-note">— return_most_common_venues(); city_venues_sorted DataFrame</span><br>
+        <span class="step-num">11.</span>  <span class="step-name">K-Means</span>                 <span class="step-note">— KMeans(n_clusters=8, random_state=1).fit(); append labels to city_venues_sorted</span><br>
+        <span class="step-num">12.</span>  <span class="step-name">Merge + map 1</span>           <span class="step-note">— join cities_merged; folium rainbow CircleMarkers by cluster label</span><br>
+        <span class="step-num">13.</span>  <span class="step-name">Cluster counts</span>          <span class="step-note">— loop 0-7: cities_merged[Cluster Labels == i].shape[0]</span><br>
+        <span class="step-num">14.</span>  <span class="step-name">Cluster top venue</span>       <span class="step-note">— cluster0-7 slices; ['1st Most Common Venue'].value_counts().head()</span><br>
+        <span class="step-num">15.</span>  <span class="step-name">Cities per cluster</span>      <span class="step-note">— groupby Cluster Labels; apply list; reset_index</span><br>
+        <span class="step-num">16.</span>  <span class="step-name">River filter</span>            <span class="step-note">— drop all columns except River + city; insert cluster labels; merge coordinates</span><br>
+        <span class="step-num">17.</span>  <span class="step-name">Map 2 — River</span>           <span class="step-note">— filter df3 = df2[(df2 != 0).all(1)]; same rainbow folium map on filtered cities</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ MAPS ══ -->
+<div id="maps" class="section">
+  <p class="section-label">Visualisation</p>
+  <h2 class="section-title">Two maps, two questions</h2>
+  <p class="section-intro">Folium renders interactive Leaflet.js maps directly in the notebook. Two maps answer different analytical questions — one broad, one targeted.</p>
+
+  <div class="map-grid stagger">
+
+    <div class="map-card fade-up">
+      <span class="map-emoji">🗺️</span>
+      <p class="map-label">Map 1 · Full cluster geography</p>
+      <h3 class="map-name">All Cities — Coloured by Cluster</h3>
+      <p class="map-desc">Every city in the dataset is plotted as a circle marker. Colour encodes cluster membership using a rainbow palette generated from <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">matplotlib.cm.rainbow</code> — 8 colours evenly spaced across the spectrum. Each marker popup shows city name and cluster number.</p>
+      <p class="map-desc" style="margin-top:10px;">The spatial distribution of colours reveals whether clusters have a geographic pattern (UK cities in one colour, Spanish cities in another) or whether they interleave — which would confirm that venue profile, not country, drives the clustering.</p>
+      <img src="https://klaire03.github.io/images/urban%20clusters.png" alt="All Cities — Coloured by Cluster" style="width:100%;display:block;margin:16px 0;border:1px solid var(--border);" />
+      <div class="map-note">✦ Rainbow palette: <code style="font-size:.8rem;">cm.rainbow(np.linspace(0,1,len(ys)))</code> mapped to hex via <code style="font-size:.8rem;">colors.rgb2hex()</code>. Each cluster integer indexes into the same array — label 0 always maps to the same colour.</div>
+    </div>
+
+    <div class="map-card fade-up">
+      <span class="map-emoji">🏞️</span>
+      <p class="map-label">Map 2 · River venue filter</p>
+      <h3 class="map-name">Cities with River Venues</h3>
+      <p class="map-desc">A second map shows only cities where the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">River</code> venue category has a non-zero frequency in the Foursquare data. All other venue columns are dropped first; the city and cluster label columns are retained so each marker still carries its cluster colour.</p>
+      <p class="map-desc" style="margin-top:10px;">This is a targeted geographic query: which cities in the dataset have active riverfront activity captured by Foursquare — and do those cities tend to fall in the same cluster, or are they distributed across several?</p>
+      <div class="map-note">✦ The filter logic <code style="font-size:.8rem;">df2[(df2 != 0).all(1)]</code> drops any row where River frequency is 0.0 — keeping only cities where at least one venue fell into the River category within 5 km.</div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ INSIGHTS ══ -->
+<div id="insights" class="dark-band">
+  <div class="dark-band-inner">
+    <p class="section-label">Key insights & findings</p>
+    <h2 class="section-title">What the data reveals</h2>
+    <p class="section-intro">These analytical conclusions emerge from the cluster structure — each one follows from a specific stage of the notebook and leads to a concrete follow-up question.</p>
+
+    <div class="insights-list stagger">
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">1</div>
+        <div class="insight-body">
+          <h4>City type outweighs national geography — UK and Spanish cities mix within clusters</h4>
+          <p>The K-Means clusters do not simply separate British from Spanish cities. Instead, cities with similar venue compositions — a coastal resort in the UK and a beach town in Spain, or a cultural capital from either country — cluster together. This directly answers the research question: the venue fingerprint of a city is a stronger grouping signal than which country it sits in. <strong style="color:var(--teal3);">→ Venue profile is a better proxy for "city character" than national origin.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">2</div>
+        <div class="insight-body">
+          <h4>The 1st Most Common Venue is a reliable cluster label — no manual annotation needed</h4>
+          <p>Inspecting <code style="font-size:.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;">cluster_n['1st Most Common Venue'].value_counts().head()</code> per cluster produces interpretable human-readable names without any supervised labelling. A cluster where Restaurant dominates tells a different story from one where Gym or Museum leads. This is the unsupervised equivalent of feature importance — the top venue is the defining dimension for each group. <strong style="color:var(--teal3);">→ Value_counts() on the ranked venue column is all the label generation you need.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">3</div>
+        <div class="insight-body">
+          <h4>The River filter demonstrates that venue columns are reusable geographic queries</h4>
+          <p>Filtering to cities where River frequency is non-zero produces a sub-map that is not simply "all cities near water" — it is specifically cities where Foursquare users have checked into river-category venues within 5 km of the centre. The same logic applies to any category: Museum, Beach, Hiking Trail. A single line of filtering code turns any venue column into an answerable geographic question. <strong style="color:var(--teal3);">→ The feature matrix doubles as a reusable query engine for place-type analysis.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">4</div>
+        <div class="insight-body">
+          <h4>Venue density bias is the most important data quality issue in this pipeline</h4>
+          <p>The Foursquare API returns up to 100 venues per city — but smaller cities may only have 20–30 venues logged, while London or Madrid saturate the limit. Mean frequency normalises for this to some extent, but a city with 30 venues will still have noisier category proportions than one with 98. Clusters containing predominantly small cities may reflect data sparsity as much as genuine venue similarity. <strong style="color:var(--teal3);">→ Always check total venue count alongside cluster membership before interpreting a cluster as analytically meaningful.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">5</div>
+        <div class="insight-body">
+          <h4>8 clusters provides useful granularity — but the right k is an open question</h4>
+          <p>The choice of k=8 produces clusters that are interpretable and varied — there is no single dominant mega-cluster absorbing most cities. However, without an elbow curve or silhouette score, k=8 cannot be claimed as optimal. It is possible that k=5 or k=6 would produce equally coherent clusters with less fragmentation of small groups. The current k is a starting point for exploration, not a definitive answer. <strong style="color:var(--teal3);">→ Run inertia across k=2 to 15; the elbow point is the more defensible choice for a published analysis.</strong></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FURTHER WORK ══ -->
+<div id="further" class="dark-band" style="background:#0f1e30;padding-top:80px;padding-bottom:80px;">
+  <div class="dark-band-inner">
+    <p class="section-label">Further work</p>
+    <h2 class="section-title" style="color:#fff;">What I'd build next</h2>
+    <p class="section-intro">Three directions that would sharpen and extend these findings — each addresses a known limitation of the current pipeline.</p>
+
+    <div class="further-grid stagger">
+
+      <div class="further-card fade-up">
+        <span class="icon">📐</span>
+        <h4>Elbow &amp; silhouette analysis to find the optimal k</h4>
+        <p>k=8 was chosen by intuition. Plotting inertia across k=2 to 15 and overlaying silhouette scores would give a data-derived justification for the cluster count — or reveal that a different k produces tighter, more separated groups. DBSCAN is also worth testing: it does not require k to be specified and can identify outlier cities that do not fit any cluster cleanly.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">🌍</span>
+        <h4>Migrate to Foursquare Places API v3 and extend to more countries</h4>
+        <p>The v2 API used here is deprecated — live re-runs require migration to Foursquare's current API. Once restored, extending to France, Germany, and Italy would test whether the cluster structure generalises beyond the UK/Spain pair. The pipeline needs only a new CSV of cities with coordinates and the same getVenues() logic updated for the v3 endpoint format.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">📊</span>
+        <h4>Add demographic context to cluster profiles</h4>
+        <p>Venue frequency tells you what a city has — but not why. Merging cluster membership with population size, GDP per capita, or tourism visitor numbers would test whether clusters correspond to economic categories as well as venue ones. A cluster of "cultural capital" cities should show elevated museum density and high tourism. A cluster of "dormitory towns" should show high supermarket and commuter-transport density with low leisure venues.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ CAVEATS ══ -->
+<div class="section-sm">
+  <p class="section-label">Limitations</p>
+  <h2 class="section-title">Caveats worth knowing</h2>
+
+  <div class="caveats-row stagger">
+    <div class="caveat-card fade-up">
+      <h4>📡 Foursquare API v2 is deprecated</h4>
+      <p>The data collection stage of this notebook uses the legacy Foursquare Places API v2, which has been deprecated. The <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">CLIENT_ID</code> / <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">CLIENT_SECRET</code> auth model and the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">/v2/venues/explore</code> endpoint no longer work with new credentials. The notebook reflects the original implementation; a v3 migration is required for live re-runs.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>🎯 k=8 is not data-derived</h4>
+      <p>The cluster count is set manually without elbow curve or silhouette analysis. Different values of k would produce different cluster structures — some potentially more coherent than k=8. Any interpretation of the 8 clusters as "the right grouping" should be treated as exploratory rather than definitive until a systematic k selection method is applied.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>📉 Venue density varies by city size</h4>
+      <p>Larger cities approach the 100-venue API limit; smaller towns may return 20–30. Mean frequency partially normalises for this, but sparse cities have noisier profiles. A cluster dominated by small cities may reflect data incompleteness as much as genuine venue similarity. Checking total venue count per city alongside cluster membership is good practice before drawing conclusions.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-info">
+    <p>UK &amp; Spain City Clustering · Venue-Based K-Means Analysis</p>
+    <p>Foursquare Places API · K-Means · Folium · Google Colab · Claire Economopoulou</p>
+  </div>
+  <div class="footer-tools">
+    <span class="tool-pill">Python</span>
+    <span class="tool-pill">pandas</span>
+    <span class="tool-pill">numpy</span>
+    <span class="tool-pill">scikit-learn</span>
+    <span class="tool-pill">requests</span>
+    <span class="tool-pill">folium</span>
+    <span class="tool-pill">matplotlib</span>
+    <span class="tool-pill">geopy</span>
+    <span class="tool-pill">Foursquare API</span>
+    <span class="tool-pill">Google Colab</span>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
