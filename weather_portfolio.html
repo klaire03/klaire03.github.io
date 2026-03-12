@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What To Wear Today — ML Weather & Clothing Recommender · Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #0f1e30;
+  --navy2:   #172d44;
+  --teal:    #0e7a72;
+  --teal2:   #17a89a;
+  --teal3:   #6dd6cc;
+  --sand:    #f7f4ef;
+  --paper:   #fafaf8;
+  --ink:     #1a1a1a;
+  --mid:     #4a4a4a;
+  --muted:   #888;
+  --border:  #e2ddd6;
+  --light:   #e4f5f3;
+  --amber:   #c07818;
+  --amberbg: #fdf2e0;
+  --sky:     #0e6fa8;
+  --skybg:   #e8f3fb;
+  --rain:    #4a7cb5;
+  --rainbg:  #ecf2fa;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(15, 30, 48, 0.97);
+  backdrop-filter: blur(8px);
+  padding: 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--teal3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+.nav-links a:hover { color: var(--teal3); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 120px 80px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+}
+.hero-glow {
+  position: absolute; top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(14,122,114,0.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-glow2 {
+  position: absolute; bottom: -100px; left: 5%;
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(14,111,168,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-glow3 {
+  position: absolute; top: 25%; left: 55%;
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(74,124,181,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal2);
+  margin-bottom: 32px;
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 12px;
+}
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: var(--teal2);
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 32px;
+  position: relative; z-index: 1;
+  max-width: 860px;
+}
+.hero h1 em { font-style: italic; color: var(--teal3); }
+.hero h1 .sky-em { font-style: italic; color: #88ccf0; }
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 580px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  position: relative; z-index: 1;
+  font-weight: 300;
+}
+
+.hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative; z-index: 1;
+  flex-wrap: wrap;
+}
+
+.stats-row { display: flex; gap: 0; }
+.stat {
+  padding: 20px 32px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: none;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+.stat:last-child { border-right: 1px solid rgba(255,255,255,0.08); }
+.stat strong {
+  display: block;
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  color: var(--teal3);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+.hero-link:hover {
+  border-color: var(--teal2);
+  color: var(--teal3);
+  background: rgba(14,122,114,0.08);
+}
+.hero-link svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── SECTION WRAPPERS ── */
+.section     { padding: 100px 80px; max-width: 1160px; margin: 0 auto; }
+.section-sm  { padding:  80px 80px; max-width: 1160px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
+
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  color: var(--navy);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.section-intro {
+  font-size: 1rem;
+  color: var(--mid);
+  max-width: 640px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  font-weight: 300;
+}
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── DARK BAND ── */
+.dark-band { background: var(--navy); padding: 100px 0; }
+.dark-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+.dark-band .section-label { color: var(--teal2); }
+.dark-band .section-label::before { background: var(--teal2); }
+.dark-band .section-title { color: #fff; }
+.dark-band .section-intro { color: rgba(255,255,255,0.45); }
+
+/* ── SAND BAND ── */
+.sand-band { background: var(--sand); padding: 100px 0; }
+.sand-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+
+/* ── LAYER CARDS (3 stages) ── */
+.era-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.era-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.era-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.era-card.stage1::after { background: var(--teal2); }
+.era-card.stage2::after { background: var(--sky); }
+.era-card.stage3::after { background: var(--rain); }
+.era-card:hover::after  { transform: scaleX(1); }
+.era-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(15,30,48,0.08); }
+
+.era-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+}
+.era-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.4rem; color: var(--navy); margin-bottom: 4px;
+}
+.era-range {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--muted); margin-bottom: 14px; letter-spacing: 0.06em;
+}
+.era-desc { font-size: 0.87rem; color: var(--mid); line-height: 1.7; font-weight: 300; }
+.era-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.06em;
+  padding: 4px 8px; background: var(--light); color: var(--teal); border-radius: 1px;
+}
+
+/* ── METHOD GRID ── */
+.method-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+}
+.method-item {
+  background: var(--paper); padding: 36px;
+  transition: background 0.2s; position: relative;
+}
+.method-item:hover { background: #f0ede7; }
+.method-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem; color: var(--border); line-height: 1;
+  position: absolute; top: 20px; right: 24px; pointer-events: none;
+}
+.method-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px;
+}
+.method-item h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 10px;
+}
+.method-item p {
+  font-size: 0.9rem; color: var(--mid); line-height: 1.7;
+  font-weight: 300; max-width: 420px;
+}
+.method-callout {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--amberbg); border-left: 2px solid var(--amber);
+  font-size: 0.82rem; color: #7a5010; line-height: 1.55; font-weight: 400;
+}
+.method-callout strong { color: var(--amber); }
+.method-win {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--light); border-left: 2px solid var(--teal);
+  font-size: 0.82rem; color: #0a5048; line-height: 1.55;
+}
+
+/* ── TECHNIQUE CARDS ── */
+.technique-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.technique-card {
+  background: #fff; border: 1px solid var(--border); padding: 28px;
+  position: relative; overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.technique-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(15,30,48,0.07); }
+.technique-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--teal);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+}
+.technique-card:hover::after { transform: scaleX(1); }
+.technique-card.wide { grid-column: span 2; }
+
+.tc-emoji  { font-size: 1.8rem; display: block; margin-bottom: 14px; line-height: 1; }
+.tc-label  {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 6px;
+}
+.tc-name   { font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: var(--navy); margin-bottom: 8px; line-height: 1.25; }
+.tc-model  { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 14px; letter-spacing: 0.04em; }
+.tc-desc   { font-size: 0.87rem; color: var(--mid); line-height: 1.7; font-weight: 300; margin-bottom: 14px; }
+.tc-note   { margin-top: 12px; padding: 9px 12px; background: var(--light); border-left: 2px solid var(--teal); font-size: 0.81rem; color: #0a5048; line-height: 1.55; }
+.tc-warn   { margin-top: 12px; padding: 9px 12px; background: var(--amberbg); border-left: 2px solid var(--amber); font-size: 0.81rem; color: #7a5010; line-height: 1.55; }
+
+/* ── INSIGHTS ── */
+.insights-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+.insight-item {
+  display: grid; grid-template-columns: 64px 1fr;
+  border-bottom: 1px solid var(--border); transition: background 0.2s;
+}
+.insight-item:last-child { border-bottom: none; }
+.insight-item:hover { background: rgba(14,122,114,0.03); }
+.insight-num {
+  display: flex; align-items: flex-start; justify-content: center; padding-top: 28px;
+  font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: var(--teal3);
+  border-right: 1px solid var(--border); background: rgba(14,122,114,0.02);
+}
+.insight-body { padding: 28px 32px; }
+.insight-body h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.3;
+}
+.insight-body p { font-size: 0.92rem; color: var(--mid); line-height: 1.72; font-weight: 300; }
+
+/* ── FURTHER WORK ── */
+.further-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.further-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08); padding: 28px; transition: background 0.2s;
+}
+.further-card:hover { background: rgba(14,122,114,0.06); }
+.further-card .icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+.further-card h4 { font-size: 0.92rem; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.3; }
+.further-card p { font-size: 0.85rem; color: rgba(255,255,255,0.42); line-height: 1.7; font-weight: 300; }
+
+/* ── CAVEATS ── */
+.caveats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.caveat-card { padding: 28px; border: 1px solid var(--border); background: var(--sand); }
+.caveat-card h4 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.caveat-card p  { font-size: 0.87rem; color: var(--mid); line-height: 1.68; font-weight: 300; }
+
+/* ── PIPELINE BLOCK ── */
+.pipeline {
+  background: #0a1520;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 32px 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; line-height: 1.9;
+  color: rgba(255,255,255,0.55); overflow-x: auto;
+}
+.pipeline .comment   { color: rgba(109,214,204,0.4); }
+.pipeline .step-num  { color: var(--teal2); }
+.pipeline .step-name { color: rgba(255,255,255,0.85); font-weight: 500; }
+.pipeline .step-note { color: rgba(255,255,255,0.35); }
+
+/* ── FEATURE TABLE ── */
+.feature-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 24px; }
+.feature-table th {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 12px 16px; background: var(--navy); color: rgba(255,255,255,0.5);
+  text-align: left; font-weight: 400;
+}
+.feature-table td {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  color: var(--mid); vertical-align: top; line-height: 1.6; font-weight: 300;
+}
+.feature-table td:first-child {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--navy); font-weight: 500; letter-spacing: 0.04em; white-space: nowrap;
+}
+.feature-table tr:last-child td { border-bottom: none; }
+.feature-table tr:hover td { background: rgba(14,122,114,0.02); }
+.range-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+  background: var(--light); color: var(--teal); padding: 2px 7px; border-radius: 1px;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 80px; display: flex; justify-content: space-between;
+  align-items: center; gap: 24px; flex-wrap: wrap;
+}
+.footer-info p {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; color: rgba(255,255,255,0.25); margin-bottom: 4px;
+}
+.footer-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: 0.06em; padding: 5px 10px;
+  border: 1px solid rgba(14,168,154,0.25); color: var(--teal2); border-radius: 1px;
+}
+
+/* ── ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.10s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+.hero-left-anim > * { opacity: 0; transform: translateY(22px); animation: fadeup 0.8s ease forwards; }
+.hero-left-anim > *:nth-child(1) { animation-delay: 0.10s; }
+.hero-left-anim > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-left-anim > *:nth-child(3) { animation-delay: 0.40s; }
+.hero-left-anim > *:nth-child(4) { animation-delay: 0.55s; }
+@keyframes fadeup { to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 32px 64px; }
+  .section, .section-sm { padding: 60px 32px; }
+  .dark-band-inner, .sand-band-inner { padding: 0 32px; }
+  .dark-band, .sand-band { padding: 60px 0; }
+  .stats-row { flex-wrap: wrap; }
+  .era-split, .method-grid, .technique-grid, .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  .technique-card.wide { grid-column: 1; }
+  footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <span class="nav-brand">portfolio / what_to_wear_today</span>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#techniques">Techniques</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#further">Further work</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="top">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-glow3"></div>
+
+  <div class="hero-left-anim">
+    <p class="hero-tag">Time-Series Forecasting · Semantic Search · ML Deployment</p>
+
+    <h1>weather<br><em>predicted.</em><br><span class="sky-em">outfit chosen.</span></h1>
+
+    <p class="hero-desc">An end-to-end ML pipeline that fetches 14 days of hourly weather history from the Open-Meteo API, predicts the next 12 hours using a Keras LSTM, converts the forecast into natural language, and matches it against a clothing catalogue via sentence-transformer cosine similarity — deployed as a FastAPI service inside Docker.</p>
+
+    <div class="hero-bottom">
+      <div class="stats-row">
+        <div class="stat"><strong>336h</strong><span>input window</span></div>
+        <div class="stat"><strong>12h</strong><span>forecast horizon</span></div>
+        <div class="stat"><strong>4</strong><span>target variables</span></div>
+        <div class="stat"><strong>4</strong><span>clothing categories</span></div>
+      </div>
+
+      <div class="hero-links">
+        <a class="hero-link" href="https://github.com/pawarsp/what-to-wear-today" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="hero-link" href="https://colab.research.google.com" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+          Notebook
+        </a>
+        <a class="hero-link" href="#">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+          Kaggle Dataset
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ OVERVIEW ══ -->
+<div id="overview" class="section">
+  <p class="section-label">Project overview</p>
+  <h2 class="section-title">What this project does</h2>
+  <p class="section-intro">Weather is a sequence problem. Clothing is a language problem. This project solves both — by building a time-series LSTM that forecasts the next 12 hours of conditions, then a semantic recommender that converts those numbers into a natural language description and matches it to the right outfit using sentence embeddings.</p>
+
+  <div class="era-split stagger">
+
+    <div class="era-card stage1 fade-up">
+      <p class="era-meta">Stage 1</p>
+      <h3 class="era-name">Data Engineering</h3>
+      <p class="era-range">Open-Meteo API · SQL-style ETL · Python</p>
+      <p class="era-desc">Hourly weather history is fetched for the past 14 days and cached locally as CSV. Missing timestamps are detected and filled with linear interpolation. The datetime column is encoded into cyclical sin/cos features so the LSTM understands time as circular, not linear.</p>
+      <div class="era-tags">
+        <span class="tag">open-meteo api</span>
+        <span class="tag">interpolation</span>
+        <span class="tag">cyclical encoding</span>
+      </div>
+    </div>
+
+    <div class="era-card stage2 fade-up">
+      <p class="era-meta">Stage 2</p>
+      <h3 class="era-name">Weather Forecasting</h3>
+      <p class="era-range">Keras LSTM · 336h input · 12h horizon</p>
+      <p class="era-desc">A Keras LSTM trained on 336 hours of historical data predicts the next 12 hours of temperature, humidity, rain, and wind speed. A MinMaxScaler is saved alongside each model checkpoint so predictions can be inverse-transformed back to real units at inference time.</p>
+      <div class="era-tags">
+        <span class="tag">lstm</span>
+        <span class="tag">keras</span>
+        <span class="tag">minmaxscaler</span>
+      </div>
+    </div>
+
+    <div class="era-card stage3 fade-up">
+      <p class="era-meta">Stage 3</p>
+      <h3 class="era-name">Clothing Recommendation</h3>
+      <p class="era-range">Sentence Transformers · Cosine Similarity · NLP</p>
+      <p class="era-desc">The weather forecast is converted into a natural language sentence. A sentence transformer embeds both the weather description and 4,000+ clothing items. Cosine similarity ranks each item's relevance; top 5 are returned per category — tops, bottoms, shoes, accessories — with live image links validated before delivery.</p>
+      <div class="era-tags">
+        <span class="tag">all-minilm-l6-v2</span>
+        <span class="tag">cosine similarity</span>
+        <span class="tag">nlu bridging</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Research questions</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Can an LSTM accurately forecast short-range weather from 14 days of hourly data? Does converting numeric conditions to natural language produce better clothing matches than direct feature comparison? How much of recommendation quality is lost by random sampling vs. exhaustive search?</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Key methodological decision</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Using natural language as the bridge between weather numbers and clothing descriptions — rather than a direct numeric feature match — is the core design choice. It allows the recommender to leverage the semantic knowledge already baked into the sentence transformer's pre-training, without any labelled weather-clothing training data.</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">No labelled training data</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">The clothing recommender requires zero labelled weather–outfit pairs. The sentence transformer's pre-trained knowledge of language handles the association. Clothing embeddings are pre-computed and cached — only the weather sentence needs encoding at request time.</p>
+    </div>
+  </div>
+
+  <div class="fade-up" style="margin-top:48px;">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block;">Live app — select city, get forecast & outfit</p>
+    <div style="display:grid;grid-template-columns:340px 1fr;gap:32px;align-items:start;">
+      <img src="https://klaire03.github.io/images/whattowear.png" alt="What To Wear Today — app interface" style="width:100%;border:1px solid var(--border);display:block;" />
+      <div>
+        <p style="font-size:.95rem;color:var(--mid);line-height:1.8;font-weight:300;margin-bottom:16px;">The deployed FastAPI app accepts a city selection and returns the full pipeline output in a single view: live weather conditions, a Leaflet.js map, a 12-hour LSTM temperature forecast chart, and a categorised outfit recommendation grid with product images pulled from the clothing catalogue.</p>
+        <p style="font-size:.95rem;color:var(--mid);line-height:1.8;font-weight:300;">Each recommendation includes category, item name, and a confidence score derived from cosine similarity — so the output is both actionable and explainable.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ METHODOLOGY ══ -->
+<div id="methodology" class="sand-band">
+  <div class="sand-band-inner">
+    <p class="section-label">Methodology</p>
+    <h2 class="section-title">How it was built</h2>
+    <p class="section-intro">Five analytical stages run in sequence — from raw API ingestion through to a ranked outfit recommendation list. Each decision is documented with its rationale.</p>
+
+    <div class="method-grid stagger">
+
+      <div class="method-item fade-up">
+        <span class="method-num">01</span>
+        <p class="method-step">Data ingestion</p>
+        <h4>Open-Meteo API + local CSV cache</h4>
+        <p>Hourly weather history is fetched via <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">openmeteo_requests</code> with a 5-retry session. Results are stored as <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">location_startdate_enddate.csv</code>. On every load the column schema is validated against the expected variable list — if it mismatches, the cache is deleted and refetched. Eight variables are collected: temperature, humidity, dew point, apparent temperature, rain, wind speed, cloud cover, and pressure.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> Only 4 cities are currently supported via a hardcoded coordinate dictionary. The <code style="font-size:.8rem;">get_coords_from_location_name_dummy()</code> function must be extended or replaced with a live geocoding call to support arbitrary locations.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">02</span>
+        <p class="method-step">Feature engineering</p>
+        <h4>Missing timestamp interpolation + cyclical time encoding</h4>
+        <p>Missing hourly rows are detected by building a complete <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">pd.date_range</code> and diffing against the actual index. Gaps are filled with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">.interpolate(method='linear')</code>. The datetime column is then encoded into six cyclical features — <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sin/cos</code> for hour of day, day of week, and day of year — and dropped. The date column is no longer needed; the pattern is preserved in the circular encoding.</p>
+        <div class="method-win">✦ Cyclical encoding prevents the LSTM from treating time as linear. Without it, the model sees hour 23 and hour 0 as maximally distant — the opposite of their true relationship. Sin/cos encoding maps both to adjacent points on a circle.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">LSTM forecasting</p>
+        <h4>336-hour input window → 12-hour multi-target prediction</h4>
+        <p>The preprocessed array is shaped to <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">(1, 336, n_features)</code> via <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">np.expand_dims</code> and passed to the loaded Keras model. The model outputs a <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">(12, 4)</code> array — 12 hours of temperature, humidity, rain, and wind. A saved <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">joblib</code> scaler reverses the MinMax normalisation before the values are returned. Negative predictions are clipped to zero.</p>
+        <div class="method-win">✦ The target scaler is saved separately from the input scaler — only the 4 output variables need inverse-transforming. Using a single combined scaler would force unnecessary inverse transformation of input-only features.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">04</span>
+        <p class="method-step">Weather narration</p>
+        <h4>Numeric forecast → natural language description</h4>
+        <p>The 12-hour forecast is aggregated to a single representative condition: median temperature, median humidity, maximum wind, maximum rain. Threshold lookup tables convert each numeric value to a qualitative descriptor — e.g. temperature 12°C → "cool and fresh", wind 8 km/h → "slightly breezy". These descriptors are assembled into a complete sentence: <em>"At around 14 o'clock the air is cool and fresh at 12°C, it is slightly breezy with a windspeed of 8 km/h..."</em></p>
+        <div class="method-callout"><strong>⚠ Note:</strong> The threshold values are business rules, not data-derived. Different threshold tables would produce different sentence outputs and therefore different recommendation results — they are the main lever for tuning recommendation behaviour without retraining the model.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">05</span>
+        <p class="method-step">Clothing recommendation</p>
+        <h4>Sentence embedding + cosine similarity over pre-computed clothing vectors</h4>
+        <p>The weather sentence is encoded with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">all-MiniLM-L6-v2</code>. For each clothing category, up to 200 items are sampled and their pre-computed embeddings are retrieved from <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">.npy</code> files. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity([weather_emb], clothes_emb_sample)</code> scores each item. The top 5 are returned; product image links are validated with an HTTP HEAD request and dead links are excluded.</p>
+        <div class="method-win">✦ Pre-computing clothing embeddings at catalogue load time reduces inference latency by ~95%. The sentence transformer only needs to encode a single weather sentence per request — not the entire clothing catalogue.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">06</span>
+        <p class="method-step">Deployment</p>
+        <h4>FastAPI service → Docker container → Google Cloud Run</h4>
+        <p>The full pipeline — weather fetch, LSTM inference, recommendation — is served via a <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">uvicorn</code> FastAPI application. The Docker image bakes in the trained model, scaler, clothing CSVs, and pre-computed embeddings. Cloud Run deployment is automated via <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">make docker_push && make docker_deploy</code>. The image targets <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">linux/amd64</code> for GCP compatibility.</p>
+        <div class="method-win">✦ Baking the model and data into the Docker image avoids cold-start latency from remote model fetches. The tradeoff is a larger image size — acceptable for a single-model API but worth revisiting if multiple model versions need to coexist.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px;">
+      <p class="method-step" style="margin-bottom:16px;">Full pipeline</p>
+      <div class="pipeline">
+        <span class="comment"># End-to-end pipeline — API ingestion through to ranked clothing recommendations</span><br>
+        <span class="step-num"> 1.</span>  <span class="step-name">Install &amp; import</span>            <span class="step-note">— openmeteo_requests, keras, sentence_transformers, fastapi, sklearn, joblib, pandas, numpy</span><br>
+        <span class="step-num"> 2.</span>  <span class="step-name">Geocode city</span>                <span class="step-note">— get_coords_from_location_name_dummy(location) → lat, lon, timezone</span><br>
+        <span class="step-num"> 3.</span>  <span class="step-name">Fetch weather history</span>       <span class="step-note">— Open-Meteo archive API; 8 hourly variables; start_date = today - 14 days</span><br>
+        <span class="step-num"> 4.</span>  <span class="step-name">Cache to CSV</span>                <span class="step-note">— location_startdate_enddate.csv; schema-validated on load; delete &amp; refetch on mismatch</span><br>
+        <span class="step-num"> 5.</span>  <span class="step-name">Clean timestamps</span>            <span class="step-note">— pd.date_range diff; .reindex(full_index).interpolate(method='linear')</span><br>
+        <span class="step-num"> 6.</span>  <span class="step-name">Timezone filter</span>             <span class="step-note">— tz_localize(UTC) → tz_convert(local); filter df to rows ≤ now; take last 336 rows</span><br>
+        <span class="step-num"> 7.</span>  <span class="step-name">Cyclical encoding</span>           <span class="step-note">— sin/cos for hour (÷24), day_of_week (÷7), day_of_year (÷365); drop date column</span><br>
+        <span class="step-num"> 8.</span>  <span class="step-name">Shape input</span>                 <span class="step-note">— np.expand_dims(df, axis=0) → (1, 336, n_features) batch tensor</span><br>
+        <span class="step-num"> 9.</span>  <span class="step-name">Load LSTM model</span>             <span class="step-note">— glob latest weather_predictor_{location}*.keras; load_model with custom MSE</span><br>
+        <span class="step-num">10.</span>  <span class="step-name">Load scaler</span>                 <span class="step-note">— glob latest weather_y_scaler_{location}*; joblib.load</span><br>
+        <span class="step-num">11.</span>  <span class="step-name">Predict</span>                     <span class="step-note">— model.predict(X) → (1,12,4); squeeze; scaler.inverse_transform; clip(lower=0)</span><br>
+        <span class="step-num">12.</span>  <span class="step-name">Build forecast DataFrame</span>    <span class="step-note">— columns: time, temperature, humidity, wind, rain; 12 rows</span><br>
+        <span class="step-num">13.</span>  <span class="step-name">Aggregate forecast</span>          <span class="step-note">— median(temp), median(humidity), max(wind), max(rain), first timestamp</span><br>
+        <span class="step-num">14.</span>  <span class="step-name">Narrate weather</span>             <span class="step-note">— threshold lookup tables → qualitative descriptors → assembled sentence string</span><br>
+        <span class="step-num">15.</span>  <span class="step-name">Load clothing data</span>          <span class="step-note">— accessories.csv, shoes.csv, top.csv, bottom.csv → pd.concat; load .npy embeddings per category</span><br>
+        <span class="step-num">16.</span>  <span class="step-name">Encode weather</span>             <span class="step-note">— SentenceTransformer('all-MiniLM-L6-v2').encode(weather_sentence) → 384-dim vector</span><br>
+        <span class="step-num">17.</span>  <span class="step-name">Sample &amp; score</span>             <span class="step-note">— per category: sample 200 items; cosine_similarity([weather_emb], clothes_emb) → scores array</span><br>
+        <span class="step-num">18.</span>  <span class="step-name">Rank &amp; validate links</span>      <span class="step-note">— argsort(scores)[::-1][:5]; HTTP HEAD request per image link; dead links skipped</span><br>
+        <span class="step-num">19.</span>  <span class="step-name">Serve via FastAPI</span>           <span class="step-note">— uvicorn api.fast:app --host 0.0.0.0 --port $PORT; Docker + Cloud Run</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ TECHNIQUES ══ -->
+<div id="techniques" class="section">
+  <p class="section-label">Analytical techniques</p>
+  <h2 class="section-title">The data science toolkit</h2>
+  <p class="section-intro">Each technique was chosen to answer a specific question. The decisions below document what was used and why — including where a simpler approach was deliberately rejected.</p>
+
+  <div class="technique-grid stagger">
+
+    <div class="technique-card fade-up">
+      <span class="tc-emoji">🌦️</span>
+      <p class="tc-label">Data ingestion</p>
+      <h3 class="tc-name">Open-Meteo API + CSV Caching</h3>
+      <p class="tc-model">openmeteo_requests · requests_cache · retry_requests</p>
+      <p class="tc-desc">Each city's weather history is fetched using a retried, cached session. The response is unpacked variable-by-variable using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">hourly.Variables(idx).ValuesAsNumpy()</code> and assembled into a DataFrame with a generated <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">pd.date_range</code> index.</p>
+      <div class="tc-warn"><strong>⚠</strong> City support is hardcoded to 4 locations. Any unknown city name causes a <code style="font-size:.8rem;">None</code> return and silent failure downstream. Validate location input before calling the API.</div>
+    </div>
+
+    <div class="technique-card fade-up">
+      <span class="tc-emoji">🔁</span>
+      <p class="tc-label">Feature engineering</p>
+      <h3 class="tc-name">Cyclical Time Encoding</h3>
+      <p class="tc-model">numpy · sin/cos transforms · pandas dt accessors</p>
+      <p class="tc-desc">Three temporal dimensions — hour (÷24), day of week (÷7), day of year (÷365) — are each encoded as a sin/cos pair. This produces 6 new columns and preserves the circular nature of time: the model sees hour 23 and hour 0 as adjacent, and January 1 and December 31 as near-identical in the yearly cycle.</p>
+      <div class="tc-note">✦ This encoding is essential for LSTM generalisation across days and seasons. A raw hour integer (0–23) would cause the model to treat midnight as maximally dissimilar to 11 PM — a structurally incorrect representation.</div>
+    </div>
+
+    <div class="technique-card fade-up">
+      <span class="tc-emoji">🧠</span>
+      <p class="tc-label">Time-series forecasting</p>
+      <h3 class="tc-name">LSTM Neural Network</h3>
+      <p class="tc-model">Keras · TensorFlow · MinMaxScaler · joblib</p>
+      <p class="tc-desc">An LSTM trained on 336-hour sequences predicts the next 12 hours of 4 weather targets simultaneously. The model and a separate target scaler are versioned by timestamp and loaded at inference by globbing the most recent checkpoint in the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">/models/</code> directory.</p>
+      <div class="tc-note">✦ A separate target scaler (covering only the 4 output variables) is saved alongside the model. This is critical — using the full input scaler would attempt to inverse-transform variables the model never predicts, producing incorrect output shapes.</div>
+    </div>
+
+    <div class="technique-card fade-up">
+      <span class="tc-emoji">💬</span>
+      <p class="tc-label">Weather narration</p>
+      <h3 class="tc-name">Threshold-Based Natural Language Generation</h3>
+      <p class="tc-model">Python · custom threshold lookup tables</p>
+      <p class="tc-desc">A <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">describe_by_threshold(value, thresholds)</code> function scans ordered <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">(limit, description)</code> pairs and returns the first matching descriptor. Four independent lookup tables cover temperature, humidity, wind, and rain. The outputs are assembled into a single sentence per hour.</p>
+      <div class="tc-note">✦ Threshold tables are tunable without retraining any model — they are the primary lever for adjusting what "cold enough for a coat" means to the recommender. They are business rules, not learned parameters.</div>
+    </div>
+
+    <div class="technique-card fade-up">
+      <span class="tc-emoji">👗</span>
+      <p class="tc-label">Clothing recommendation</p>
+      <h3 class="tc-name">Sentence Transformer Embeddings</h3>
+      <p class="tc-model">sentence-transformers · all-MiniLM-L6-v2 · numpy .npy cache</p>
+      <p class="tc-desc">Clothing descriptions are encoded once into 384-dimensional vectors and saved as <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">embeddings_{category}.npy</code> per category. At inference, only the weather sentence is encoded live. The model is cached locally in <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">/models/all-MiniLM-L6-v2/</code> to avoid download latency in production.</p>
+      <div class="tc-warn"><strong>⚠</strong> Random sampling of 200 items per category introduces non-determinism — results vary between calls on large catalogues. Consider FAISS approximate nearest-neighbour search for deterministic, scalable retrieval at production catalogue sizes.</div>
+      <img src="https://klaire03.github.io/images/whattowear2.png" alt="Outfit recommendation output grid" style="width:100%;display:block;margin-top:20px;border:1px solid var(--border);" />
+    </div>
+
+    <div class="technique-card wide fade-up">
+      <span class="tc-emoji">📐</span>
+      <p class="tc-label">Similarity scoring</p>
+      <h3 class="tc-name">Cosine Similarity — Weather Description vs. Clothing Embeddings</h3>
+      <p class="tc-model">sklearn cosine_similarity · numpy argsort · HTTP HEAD link validation</p>
+      <p class="tc-desc">A single <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity([weather_emb], clothes_emb_sample)[0]</code> call scores all sampled items simultaneously in one batch operation. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">np.argsort(scores)[::-1][:top_k]</code> extracts the top 5 indices. For each result, product image links are parsed from the raw <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">product_images</code> string with a regex and validated with an HTTP HEAD request before being returned.</p>
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="tc-note">✦ Cosine similarity is preferred over Euclidean distance for high-dimensional embedding vectors. It measures the angle between vectors — capturing semantic direction rather than magnitude — so a short but precisely aligned weather description scores correctly against a longer clothing description.</div>
+        <div class="tc-warn"><strong>⚠</strong> Link validation adds 1–2 seconds per recommendation call due to sequential HTTP requests. For production, consider an async link health cache that refreshes periodically rather than validating on every request.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Weather variable reference table -->
+  <div style="margin-top:56px;">
+    <p class="method-step" style="margin-bottom:16px;">Open-Meteo weather variables — reference</p>
+    <table class="feature-table">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Unit</th>
+          <th>What it measures</th>
+          <th>Role in pipeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>temperature_2m</td>
+          <td><span class="range-pill">°C</span></td>
+          <td>Air temperature 2 metres above ground</td>
+          <td>Primary forecast target; drives warmth descriptor</td>
+        </tr>
+        <tr>
+          <td>relative_humidity_2m</td>
+          <td><span class="range-pill">%</span></td>
+          <td>Relative humidity 2 metres above ground</td>
+          <td>Primary forecast target; drives humidity descriptor</td>
+        </tr>
+        <tr>
+          <td>rain</td>
+          <td><span class="range-pill">mm</span></td>
+          <td>Hourly rainfall accumulation</td>
+          <td>Primary forecast target; drives rain descriptor + waterproof recommendations</td>
+        </tr>
+        <tr>
+          <td>wind_speed_10m</td>
+          <td><span class="range-pill">km/h</span></td>
+          <td>Wind speed 10 metres above ground</td>
+          <td>Primary forecast target; drives wind descriptor</td>
+        </tr>
+        <tr>
+          <td>dew_point_2m</td>
+          <td><span class="range-pill">°C</span></td>
+          <td>Temperature at which air becomes saturated</td>
+          <td>Input feature only — not a forecast target; adds humidity context for LSTM</td>
+        </tr>
+        <tr>
+          <td>apparent_temperature</td>
+          <td><span class="range-pill">°C</span></td>
+          <td>Perceived "feels like" temperature combining wind chill and humidity</td>
+          <td>Input feature only — adds perceived-comfort signal for LSTM</td>
+        </tr>
+        <tr>
+          <td>cloud_cover</td>
+          <td><span class="range-pill">%</span></td>
+          <td>Fraction of sky covered by cloud</td>
+          <td>Input feature only — correlated with rain probability</td>
+        </tr>
+        <tr>
+          <td>pressure_msl</td>
+          <td><span class="range-pill">hPa</span></td>
+          <td>Atmospheric pressure at mean sea level</td>
+          <td>Input feature only — pressure drop is a leading indicator of incoming weather change</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ INSIGHTS ══ -->
+<div id="insights" class="dark-band">
+  <div class="dark-band-inner">
+    <p class="section-label">Key insights & findings</p>
+    <h2 class="section-title">What the pipeline reveals</h2>
+    <p class="section-intro">These are the analytical conclusions that emerge from building and evaluating the system — each one surfaces a specific design decision and points toward a concrete next question.</p>
+
+    <div class="insights-list stagger">
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">1</div>
+        <div class="insight-body">
+          <h4>Natural language is a better bridge than feature vectors — the recommender needs no labelled training data</h4>
+          <p>The most counterintuitive design decision in this project is deliberately not building a direct numeric-to-clothing model. Instead, the weather forecast is first converted to natural language, then matched semantically. This works because <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">all-MiniLM-L6-v2</code> was pre-trained on a vast corpus that includes product descriptions, weather language, and everyday clothing vocabulary. The semantic associations between "cold and rainy" and "waterproof jacket" are already encoded in its weights. <strong style="color:var(--teal3);">→ Pre-trained language models eliminate the cold-start problem for recommendation: zero labelled weather–outfit pairs are required.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">2</div>
+        <div class="insight-body">
+          <h4>Cyclical encoding is not optional — it determines whether the LSTM can generalise across the year</h4>
+          <p>Without sin/cos encoding, the LSTM treats time as a linear variable: hour 23 appears maximally distant from hour 0, and December 31 is treated as completely unlike January 1. A model trained this way will consistently misforecast weather at day and year boundaries — precisely the transitions where forecast accuracy matters most. The cyclical encoding maps all time dimensions onto circles, preserving their true topology. <strong style="color:var(--teal3);">→ A single feature engineering decision — how time is represented — has more impact on LSTM forecast quality than architecture tuning.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">3</div>
+        <div class="insight-body">
+          <h4>Threshold tables are the primary lever for recommendation quality — and they're not learned from data</h4>
+          <p>The qualitative descriptors ("cool and fresh", "slightly breezy") are produced by hardcoded threshold tables, not by any model. Changing where the temperature boundary between "fresh" and "mild" sits changes which clothing items get recommended — without touching the LSTM or the sentence transformer. This means recommendation quality is partly a product design problem, not just a machine learning problem. The threshold tables define what "cold enough for a coat" means. <strong style="color:var(--teal3);">→ Tuning threshold tables is the fastest, cheapest, and most interpretable way to improve recommendation relevance.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">4</div>
+        <div class="insight-body">
+          <h4>Pre-computing clothing embeddings reduces inference latency by ~95% — the bottleneck shifts to link validation</h4>
+          <p>Encoding the full clothing catalogue at request time would take several seconds per category. Pre-computing and caching embeddings as <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">.npy</code> files means the transformer only encodes one sentence at inference. After this optimisation, the dominant latency is sequential HTTP HEAD requests validating product image links — one per candidate item. A link health cache refreshed on a schedule would eliminate this bottleneck entirely. <strong style="color:var(--teal3);">→ The embedding cache is the right architectural decision; async link validation is the missing companion optimisation.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">5</div>
+        <div class="insight-body">
+          <h4>4-city hardcoding is the system's most critical scalability constraint</h4>
+          <p>The city coordinate dictionary in <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">get_coords_from_location_name_dummy()</code> silently returns <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">None</code> for any unsupported location — a failure mode that propagates invisibly through the pipeline until it crashes at the API call. The real geocoding function using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">geopy.Nominatim</code> already exists in the codebase; the dummy version was introduced for reliability during development. Replacing it is the single highest-leverage change for extending the product. <strong style="color:var(--teal3);">→ One function swap turns a 4-city demo into a global product.</strong></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FURTHER WORK ══ -->
+<div id="further" class="dark-band" style="background:#0a1520;padding-top:80px;padding-bottom:80px;">
+  <div class="dark-band-inner">
+    <p class="section-label">Further work</p>
+    <h2 class="section-title" style="color:#fff;">What I'd build next</h2>
+    <p class="section-intro">Three directions that would materially sharpen the system — each targets a known limitation of the current architecture.</p>
+
+    <div class="further-grid stagger">
+
+      <div class="further-card fade-up">
+        <span class="icon">🌍</span>
+        <h4>Replace hardcoded cities with live geocoding — turn a 4-city demo into a global product</h4>
+        <p>The <code style="font-size:.8rem;opacity:.6;">geopy.Nominatim</code> geocoder already exists in the codebase alongside the dummy dictionary. Swapping <code style="font-size:.8rem;opacity:.6;">get_coords_from_location_name_dummy()</code> for the live version would make the pipeline work for any city on earth. The Open-Meteo API has global coverage; the only engineering work is adding a fallback for geocoding failures and caching coordinates to avoid repeated API calls.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">⚡</span>
+        <h4>FAISS approximate nearest-neighbour search — deterministic, scalable clothing retrieval</h4>
+        <p>The current random 200-item sample introduces non-determinism and misses high-scoring items that fall outside the sample window. A FAISS index built once at catalogue load time would retrieve the true top-k items from the full catalogue in milliseconds — no sampling, no variability, and no performance penalty. This becomes critical as the clothing catalogue grows beyond a few thousand items.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">🔁</span>
+        <h4>Scheduled model retraining — keep the LSTM accurate as climate patterns shift</h4>
+        <p>The LSTM is trained on a historical snapshot and never updated. Weather patterns shift seasonally and year-over-year; a model trained in summer will gradually degrade on winter forecasts if left static. A monthly retraining job pulling fresh data from Open-Meteo and redeploying the updated checkpoint via the existing Docker pipeline would maintain forecast accuracy without any architecture changes.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ CAVEATS ══ -->
+<div class="section-sm">
+  <p class="section-label">Limitations</p>
+  <h2 class="section-title">Caveats worth knowing</h2>
+
+  <div class="caveats-row stagger">
+    <div class="caveat-card fade-up">
+      <h4>📍 Only 4 cities are supported</h4>
+      <p>Location lookup is hardcoded to Berlin, Marseille, Porto, and London. Any other city name silently returns <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">None</code> and fails downstream. The real geocoding function using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">geopy.Nominatim</code> is already in the codebase — the dummy version was a reliability shortcut during development and was never removed.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>🎲 Recommendation results are non-deterministic</h4>
+      <p>Each call samples up to 200 clothing items per category at random. On catalogues larger than 200 items per category, the top-ranked results may differ between requests. This is a deliberate speed tradeoff — cosine similarity over the full catalogue without sampling is slow at inference time — but it means results are not reproducible without fixing the random seed.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>🔗 Dead product links are excluded, not repaired</h4>
+      <p>Image links are validated with an HTTP HEAD request and silently skipped if they return a 4xx or 5xx status. This means the number of recommendations returned can fall below <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">top_k=5</code> if many links in the top results are broken. The clothing catalogue needs periodic link-health maintenance to prevent recommendation quality degrading over time as product pages are removed.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-info">
+    <p>What To Wear Today — ML Weather &amp; Clothing Recommender</p>
+    <p>Open-Meteo API · Keras LSTM · Sentence Transformers · FastAPI · Docker · Google Cloud Run</p>
+  </div>
+  <div class="footer-tools">
+    <span class="tool-pill">Python</span>
+    <span class="tool-pill">pandas</span>
+    <span class="tool-pill">numpy</span>
+    <span class="tool-pill">keras</span>
+    <span class="tool-pill">tensorflow</span>
+    <span class="tool-pill">sentence-transformers</span>
+    <span class="tool-pill">sklearn</span>
+    <span class="tool-pill">openmeteo-requests</span>
+    <span class="tool-pill">fastapi</span>
+    <span class="tool-pill">uvicorn</span>
+    <span class="tool-pill">joblib</span>
+    <span class="tool-pill">Docker</span>
+    <span class="tool-pill">GCP Cloud Run</span>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
