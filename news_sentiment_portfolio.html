@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-National News Sentiment Analysis — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #152438;
+  --navy2:   #1e3a5f;
+  --teal:    #1a7a6e;
+  --teal2:   #25a99a;
+  --teal3:   #7dd8d0;
+  --sand:    #f7f4ef;
+  --paper:   #fafaf8;
+  --ink:     #1a1a1a;
+  --mid:     #4a4a4a;
+  --muted:   #888;
+  --border:  #e2ddd6;
+  --light:   #e8f5f3;
+  --amber:   #c8821a;
+  --amberbg: #fdf3e3;
+  --blue:    #1f77b4;
+  --red:     #e74c3c;
+  --bluebg:  #e8f1f8;
+  --redbg:   #fdf0ee;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(21, 36, 56, 0.97);
+  backdrop-filter: blur(8px);
+  padding: 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--teal3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+
+.nav-links a:hover { color: var(--teal3); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 120px 80px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(26,122,110,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-glow2 {
+  position: absolute;
+  bottom: -100px; left: 5%;
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(26,122,110,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* second glow — subtle blue for Greece */
+.hero-glow3 {
+  position: absolute;
+  top: 30%; left: 55%;
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(31,119,180,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal2);
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: var(--teal2);
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+}
+
+.hero h1 em { font-style: italic; color: var(--teal3); }
+.hero h1 .blue-em { font-style: italic; color: #7ab8e0; }
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 560px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 1;
+  font-weight: 300;
+}
+
+.hero-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.stats-row { display: flex; gap: 0; }
+
+.stat {
+  padding: 20px 32px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: none;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+.stat:last-child { border-right: 1px solid rgba(255,255,255,0.08); }
+
+.stat strong {
+  display: block;
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.4rem;
+  color: var(--teal3);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.hero-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.hero-link:hover {
+  border-color: var(--teal2);
+  color: var(--teal3);
+  background: rgba(26,122,110,0.08);
+}
+
+.hero-link svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── SECTION WRAPPERS ── */
+.section {
+  padding: 100px 80px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.section-sm {
+  padding: 80px 80px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--teal);
+}
+
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  color: var(--navy);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.section-intro {
+  font-size: 1rem;
+  color: var(--mid);
+  max-width: 640px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+  font-weight: 300;
+}
+
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── DARK BAND ── */
+.dark-band {
+  background: var(--navy);
+  padding: 100px 0;
+}
+
+.dark-band-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+.dark-band .section-label { color: var(--teal2); }
+.dark-band .section-label::before { background: var(--teal2); }
+.dark-band .section-title { color: #fff; }
+.dark-band .section-intro { color: rgba(255,255,255,0.45); }
+
+/* ── SAND BAND ── */
+.sand-band { background: var(--sand); padding: 100px 0; }
+.sand-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
+
+/* ── METHODOLOGY STEPS ── */
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.method-item {
+  background: var(--paper);
+  padding: 36px;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.method-item:hover { background: #f0ede7; }
+
+.method-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  color: var(--border);
+  line-height: 1;
+  position: absolute;
+  top: 20px; right: 24px;
+  pointer-events: none;
+}
+
+.method-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+
+.method-item h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.method-item p {
+  font-size: 0.9rem;
+  color: var(--mid);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 420px;
+}
+
+.method-callout {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--amberbg);
+  border-left: 2px solid var(--amber);
+  font-size: 0.82rem;
+  color: #7a5010;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.method-callout strong { color: var(--amber); }
+
+.method-win {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--light);
+  border-left: 2px solid var(--teal);
+  font-size: 0.82rem;
+  color: #0e5048;
+  line-height: 1.55;
+}
+
+/* ── COUNTRY CARDS (replaces persona cards) ── */
+.country-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.country-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.country-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.country-card.greece::after  { background: var(--blue); }
+.country-card.korea::after   { background: var(--red); }
+.country-card:hover::after   { transform: scaleX(1); }
+
+.country-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(21,36,56,0.08);
+}
+
+.country-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.dot-gr { background: var(--blue); }
+.dot-kr { background: var(--red); }
+
+.country-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.country-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  color: var(--navy);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.country-source {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  letter-spacing: 0.06em;
+}
+
+.country-desc {
+  font-size: 0.88rem;
+  color: var(--mid);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+
+.country-signals {
+  font-size: 0.82rem;
+  color: var(--teal);
+  font-weight: 400;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.country-signals strong { color: var(--navy); font-weight: 600; }
+
+.country-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  background: var(--light);
+  color: var(--teal);
+  border-radius: 1px;
+}
+
+/* ── NLP PIPELINE CARDS ── */
+.nlp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.nlp-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.nlp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(21,36,56,0.07);
+}
+
+.nlp-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nlp-card:hover::after { transform: scaleX(1); }
+
+.nlp-card.wide { grid-column: span 2; }
+
+.nlp-emoji {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.nlp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+
+.nlp-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.nlp-model {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+}
+
+.nlp-desc {
+  font-size: 0.87rem;
+  color: var(--mid);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 14px;
+}
+
+.nlp-note {
+  margin-top: 12px;
+  padding: 9px 12px;
+  background: var(--light);
+  border-left: 2px solid var(--teal);
+  font-size: 0.81rem;
+  color: #0e5048;
+  line-height: 1.55;
+}
+
+.nlp-warn {
+  margin-top: 12px;
+  padding: 9px 12px;
+  background: var(--amberbg);
+  border-left: 2px solid var(--amber);
+  font-size: 0.81rem;
+  color: #7a5010;
+  line-height: 1.55;
+}
+
+/* ── INSIGHTS ── */
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.insight-item {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.insight-item:last-child { border-bottom: none; }
+.insight-item:hover { background: rgba(26,122,110,0.03); }
+
+.insight-num {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 28px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  color: var(--teal3);
+  border-right: 1px solid var(--border);
+  background: rgba(26,122,110,0.02);
+}
+
+.insight-body { padding: 28px 32px; }
+
+.insight-body h4 {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.insight-body p {
+  font-size: 0.92rem;
+  color: var(--mid);
+  line-height: 1.72;
+  font-weight: 300;
+}
+
+/* ── FURTHER WORK ── */
+.further-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.further-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 28px;
+  transition: background 0.2s;
+}
+
+.further-card:hover { background: rgba(26,122,110,0.06); }
+
+.further-card .icon {
+  font-size: 1.4rem;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.further-card h4 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.further-card p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── CAVEATS ── */
+.caveats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.caveat-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  background: var(--sand);
+}
+
+.caveat-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.caveat-card p {
+  font-size: 0.87rem;
+  color: var(--mid);
+  line-height: 1.68;
+  font-weight: 300;
+}
+
+/* ── PIPELINE ── */
+.pipeline {
+  background: #0d1e30;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 32px 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.55);
+  overflow-x: auto;
+}
+
+.pipeline .comment { color: rgba(125,216,208,0.4); }
+.pipeline .step-num { color: var(--teal2); }
+.pipeline .step-name { color: rgba(255,255,255,0.85); font-weight: 500; }
+.pipeline .step-note { color: rgba(255,255,255,0.35); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-info p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 4px;
+}
+
+.footer-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.tool-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border: 1px solid rgba(26,169,154,0.25);
+  color: var(--teal2);
+  border-radius: 1px;
+}
+
+/* ── COUNTRY FLAG BADGE ── */
+.flag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 1px;
+  font-weight: 500;
+}
+
+.flag-gr {
+  background: var(--bluebg);
+  color: var(--blue);
+  border: 1px solid rgba(31,119,180,0.2);
+}
+
+.flag-kr {
+  background: var(--redbg);
+  color: var(--red);
+  border: 1px solid rgba(231,76,60,0.2);
+}
+
+/* ── COMPARISON TABLE ── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-top: 24px;
+}
+
+.compare-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  background: var(--navy);
+  color: rgba(255,255,255,0.5);
+  text-align: left;
+  font-weight: 400;
+}
+
+.compare-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--mid);
+  vertical-align: top;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.compare-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--navy);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(26,122,110,0.02); }
+
+/* ── SENTIMENT BADGE ── */
+.sent-pos { color: #1a7a3e; background: #eaf6ee; padding: 2px 7px; border-radius: 1px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.sent-neg { color: #9a1a1a; background: #fceaea; padding: 2px 7px; border-radius: 1px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.sent-neu { color: #5a5a40; background: #f5f4ea; padding: 2px 7px; border-radius: 1px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+.stagger > *:nth-child(7) { transition-delay: 0.40s; }
+.stagger > *:nth-child(8) { transition-delay: 0.46s; }
+.stagger > *:nth-child(9) { transition-delay: 0.52s; }
+
+.hero-left-anim > * {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: fadeup 0.8s ease forwards;
+}
+
+.hero-left-anim > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-left-anim > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-left-anim > *:nth-child(3) { animation-delay: 0.4s; }
+.hero-left-anim > *:nth-child(4) { animation-delay: 0.55s; }
+
+@keyframes fadeup { to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 32px 64px; }
+  .section, .section-sm { padding: 60px 32px; }
+  .dark-band-inner, .sand-band-inner { padding: 0 32px; }
+  .dark-band, .sand-band { padding: 60px 0; }
+  .stats-row { flex-wrap: wrap; }
+  .method-grid { grid-template-columns: 1fr; }
+  .country-split { grid-template-columns: 1fr; }
+  .nlp-grid { grid-template-columns: 1fr; }
+  .nlp-card.wide { grid-column: 1; }
+  .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════ -->
+<nav>
+  <span class="nav-brand">portfolio / news_sentiment_analysis</span>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#nlp">NLP Pipeline</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#further">Further work</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ═════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-glow3"></div>
+
+  <div class="hero-left-anim">
+    <p class="hero-tag">Multilingual NLP · Sentiment Analysis · Comparative Media Studies</p>
+
+    <h1>What do <em>Greece</em> and<br><span class="blue-em">South Korea</span><br>write about?</h1>
+
+    <p class="hero-desc">A cross-national news sentiment analysis comparing how two geographically and culturally distant media landscapes cover the news. Built with XLM-RoBERTa, BERTopic, zero-shot NLI classification, spaCy NER, and UMAP semantic clustering — all from scraped headlines with no labelled training data.</p>
+
+    <div class="hero-bottom">
+      <div class="stats-row">
+        <div class="stat"><strong>2</strong><span>countries</span></div>
+        <div class="stat"><strong>2</strong><span>news sources</span></div>
+        <div class="stat"><strong>8</strong><span>NLP techniques</span></div>
+        <div class="stat"><strong>4</strong><span>output files</span></div>
+      </div>
+
+      <div class="hero-links">
+        <a class="hero-link" href="https://github.com" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="hero-link" href="https://colab.research.google.com" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+          Notebook
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ OVERVIEW ══════════════════════════════════════════════ -->
+<div id="overview" class="section">
+  <p class="section-label">Project overview</p>
+  <h2 class="section-title">What this project does</h2>
+  <p class="section-intro">News sentiment is not universal — the same global event can be covered with entirely different emotional tone depending on country, media outlet, and cultural context. This project asks: are two news cultures reporting the world the same way?</p>
+
+  <div class="country-split stagger">
+
+    <div class="country-card greece fade-up">
+      <p class="country-meta"><span class="country-dot dot-gr"></span>Source 1 · Greece</p>
+      <h3 class="country-name">To Vima</h3>
+      <p class="country-source">tovima.gr · Society category · 6 pages scraped</p>
+      <p class="country-desc">One of Greece's oldest and most respected broadsheet newspapers. Headlines are extracted from WordPress <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">img alt</code> attributes — a platform quirk where the featured image alt text doubles as the article title. Raw Greek text is stored alongside Google-translated English.</p>
+      <div class="country-signals">
+        <strong>Scraping detail:</strong> HTML structure uses <code style="font-size:.8rem;">figure[style] → img[alt]</code> for headlines; <code style="font-size:.8rem;">time.post-date</code> for dates in <code style="font-size:.8rem;">%d.%m.%Y, %H:%M</code> format.
+      </div>
+      <div class="country-tags">
+        <span class="tag">greek-language</span><span class="tag">xlm-roberta native</span><span class="tag">translated baseline</span><span class="tag">broadsheet</span>
+      </div>
+    </div>
+
+    <div class="country-card korea fade-up">
+      <p class="country-meta"><span class="country-dot dot-kr"></span>Source 2 · South Korea</p>
+      <h3 class="country-name">Korea Herald</h3>
+      <p class="country-source">koreaherald.com · National section · 10 pages scraped</p>
+      <p class="country-desc">Korea's largest English-language daily. Article links match <code style="font-size:.8rem;background:var(--redbg);padding:1px 4px;">/article/\d+</code>; dates sit as untagged text nodes inside the parent <code style="font-size:.8rem;">&lt;li&gt;</code>. A 0.5-second polite delay is inserted between page requests. Headlines are already in English — no translation step needed.</p>
+      <div class="country-signals">
+        <strong>Scraping detail:</strong> <code style="font-size:.8rem;">a[href=/article/\d+]</code> links; walks up to parent <code style="font-size:.8rem;">&lt;li&gt;</code> for date; format <code style="font-size:.8rem;">%B %d, %Y</code>. Deduplication on URL then on headline text.
+      </div>
+      <div class="country-tags">
+        <span class="tag">english-language</span><span class="tag">no translation needed</span><span class="tag">url dedup</span><span class="tag">polite scraping</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="fade-up" style="margin-top:40px;margin-bottom:40px;">
+    <img src="https://klaire03.github.io/images/news6.png" alt="Map showing Greece and South Korea data sources" style="width:100%;display:block;border:1px solid var(--border);" />
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Research question</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Do geographically and culturally distant news outlets show measurably different sentiment, topic focus, emotional framing, or vocabulary? What topics are covered by both — and what is exclusive to each?</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Key methodological decision</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Running XLM-RoBERTa on <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">Headline_Original</code> (native Greek) instead of translated English eliminates translation as a confound in the primary sentiment signal. VADER on translated text is kept as a degradation baseline.</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">No labelled data required</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Zero-shot classification, pre-trained transformer models, and unsupervised clustering mean the entire pipeline runs on scraped headlines with no manual annotation. The project is fully replicable on any two news outlets.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ METHODOLOGY ═══════════════════════════════════════════ -->
+<div id="methodology" class="sand-band">
+  <div class="sand-band-inner">
+    <p class="section-label">Methodology</p>
+    <h2 class="section-title">How it was built</h2>
+    <p class="section-intro">Eight NLP techniques run in sequence, each chosen to answer a specific analytical question. Several decisions were made deliberately to maximise cross-linguistic validity.</p>
+
+    <div class="method-grid stagger">
+
+      <div class="method-item fade-up">
+        <span class="method-num">01</span>
+        <p class="method-step">Data collection</p>
+        <h4>Structured web scraping with polite delays</h4>
+        <p>BeautifulSoup scrapes both outlets using source-specific strategies — img alt extraction for To Vima, link pattern matching for Korea Herald. A 0.5s sleep between Korea Herald pages avoids triggering rate limits. A descriptive <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">User-Agent</code> string is used throughout.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> To Vima's WordPress theme stores headlines in <code style="font-size:.8rem;">figure img[alt]</code>, not a heading tag. Parsing the wrong element returns empty strings silently — always print the first 3 rows after scraping to confirm extraction worked.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">02</span>
+        <p class="method-step">Cleaning</p>
+        <h4>Cascading date parser — never drops rows</h4>
+        <p>A three-tier date parser tries source-specific formats first (<code style="font-size:.8rem;">%d.%m.%Y, %H:%M</code> for Greece; <code style="font-size:.8rem;">%B %d, %Y</code> for Korea), then ISO 8601, then pandas inference. It never raises — returning <code style="font-size:.8rem;">NaT</code> on failure. Articles with unparsed dates are kept with <code style="font-size:.8rem;">NaT</code> rather than dropped.</p>
+        <div class="method-win">✦ Keeping NaT rows preserves all articles for sentiment, NER, and topic analysis. Silent data loss from a date format edge case would bias temporal analysis without any visible warning.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">Sentiment</p>
+        <h4>XLM-RoBERTa on native text — not on translations</h4>
+        <p>The Cardiff NLP model was fine-tuned on 198M multilingual tweets across 100+ languages including Greek. Running it on <code style="font-size:.8rem;">Headline_Original</code> means Greek articles are scored in Greek. VADER on translated English is kept as a baseline. The agreement rate between methods quantifies translation degradation.</p>
+        <div class="method-win">✦ VADER + machine translation introduces noise at every step: changed word choice, lost negation, false cognates. The disagreement rate — typically 30–40% — directly shows how much a VADER-only analysis would have been wrong.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">04</span>
+        <p class="method-step">Topic modelling</p>
+        <h4>BERTopic over LDA — semantic, not lexical</h4>
+        <p>BERTopic uses sentence embeddings from <code style="font-size:.8rem;">all-MiniLM-L6-v2</code> rather than bag-of-words counts. "PM resigns" and "Prime Minister steps down" map to the same semantic neighbourhood regardless of surface wording. Pre-computed embeddings are passed directly to avoid recomputing them for later clustering steps.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> BERTopic is stochastic — results vary slightly between runs because UMAP and HDBSCAN are both non-deterministic. Pin <code style="font-size:.8rem;">umap_model</code> and <code style="font-size:.8rem;">hdbscan_model</code> with <code style="font-size:.8rem;">random_state=42</code> for reproducible topics.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">05</span>
+        <p class="method-step">Classification</p>
+        <h4>Zero-shot NLI — no labelled training data needed</h4>
+        <p>Zero-shot classification frames each headline as an NLI entailment problem: "Does this headline entail the topic 'crime and justice'?" The model was trained on MNLI to answer exactly these questions. Eight thematic categories cover the full editorial spectrum. The smaller MiniLM model (~22M params) was chosen over BART-large (~400M) for 8–10× faster CPU inference.</p>
+        <div class="method-win">✦ The original BART-large reference cell is kept in the notebook to document the performance problem explicitly — a design decision that makes the optimisation visible, not hidden.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">06</span>
+        <p class="method-step">Named entity recognition</p>
+        <h4>spaCy batch NER — what names appear in each outlet?</h4>
+        <p>spaCy's <code style="font-size:.8rem;">en_core_web_sm</code> model runs over translated headlines via <code style="font-size:.8rem;">nlp.pipe()</code> for batch efficiency. Entities are filtered to PERSON, ORG, GPE, and NORP — the four types most analytically relevant to news coverage. Set intersection across both outlets reveals the shared international news agenda.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> NER accuracy on short headline text is lower than on full articles — less context to resolve ambiguous names. Always scan the top entity list for obvious misclassifications before citing in analysis.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">07</span>
+        <p class="method-step">Emotion & readability</p>
+        <h4>NRC Emotion Lexicon + Flesch-Kincaid</h4>
+        <p>The NRC lexicon (8 emotions: fear, anger, trust, surprise, sadness, disgust, joy, anticipation) is downloaded directly from GitHub rather than via the fragile <code style="font-size:.8rem;">nrclex</code> library. Scores are normalised by total emotion-bearing words. Three readability metrics capture headline complexity: FK grade, average word length, and word count.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> NRC is word-level with no negation awareness — "no joy" scores positive on joy. Flesch-Kincaid was designed for multi-sentence text; treat absolute grade-level numbers as comparative, not literal, on headline-length text.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">08</span>
+        <p class="method-step">Semantic clustering</p>
+        <h4>SentenceTransformers → UMAP → HDBSCAN</h4>
+        <p>384-dimensional sentence embeddings are reduced to 2D with UMAP (<code style="font-size:.8rem;">metric='cosine'</code>, <code style="font-size:.8rem;">n_neighbors=15</code>, <code style="font-size:.8rem;">random_state=42</code>), then clustered with HDBSCAN (<code style="font-size:.8rem;">min_cluster_size=6</code>). Clusters where both countries contribute articles are flagged as shared international stories — the key comparative output.</p>
+        <div class="method-win">✦ Clustering on 2D UMAP coordinates rather than full 384D embeddings is faster and gives HDBSCAN a cleaner density landscape. UMAP axes have no interpretive meaning — the chart is a visual sanity check, not a measurement.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px;">
+      <p class="method-step" style="margin-bottom:16px;">Full pipeline</p>
+      <div class="pipeline">
+        <span class="comment"># Pipeline — both countries run through identical steps from the same combined_df</span><br>
+        <span class="step-num"> 1.</span>  <span class="step-name">Install & import</span>      <span class="step-note">— %pip installs; NLTK downloads; global HEADERS, COLORS, STOP_WORDS constants</span><br>
+        <span class="step-num"> 2.</span>  <span class="step-name">Scrape To Vima</span>       <span class="step-note">— 6 pages; img[alt] headlines; GoogleTranslator; store Headline_Original + Headline</span><br>
+        <span class="step-num"> 3.</span>  <span class="step-name">Scrape Korea Herald</span>  <span class="step-note">— 10 pages; /article/\d+ links; parent li date node; 0.5s delay; URL + headline dedup</span><br>
+        <span class="step-num"> 4.</span>  <span class="step-name">Clean & merge</span>        <span class="step-note">— cascading date parser → NaT on failure; deduplicate; sort; pd.concat ignore_index=True</span><br>
+        <span class="step-num"> 5.</span>  <span class="step-name">XLM-RoBERTa</span>          <span class="step-note">— cardiffnlp/twitter-xlm-roberta-base-sentiment; Headline_Original; compound = score × sign</span><br>
+        <span class="step-num"> 6.</span>  <span class="step-name">VADER baseline</span>       <span class="step-note">— translated Headline only; agreement rate vs XLM quantifies translation degradation</span><br>
+        <span class="step-num"> 7.</span>  <span class="step-name">EDA</span>                   <span class="step-note">— violin + stacked bar; weekly time series; day-of-week heatmap; top/bottom headlines; Folium map</span><br>
+        <span class="step-num"> 8.</span>  <span class="step-name">BERTopic</span>              <span class="step-note">— all-MiniLM-L6-v2 embeddings; min_topic_size=5; nr_topics='auto'; c-TF-IDF labels</span><br>
+        <span class="step-num"> 9.</span>  <span class="step-name">TF-IDF vocabulary</span>    <span class="step-note">— POS-tagged content words; each country = one document; distinctive terms by IDF penalisation</span><br>
+        <span class="step-num">10.</span>  <span class="step-name">Zero-shot classify</span>   <span class="step-note">— cross-encoder/nli-MiniLM2-L6-H768; 8 categories; batch=16; isinstance guard for last batch</span><br>
+        <span class="step-num">11.</span>  <span class="step-name">NER</span>                   <span class="step-note">— spacy en_core_web_sm; nlp.pipe batch=64; PERSON/ORG/GPE/NORP; set intersection for shared</span><br>
+        <span class="step-num">12.</span>  <span class="step-name">Event detection</span>      <span class="step-note">— daily means; per-country z-score; |z|>1.5 spike flag; annotated Plotly chart; headline printout</span><br>
+        <span class="step-num">13.</span>  <span class="step-name">NRC emotions</span>         <span class="step-note">— direct GitHub download; 8-emotion lexicon; normalised fraction; radar + KDE plots</span><br>
+        <span class="step-num">14.</span>  <span class="step-name">Readability</span>          <span class="step-note">— Flesch-Kincaid grade; avg word length; headline word count; KDE comparison curves</span><br>
+        <span class="step-num">15.</span>  <span class="step-name">Semantic clustering</span>  <span class="step-note">— SentenceTransformer → UMAP cosine → HDBSCAN; shared cluster flag; sentiment heatmap</span><br>
+        <span class="step-num">16.</span>  <span class="step-name">Export</span>               <span class="step-note">— news_sentiment_combined.csv · greek_news_clean.csv · korea_news_clean.csv · semantic_clusters.csv</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ NLP PIPELINE ═══════════════════════════════════════════ -->
+<div id="nlp" class="section">
+  <p class="section-label">NLP pipeline</p>
+  <h2 class="section-title">Eight techniques, one notebook</h2>
+  <p class="section-intro">Each component is a deliberate choice with a specific trade-off. The full stack runs on scraped headlines with no manually labelled training data.</p>
+
+  <div class="nlp-grid stagger">
+
+    <div class="nlp-card wide fade-up">
+      <span class="nlp-emoji">🤗</span>
+      <p class="nlp-label">Primary sentiment</p>
+      <h3 class="nlp-name">XLM-RoBERTa — Multilingual Transformer</h3>
+      <p class="nlp-model">cardiffnlp/twitter-xlm-roberta-base-sentiment · 198M tweets · 100+ languages</p>
+      <p class="nlp-desc">Scores headlines in their native language. Greek articles are scored in Greek — no translation step. The output <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">xlm_compound</code> maps the model's softmax confidence to [−1, 1] by multiplying by the sign of the predicted label: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">score × LABEL_MAP[label]</code>. This produces a range directly comparable to VADER without any rescaling.</p>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <span class="flag-gr">🇬🇷 Greek: Headline_Original</span>
+        <span class="flag-kr">🇰🇷 Korean: Headline_Original (already EN)</span>
+      </div>
+      <div class="nlp-note">✦ The <code style="font-size:.8rem;">.capitalize()</code> call on the model's label string is a necessary defensive step — HuggingFace pipelines can return labels as POSITIVE or Positive depending on model version. Without it, LABEL_MAP silently returns 0 for every row, making all compound scores zero.</div>
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">📊</span>
+      <p class="nlp-label">Baseline comparison</p>
+      <h3 class="nlp-name">VADER</h3>
+      <p class="nlp-model">Rule-based · English-only · Social media optimised</p>
+      <p class="nlp-desc">Runs on translated English <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">Headline</code> only. Kept as a methodological baseline — not the primary signal. Agreement rate with XLM-RoBERTa directly quantifies how much sentiment information is lost in translation.</p>
+      <div class="nlp-warn"><strong>⚠</strong> VADER has no knowledge of Greek. When applied to machine-translated Greek, every step introduces error. The disagreement rate (typically 30–40%) is itself a finding.</div>
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">🗂</span>
+      <p class="nlp-label">Topic modelling</p>
+      <h3 class="nlp-name">BERTopic</h3>
+      <p class="nlp-model">all-MiniLM-L6-v2 embeddings · UMAP + HDBSCAN internal · c-TF-IDF labels</p>
+      <p class="nlp-desc">Clusters headlines semantically, not lexically. Auto-labels each topic with its top 3 c-TF-IDF keywords. Pre-computed embeddings are passed directly to avoid recomputing. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">min_topic_size=5</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">nr_topics='auto'</code>.</p>
+      <div class="nlp-note">✦ Topic −1 is the outlier cluster. Always exclude it from distribution charts — it is not a real topic.</div>
+      <img src="https://klaire03.github.io/images/news4.png" alt="Greece and South Korea key terms word clouds" style="width:100%;display:block;margin-top:16px;border:1px solid var(--border);" />
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">🏷</span>
+      <p class="nlp-label">Topic classification</p>
+      <h3 class="nlp-name">Zero-Shot NLI</h3>
+      <p class="nlp-model">cross-encoder/nli-MiniLM2-L6-H768 · ~22M params · 8 categories · batch=16</p>
+      <p class="nlp-desc">Classifies each headline into one of eight thematic categories with no labelled training data. Batched inference (16 headlines per forward pass) provides 8–10× speedup over one-at-a-time inference on CPU.</p>
+      <div class="nlp-warn"><strong>⚠</strong> Edge case: when the final batch contains only one item, the HuggingFace pipeline returns a dict instead of a list. The <code style="font-size:.8rem;">isinstance(results, dict)</code> guard prevents the last batch's label being silently dropped.</div>
+      <img src="https://klaire03.github.io/images/news3.png" alt="Zero-shot topic classification and mean sentiment per category" style="width:100%;display:block;margin-top:16px;border:1px solid var(--border);" />
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">🔍</span>
+      <p class="nlp-label">Named entities</p>
+      <h3 class="nlp-name">spaCy NER</h3>
+      <p class="nlp-model">en_core_web_sm · nlp.pipe batch=64 · PERSON / ORG / GPE / NORP</p>
+      <p class="nlp-desc">Extracts named entities from translated headlines in batch mode. Set intersection across both outlets surfaces the shared international news agenda — entities mentioned by both media cultures simultaneously.</p>
+      <div class="nlp-note">✦ <code style="font-size:.8rem;">nlp.pipe()</code> is significantly faster than looping <code style="font-size:.8rem;">nlp()</code> per headline because it amortises model overhead across the batch.</div>
+      <img src="https://klaire03.github.io/images/news2.png" alt="Top people and organisations mentioned in Greece and South Korea headlines" style="width:100%;display:block;margin-top:16px;border:1px solid var(--border);" />
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">😨</span>
+      <p class="nlp-label">Emotional framing</p>
+      <h3 class="nlp-name">NRC Emotion Lexicon</h3>
+      <p class="nlp-model">8 emotions · word-level · downloaded directly from GitHub</p>
+      <p class="nlp-desc">Scores each headline on fear, anger, trust, surprise, sadness, disgust, joy, and anticipation as a fraction of total emotion-bearing words. Direct GitHub download avoids the fragile <code style="font-size:.8rem;">nrclex</code> library dependency.</p>
+      <div class="nlp-warn"><strong>⚠</strong> No negation awareness — "no joy" scores positively on joy. Treat as comparative, not absolute.</div>
+      <img src="https://klaire03.github.io/images/news1.png" alt="Mean NRC Emotion Scores by Country" style="width:100%;display:block;margin-top:16px;border:1px solid var(--border);" />
+    </div>
+
+    <div class="nlp-card fade-up">
+      <span class="nlp-emoji">📐</span>
+      <p class="nlp-label">Readability</p>
+      <h3 class="nlp-name">Flesch-Kincaid + Word Stats</h3>
+      <p class="nlp-model">textstat · FK grade · avg word length · headline word count</p>
+      <p class="nlp-desc">Three metrics that operationalise editorial complexity from different angles: syllable-based grade level, lexical complexity (avg character length per word), and information density (word count).</p>
+      <div class="nlp-warn"><strong>⚠</strong> FK grade was designed for multi-sentence prose. Use comparatively across countries, not as a literal reading level for sub-10-word headlines.</div>
+    </div>
+
+    <div class="nlp-card wide fade-up">
+      <span class="nlp-emoji">🗺</span>
+      <p class="nlp-label">Semantic structure</p>
+      <h3 class="nlp-name">SentenceTransformers → UMAP → HDBSCAN</h3>
+      <p class="nlp-model">all-MiniLM-L6-v2 · 384-dim → UMAP cosine 2D → HDBSCAN min_cluster_size=6</p>
+      <p class="nlp-desc">Encodes meaning (not just words) into 384-dimensional vectors, projects to 2D with cosine-metric UMAP for visualisation, then clusters with HDBSCAN. Clusters containing articles from both countries are flagged with a ★ as shared international stories — the primary comparative output of this section.</p>
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="nlp-note">✦ <code style="font-size:.8rem;">random_state=42</code> on UMAP ensures the 2D layout is reproducible, but UMAP axes have no interpretive meaning — they are a visual sanity check only.</div>
+        <div class="nlp-warn"><strong>⚠</strong> Cluster −1 = HDBSCAN noise/outliers. Exclude from cluster analysis but inspect separately — outliers are often the most unusual stories in the dataset.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sentiment method comparison table -->
+  <div style="margin-top:56px;">
+    <p class="method-step" style="margin-bottom:16px;">Sentiment method comparison</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>XLM-RoBERTa (primary)</th>
+          <th>VADER (baseline)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Input column</td>
+          <td><code style="font-size:.82rem;background:var(--light);padding:1px 4px;">Headline_Original</code> — native language</td>
+          <td><code style="font-size:.82rem;background:var(--light);padding:1px 4px;">Headline</code> — translated English</td>
+        </tr>
+        <tr>
+          <td>Approach</td>
+          <td>Transformer fine-tuned on 198M multilingual tweets</td>
+          <td>Rule-based lexicon, English-only</td>
+        </tr>
+        <tr>
+          <td>Greek support</td>
+          <td><span class="sent-pos">✓ native</span></td>
+          <td><span class="sent-neg">✗ requires translation</span></td>
+        </tr>
+        <tr>
+          <td>Output column</td>
+          <td><code style="font-size:.82rem;">xlm_compound</code> ∈ [−1, 1]</td>
+          <td><code style="font-size:.82rem;">compound</code> ∈ [−1, 1]</td>
+        </tr>
+        <tr>
+          <td>Used in</td>
+          <td>All EDA, heatmaps, time series, clustering, topic sentiment</td>
+          <td>Agreement rate calculation, geographic map (legacy)</td>
+        </tr>
+        <tr>
+          <td>Agreement rate</td>
+          <td colspan="2">Computed as <code style="font-size:.82rem;">(xlm_label == label).mean() × 100</code> — typically 60–70%, meaning 30–40% of VADER labels were affected by translation artefacts</td>
+        </tr>
+      </tbody>
+    </table>
+    <img src="https://klaire03.github.io/images/news7.png" alt="Sentiment Method Comparison: Transformer vs Rule-Based violin plots" style="width:100%;display:block;margin-top:24px;border:1px solid var(--border);" />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ INSIGHTS ══════════════════════════════════════════════ -->
+<div id="insights" class="dark-band">
+  <div class="dark-band-inner">
+    <p class="section-label">Key insights & findings</p>
+    <h2 class="section-title">What the data reveals</h2>
+    <p class="section-intro">These are the analytical conclusions the pipeline is designed to surface — each one emerges from a specific section of the notebook and leads to a concrete follow-up question.</p>
+
+    <div class="insights-list stagger">
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">1</div>
+        <div class="insight-body">
+          <h4>Translation degrades sentiment analysis — and we can quantify exactly how much</h4>
+          <p>The agreement rate between XLM-RoBERTa (native Greek) and VADER (translated English) is typically 60–70%, meaning 30–40% of headlines get a different sentiment label depending on whether you translate first. VADER on Greek has no Greek vocabulary — it scores whatever the translation produces. XLM-RoBERTa processes native text directly. The method comparison violin chart makes this visible at a glance: different distribution shapes = translation introduced noise. <strong style="color:var(--teal3);">→ The agreement rate is itself a finding: it's the ceiling on accuracy of any English-only sentiment analysis applied to non-English text.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">2</div>
+        <div class="insight-body">
+          <h4>Zero-shot classification works without any labelled training data</h4>
+          <p>The full 8-category topic classification runs with zero manually labelled headlines. The model was trained on NLI entailment, not news topics — but framing "does this headline entail 'crime and justice'?" is enough to get a working classifier. The original BART-large reference cell is kept in the notebook alongside the optimised MiniLM version so the performance problem is documented explicitly, not hidden. <strong style="color:var(--teal3);">→ This is a portfolio-ready demonstration that modern NLP can solve classification tasks on new domains and new languages with no training data at all.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">3</div>
+        <div class="insight-body">
+          <h4>Shared clusters reveal what both news cultures were watching simultaneously</h4>
+          <p>HDBSCAN clusters where both Greece and South Korea contribute articles represent stories with genuine international resonance — both media landscapes independently devoted coverage to the same type of event. These shared clusters are the most analytically interesting output: they show the overlap between two very different news cultures. Exclusive clusters show what each outlet was watching that the other wasn't. <strong style="color:var(--teal3);">→ The ★ flag on shared clusters in the composition table is the direct answer to the project's research question.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">4</div>
+        <div class="insight-body">
+          <h4>Emotional framing differs even when topic coverage overlaps</h4>
+          <p>The cluster sentiment heatmap shows mean XLM-RoBERTa sentiment per cluster per country. A shared cluster that is red in one country and green in another means both outlets were covering the same type of story, but with opposite emotional tone — different cultural framing of identical news. The NRC radar chart extends this: the shapes of the two countries' emotion profiles reveal systematic differences in fear, anger, trust, and anticipation across the entire headline corpus, not just shared stories. <strong style="color:var(--teal3);">→ Combined topic classification + sentiment is the analytical contribution that separates this from a simple sentiment dashboard.</strong></p>
+        </div>
+      </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">5</div>
+        <div class="insight-body">
+          <h4>Event detection needs per-country baselines, not global thresholds</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+            <p>Z-scores for sentiment spike detection are computed per country rather than globally. If Greek coverage is systematically more negative than Korean, using a cross-country baseline would flag normal Greek days as spikes. Per-country z-scores normalise against each outlet's own baseline. The threshold of 1.5 (not the conventional 2.0) is deliberate — daily means of a small number of articles have high variance, and a stricter threshold finds no spikes at all in a short scrape window. <strong style="color:var(--teal3);">→ Always check Article_Count on spike days: a spike with count=1 is likely noise; a spike with count=8+ is worth investigating.</strong></p>
+            <img src="https://klaire03.github.io/images/news5.png" alt="Mean Sentiment by Day of Week heatmap" style="width:100%;display:block;border:1px solid rgba(255,255,255,0.08);" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FURTHER WORK ═══════════════════════════════════════════ -->
+<div id="further" class="dark-band" style="background:#0f1e30;padding-top:80px;padding-bottom:80px;">
+  <div class="dark-band-inner">
+    <p class="section-label">Further work</p>
+    <h2 class="section-title" style="color:#fff;">What I'd build next</h2>
+    <p class="section-intro">Three directions that would sharpen and extend these findings — each addressing a known limitation of the current pipeline.</p>
+
+    <div class="further-grid stagger">
+
+      <div class="further-card fade-up">
+        <span class="icon">🌐</span>
+        <h4>Extend to full article text</h4>
+        <p>The entire pipeline runs on headlines only — typically 8–12 words. Full article text would produce more reliable sentiment, NER, and emotion scores by giving models more context to work with. The main change is reducing <code style="font-size:.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;">max_length</code> for XLM-RoBERTa (which truncates at 128 tokens) and reducing <code style="font-size:.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;">batch_size</code> for SentenceTransformer to avoid OOM. Event detection would become substantially more reliable on full-article sentiment.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">📅</span>
+        <h4>Longitudinal scraping over 3–6 months</h4>
+        <p>The time series and event detection sections work correctly but produce very few data points on a short scrape. Weekly resampling with 2–3 weeks of data gives 2–3 line points per country — directionally correct but not analytically meaningful. A scheduled scraper running daily would accumulate enough data for genuine trend analysis, seasonality detection, and credible event attribution.</p>
+      </div>
+
+      <div class="further-card fade-up">
+        <span class="icon">🔄</span>
+        <h4>Add more country-language pairs</h4>
+        <p>The pipeline is designed to be generalised — the same code runs on any two outlets by swapping the scraping functions and adjusting date format strings. Adding Arabic, Japanese, or French outlets would test whether the XLM-RoBERTa + zero-shot approach holds across more linguistically distant pairs. The research question becomes: is the Greece–Korea divergence typical or exceptional compared to other cross-national comparisons?</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ CAVEATS ═══════════════════════════════════════════════ -->
+<div class="section-sm">
+  <p class="section-label">Limitations</p>
+  <h2 class="section-title">Caveats worth knowing</h2>
+
+  <div class="caveats-row stagger">
+    <div class="caveat-card fade-up">
+      <h4>📰 Headlines are not articles</h4>
+      <p>All analysis runs on 8–12 word headlines, not full articles. Sentiment, NER accuracy, and emotion scores are all lower-confidence on such short text — headlines compress nuance and can be deliberately ambiguous or clickbait-oriented. The findings are directionally valid but absolute scores should be treated cautiously.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>🌍 Single outlet per country</h4>
+      <p>To Vima and Korea Herald each represent one editorial voice within a much larger media landscape. To Vima is a centrist broadsheet; Korea Herald is English-language and internationally oriented. Both may be unrepresentative of their country's full media discourse. A robust cross-national study would aggregate multiple outlets per country.</p>
+    </div>
+    <div class="caveat-card fade-up">
+      <h4>⏱ Short scrape window</h4>
+      <p>A typical scrape covers 1–2 weeks of recent headlines. The time series, event detection, and day-of-week heatmap sections work correctly but have very few data points. Conclusions about temporal patterns require at least 4–8 weeks of data per analysis window. Re-run the notebook with a wider scrape to make those sections analytically meaningful.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-info">
+    <p>Cross-National News Sentiment Analysis · Greece × South Korea</p>
+    <p>To Vima (GR) · Korea Herald (KR) · XLM-RoBERTa · BERTopic · Zero-Shot NLI</p>
+  </div>
+  <div class="footer-tools">
+    <span class="tool-pill">Python</span>
+    <span class="tool-pill">pandas</span>
+    <span class="tool-pill">transformers</span>
+    <span class="tool-pill">XLM-RoBERTa</span>
+    <span class="tool-pill">BERTopic</span>
+    <span class="tool-pill">sentence-transformers</span>
+    <span class="tool-pill">spaCy</span>
+    <span class="tool-pill">UMAP</span>
+    <span class="tool-pill">HDBSCAN</span>
+    <span class="tool-pill">VADER</span>
+    <span class="tool-pill">NLTK</span>
+    <span class="tool-pill">Plotly</span>
+    <span class="tool-pill">folium</span>
+    <span class="tool-pill">Google Colab</span>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
