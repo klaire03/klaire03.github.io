@@ -658,7 +658,6 @@ footer {
   <ul class="nav-links">
     <li><a href="#overview">Overview</a></li>
     <li><a href="#methodology">Methodology</a></li>
-    <li><a href="#techniques">Techniques</a></li>
     <li><a href="#insights">Insights</a></li>
     <li><a href="#further">Further work</a></li>
   </ul>
@@ -779,13 +778,13 @@ footer {
   <div class="sand-band-inner">
     <p class="section-label">Methodology</p>
     <h2 class="section-title">How it was built</h2>
-    <p class="section-intro">Five analytical stages run in sequence — from raw HTML scraping through to a network graph of genre relationships. Each decision is documented with its rationale.</p>
+    <p class="section-intro">Six analytical stages run in sequence — from raw HTML scraping through to a network graph of genre relationships. Each technique was chosen to answer a specific question; the decisions below document what was used and why, including where a simpler approach was deliberately rejected.</p>
 
     <div class="method-grid stagger">
 
       <div class="method-item fade-up">
         <span class="method-num">01</span>
-        <p class="method-step">Data collection</p>
+        <p class="method-step">Stage 1 · Data collection</p>
         <h4>Wikipedia scraping + Spotify API enrichment</h4>
         <p>BeautifulSoup scrapes each year's Billboard Year-End Hot 100 Wikipedia page. The <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">wikitable</code> class is parsed row by row to extract rank, title, and artist. Two Spotify API calls are then made per track — one for artist genres, one for the audio features vector — via the Spotipy wrapper.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> 2016 is excluded due to a formatting inconsistency in the Wikipedia source page. Always print the first 3 rows after each year's scrape to confirm the table was parsed correctly — a missing column silently shifts all values.</div>
@@ -793,42 +792,46 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">02</span>
-        <p class="method-step">Feature engineering</p>
+        <p class="method-step">Stage 1 · API enrichment</p>
+        <h4>Spotify audio features</h4>
+        <p>Two calls per track: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.search(artist)</code> for genre tags, then <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.audio_features([track_id])</code> for the 12-feature acoustic vector. Both return empty structures on no-match rather than raising, keeping the pipeline from halting mid-loop. Uses <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">SpotifyClientCredentials</code> via the Spotipy wrapper.</p>
+        <div class="method-win">✦ Spotify's Audio Features endpoint was restricted to paid/approved tiers in 2024. The pre-collected dataset is included as <code style="font-size:.8rem;">billboard_tracks.csv</code> for full reproducibility.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">Stage 2 · Feature engineering</p>
         <h4>JSON flattening + Min-Max normalisation</h4>
         <p>The Spotify API returns audio features as a nested dict per row. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">df['Audio Features'].apply(pd.Series)</code> expands this into individual columns. MinMaxScaler then normalises all numeric features to [0, 1] so trend lines for tempo, energy, valence, danceability, and speechiness sit on the same axis.</p>
         <div class="method-win">✦ Min-Max was chosen over Standard scaling because Spotify features are already designed to be bounded (0–1 natively for most). Standardising would warp the natural floor and ceiling, making "danceability = 1.0" visually equivalent to an outlier rather than the defined maximum.</div>
       </div>
 
       <div class="method-item fade-up">
-        <span class="method-num">03</span>
-        <p class="method-step">Trend analysis</p>
+        <span class="method-num">04</span>
+        <p class="method-step">Stage 3 · Temporal analysis</p>
         <h4>Temporal averaging — full 100 and top-20 sensitivity check</h4>
         <p>Audio features are averaged per year using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">groupby('Year').mean()</code> and plotted as overlapping line charts. A second pass filters to the top 20 ranked songs per year to test whether the same trends hold for the chart's dominant tracks, or whether they are diluted by lower-ranked entries.</p>
+        <img src="https://klaire03.github.io/images/spotify1.png" alt="Average audio features of Billboard Hot 100 songs over the years" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
         <div class="method-win">✦ Running the analysis on both the full 100 and the top 20 is a deliberate sensitivity check — not redundancy. If the top-20 trends diverge from the full-100 trends, the most-played songs are acoustically distinct from the rest of the chart.</div>
       </div>
 
       <div class="method-item fade-up">
-        <span class="method-num">04</span>
-        <p class="method-step">Artist profiling</p>
+        <span class="method-num">05</span>
+        <p class="method-step">Stage 4 · Artist analysis</p>
         <h4>Most-charted artists — feature fingerprinting by artist</h4>
         <p>The top 5 most frequently appearing artists are identified with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">value_counts().head(5)</code>. Each artist's normalised feature averages are plotted side by side, producing an acoustic "signature" for each — and revealing whether an artist's sound is consistent across years or shifts across the dataset period.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> Artist name matching is exact string comparison against the scraped chart data. Artists listed with featured acts (e.g. "Drake featuring Rihanna") will not match either artist individually — feature credits inflate misses.</div>
-      </div>
-
-      <div class="method-item fade-up">
-        <span class="method-num">05</span>
-        <p class="method-step">Genre clustering</p>
-        <h4>Binary encoding → cosine similarity → Ward's hierarchical clustering</h4>
-        <p>Each Spotify genre tag is binary-encoded as a column — 1 if the track's artist carries that genre, 0 otherwise. Cosine similarity is computed on the transposed matrix (genres × tracks). Ward's linkage hierarchical clustering is applied to the similarity matrix; 7 clusters are extracted with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">fcluster(Z, 7, criterion='maxclust')</code>.</p>
-        <div class="method-win">✦ Cosine similarity is the right metric for sparse binary co-occurrence vectors. Two rare genres that always co-occur together score highly similar even if they appear in only a handful of tracks. Euclidean distance would penalise low-frequency genres unfairly, pulling them toward the origin regardless of their relationships.</div>
+        <div class="method-win">✦ Top 5 in the 30-year dataset: Taylor Swift, Mariah Carey, Rihanna, Pink, Kelly Clarkson — a profile that itself tells a story about which artists sustained mainstream presence across decades.</div>
       </div>
 
       <div class="method-item fade-up">
         <span class="method-num">06</span>
-        <p class="method-step">Network visualisation</p>
-        <h4>NetworkX spring layout — genre cluster relationship graph</h4>
-        <p>The 7 genre clusters become nodes in a NetworkX graph. Edges are weighted by the mean cosine similarity between the genres in each pair of clusters. The spring layout algorithm (<code style="font-size:.8rem;background:var(--light);padding:1px 4px;">seed=42</code>) positions nodes so that structurally similar clusters sit physically closer together — turning a flat similarity matrix into a spatial map of the musical landscape.</p>
-        <div class="method-win">✦ Edge weight is drawn as line width, making the strength of cross-genre relationships immediately visible. A thick edge between Soul & Jazz and Pop indicates those genres' tag sets heavily overlap — artists are routinely classified as both.</div>
+        <p class="method-step">Stages 5 & 6 · Unsupervised ML + Visualisation</p>
+        <h4>Genre clustering — cosine similarity → Ward's hierarchical → NetworkX graph</h4>
+        <p>Each Spotify genre tag is binary-encoded as a column — 1 if the track's artist carries that genre, 0 otherwise. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity(genre_matrix.T)</code> computes pairwise genre similarity, normalised for frequency. Ward's linkage hierarchical clustering is applied to this similarity matrix, minimising within-cluster variance at each merge. 7 clusters are extracted with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">fcluster(Z, 7, criterion='maxclust')</code> and labelled via keyword matching (e.g. any genre containing "pop" → Cluster 5). The 7 clusters become nodes in a NetworkX graph; edges are weighted by mean cosine similarity between cluster pairs, with the spring layout (<code style="font-size:.8rem;background:var(--light);padding:1px 4px;">seed=42</code>) placing structurally similar clusters closer together. Edge weight is drawn as line width — a thick edge between Soul & Jazz and Pop indicates heavy tag co-occurrence.</p>
+        <img src="https://klaire03.github.io/images/spotify2.png" alt="Genre clusters network graph" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
+        <div class="method-win">✦ Cosine similarity is preferred over Euclidean distance for sparse binary vectors. Two rare genres that always co-occur together score highly similar even if they appear in only a handful of tracks. Euclidean distance would penalise low-frequency genres unfairly, pulling them toward the origin regardless of their relationships.</div>
+        <div class="method-callout"><strong>⚠ Note:</strong> The 7-cluster count is a deliberate interpretive choice, not a data-derived optimum. A dendrogram cut at a different height would produce different groupings — the number was chosen to align with recognisable macro-genre categories.</div>
       </div>
 
     </div>
@@ -857,167 +860,98 @@ footer {
         <span class="step-num">18.</span>  <span class="step-name">Export</span>                   <span class="step-note">— billboard_tracks.csv (full enriched dataset for reproducibility without Spotify API)</span>
       </div>
     </div>
+
+    <!-- Audio features reference table -->
+    <div style="margin-top:56px;">
+      <p class="method-step" style="margin-bottom:16px;">Spotify audio features — reference</p>
+      <table class="feature-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Range</th>
+            <th>What it measures</th>
+            <th>Used in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>valence</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Musical positivity — high = happy/euphoric, low = sad/tense</td>
+            <td>Temporal trends, artist profiles</td>
+          </tr>
+          <tr>
+            <td>energy</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Perceptual intensity — fast, loud, noisy production scores high</td>
+            <td>Temporal trends, artist profiles</td>
+          </tr>
+          <tr>
+            <td>danceability</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Suitability for dancing based on tempo, rhythm stability, beat strength</td>
+            <td>Temporal trends, artist profiles</td>
+          </tr>
+          <tr>
+            <td>speechiness</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Presence of spoken words — &gt;0.66 likely speech-only</td>
+            <td>Temporal trends (rap rise proxy)</td>
+          </tr>
+          <tr>
+            <td>tempo</td>
+            <td><span class="range-pill">BPM</span></td>
+            <td>Estimated beats per minute</td>
+            <td>Temporal trends (normalised)</td>
+          </tr>
+          <tr>
+            <td>acousticness</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Confidence that the track is acoustic (non-electronic)</td>
+            <td>Available; not in primary trend analysis</td>
+          </tr>
+          <tr>
+            <td>instrumentalness</td>
+            <td><span class="range-pill">0.0 – 1.0</span></td>
+            <td>Predicts absence of vocals — &gt;0.5 likely instrumental</td>
+            <td>Available; not in primary trend analysis</td>
+          </tr>
+          <tr>
+            <td>loudness</td>
+            <td><span class="range-pill">dB</span></td>
+            <td>Overall loudness in decibels, typically –60 to 0 dB</td>
+            <td>Available — relevant to loudness war analysis</td>
+          </tr>
+          <tr>
+            <td>key</td>
+            <td><span class="range-pill">0 – 11</span></td>
+            <td>Estimated key (Pitch Class notation: 0=C, 1=C♯…)</td>
+            <td>Available for harmonic analysis</td>
+          </tr>
+          <tr>
+            <td>mode</td>
+            <td><span class="range-pill">0 or 1</span></td>
+            <td>Modality: 1 = major (brighter), 0 = minor (darker)</td>
+            <td>Available; correlates with valence</td>
+          </tr>
+          <tr>
+            <td>duration_ms</td>
+            <td><span class="range-pill">ms</span></td>
+            <td>Track length in milliseconds</td>
+            <td>Available — streaming-era shortening hypothesis</td>
+          </tr>
+          <tr>
+            <td>time_signature</td>
+            <td><span class="range-pill">3 – 7</span></td>
+            <td>Estimated time signature (beats per bar)</td>
+            <td>Available; most popular music = 4/4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<hr class="divider">
-
-<!-- ══ TECHNIQUES ══ -->
-<div id="techniques" class="section">
-  <p class="section-label">Analytical techniques</p>
-  <h2 class="section-title">The data science toolkit</h2>
-  <p class="section-intro">Each technique was chosen to answer a specific question. The decisions below document what was used and why — including where a simpler approach was deliberately rejected.</p>
-
-  <div class="technique-grid stagger">
-
-    <div class="technique-card fade-up">
-      <span class="tc-emoji">🌐</span>
-      <p class="tc-label">Data collection</p>
-      <h3 class="tc-name">Web Scraping</h3>
-      <p class="tc-model">requests · BeautifulSoup4 · html.parser</p>
-      <p class="tc-desc">Each Wikipedia year-end chart is fetched and parsed via the <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">wikitable</code> CSS class. Table rows are iterated with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">find_all('tr')[1:]</code> — skipping the header — and cells extracted positionally.</p>
-      <div class="tc-warn"><strong>⚠</strong> 2016 excluded: source page uses a non-standard table structure that shifts cell positions. Always verify column alignment on a fresh scrape before proceeding.</div>
-    </div>
-
-    <div class="technique-card fade-up">
-      <span class="tc-emoji">🎵</span>
-      <p class="tc-label">API enrichment</p>
-      <h3 class="tc-name">Spotify Audio Features</h3>
-      <p class="tc-model">Spotipy · SpotifyClientCredentials · audio_features() endpoint</p>
-      <p class="tc-desc">Two calls per track: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.search(artist)</code> for genre tags, then <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.audio_features([track_id])</code> for the 12-feature acoustic vector. Both return empty structures on no-match rather than raising, keeping the pipeline from halting mid-loop.</p>
-      <div class="tc-note">✦ Spotify's Audio Features endpoint was restricted to paid/approved tiers in 2024. The pre-collected dataset is included as <code style="font-size:.8rem;">billboard_tracks.csv</code> for full reproducibility.</div>
-    </div>
-
-    <div class="technique-card fade-up">
-      <span class="tc-emoji">🔧</span>
-      <p class="tc-label">Feature engineering</p>
-      <h3 class="tc-name">JSON Flattening + Normalisation</h3>
-      <p class="tc-model">pandas · pd.Series · sklearn MinMaxScaler</p>
-      <p class="tc-desc">The nested audio features dict is expanded with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">.apply(pd.Series)</code> then concatenated with the base DataFrame. MinMaxScaler normalises all numeric features to [0, 1] for cross-feature comparability on shared axes.</p>
-      <div class="tc-note">✦ Min-Max preserves the natural bounded structure of Spotify features. Standard (z-score) scaling would make "maximum danceability" appear as an outlier, not as the defined ceiling of the scale.</div>
-    </div>
-
-    <div class="technique-card fade-up">
-      <span class="tc-emoji">📈</span>
-      <p class="tc-label">Temporal analysis</p>
-      <h3 class="tc-name">Trend Visualisation</h3>
-      <p class="tc-model">pandas groupby · matplotlib · dual-scope comparison</p>
-      <p class="tc-desc">Feature averages are computed per year with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">groupby('Year').mean()</code> for all 100 songs and separately for the top 20 ranked tracks. Overlapping line charts plot all five normalised features on the same 0–1 y-axis for direct comparison.</p>
-      <div class="tc-note">✦ The top-20 sensitivity analysis answers whether observed trends are driven by the chart's dominant tracks or diluted by lower-ranked entries — a methodological check, not redundancy.</div>
-    </div>
-
-    <div class="technique-card fade-up">
-      <span class="tc-emoji">🎤</span>
-      <p class="tc-label">Artist analysis</p>
-      <h3 class="tc-name">Feature Fingerprinting</h3>
-      <p class="tc-model">pandas value_counts · groupby · idxmax</p>
-      <p class="tc-desc">The top 5 most-charted artists are identified by frequency. Each artist's mean normalised audio features are computed and plotted side by side, producing an acoustic signature. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">idxmax()</code> identifies each artist's peak chart year.</p>
-      <div class="tc-note">✦ Top 5 in the 30-year dataset: Taylor Swift, Mariah Carey, Rihanna, Pink, Kelly Clarkson — a profile that itself tells a story about which artists sustained mainstream presence across decades.</div>
-    </div>
-
-    <div class="technique-card wide fade-up">
-      <span class="tc-emoji">🧩</span>
-      <p class="tc-label">Unsupervised ML</p>
-      <h3 class="tc-name">Genre Clustering — Cosine Similarity + Ward's Hierarchical</h3>
-      <p class="tc-model">sklearn cosine_similarity · scipy linkage (ward) · fcluster · NetworkX spring layout</p>
-      <p class="tc-desc">Genre tags are binary-encoded into a sparse tracks × genres matrix. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity(genre_matrix.T)</code> computes pairwise similarity between genres — measuring how often any two tags co-occur across tracks, normalised for frequency. Ward's linkage hierarchical clustering is applied to this similarity matrix, minimising within-cluster variance at each merge. 7 clusters are extracted and labelled with a hybrid approach: algorithmic labels supplemented by keyword matching on genre strings (e.g. any genre containing "pop" → Cluster 5) to improve interpretability. The resulting cluster structure is visualised as a NetworkX weighted graph.</p>
-      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="tc-note">✦ Cosine similarity is preferred over Euclidean distance for sparse binary vectors. Rare genres that always co-occur score highly similar regardless of frequency — Euclidean would penalise them for being near the origin.</div>
-        <div class="tc-warn"><strong>⚠</strong> The 7-cluster count is a deliberate interpretive choice, not a data-derived optimum. A dendrogram cut at a different height would produce different groupings — the number was chosen to align with recognisable macro-genre categories.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Audio features reference table -->
-  <div style="margin-top:56px;">
-    <p class="method-step" style="margin-bottom:16px;">Spotify audio features — reference</p>
-    <table class="feature-table">
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Range</th>
-          <th>What it measures</th>
-          <th>Used in</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>valence</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Musical positivity — high = happy/euphoric, low = sad/tense</td>
-          <td>Temporal trends, artist profiles</td>
-        </tr>
-        <tr>
-          <td>energy</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Perceptual intensity — fast, loud, noisy production scores high</td>
-          <td>Temporal trends, artist profiles</td>
-        </tr>
-        <tr>
-          <td>danceability</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Suitability for dancing based on tempo, rhythm stability, beat strength</td>
-          <td>Temporal trends, artist profiles</td>
-        </tr>
-        <tr>
-          <td>speechiness</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Presence of spoken words — &gt;0.66 likely speech-only</td>
-          <td>Temporal trends (rap rise proxy)</td>
-        </tr>
-        <tr>
-          <td>tempo</td>
-          <td><span class="range-pill">BPM</span></td>
-          <td>Estimated beats per minute</td>
-          <td>Temporal trends (normalised)</td>
-        </tr>
-        <tr>
-          <td>acousticness</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Confidence that the track is acoustic (non-electronic)</td>
-          <td>Available; not in primary trend analysis</td>
-        </tr>
-        <tr>
-          <td>instrumentalness</td>
-          <td><span class="range-pill">0.0 – 1.0</span></td>
-          <td>Predicts absence of vocals — &gt;0.5 likely instrumental</td>
-          <td>Available; not in primary trend analysis</td>
-        </tr>
-        <tr>
-          <td>loudness</td>
-          <td><span class="range-pill">dB</span></td>
-          <td>Overall loudness in decibels, typically –60 to 0 dB</td>
-          <td>Available — relevant to loudness war analysis</td>
-        </tr>
-        <tr>
-          <td>key</td>
-          <td><span class="range-pill">0 – 11</span></td>
-          <td>Estimated key (Pitch Class notation: 0=C, 1=C♯…)</td>
-          <td>Available for harmonic analysis</td>
-        </tr>
-        <tr>
-          <td>mode</td>
-          <td><span class="range-pill">0 or 1</span></td>
-          <td>Modality: 1 = major (brighter), 0 = minor (darker)</td>
-          <td>Available; correlates with valence</td>
-        </tr>
-        <tr>
-          <td>duration_ms</td>
-          <td><span class="range-pill">ms</span></td>
-          <td>Track length in milliseconds</td>
-          <td>Available — streaming-era shortening hypothesis</td>
-        </tr>
-        <tr>
-          <td>time_signature</td>
-          <td><span class="range-pill">3 – 7</span></td>
-          <td>Estimated time signature (beats per bar)</td>
-          <td>Available; most popular music = 4/4</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
 
 <hr class="divider">
 
@@ -1034,10 +968,7 @@ footer {
         <div class="insight-num">1</div>
         <div class="insight-body">
           <h4>Valence has fallen — popular music has measurably got sadder since the 90s</h4>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
-            <p>The temporal trend chart shows a clear multi-decade decline in mean valence across the Billboard Hot 100. The 90s produced chart-toppers with high average positivity; by the mid-2010s, sad and melancholic tracks dominate. This tracks the cultural shift documented in academic music research: streaming algorithms amplify slower, more emotionally ambiguous material because it sustains longer listening sessions. <strong style="color:var(--teal3);">→ Valence is the single most informative feature for capturing the emotional trajectory of mainstream popular music.</strong></p>
-            <img src="https://klaire03.github.io/images/spotify1.png" alt="Genre Clusters network graph" style="width:100%;display:block;border:1px solid rgba(255,255,255,0.08);" />
-          </div>
+          <p>The temporal trend chart shows a clear multi-decade decline in mean valence across the Billboard Hot 100. The 90s produced chart-toppers with high average positivity; by the mid-2010s, sad and melancholic tracks dominate. This tracks the cultural shift documented in academic music research: streaming algorithms amplify slower, more emotionally ambiguous material because it sustains longer listening sessions. <strong style="color:var(--teal3);">→ Valence is the single most informative feature for capturing the emotional trajectory of mainstream popular music.</strong></p>
         </div>
       </div>
 
@@ -1061,10 +992,7 @@ footer {
         <div class="insight-num">4</div>
         <div class="insight-body">
           <h4>Genre clustering reveals that Pop and R&B are structurally the same cluster — not two</h4>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
-            <p>Despite being treated as distinct genres in casual discourse, cosine similarity places many contemporary R&B and pop tags into the same hierarchical cluster because the same artists are routinely tagged with both. The network graph makes this visible as a thick edge — heavy co-occurrence. Soul & Jazz, by contrast, sits near but distinct from this cluster. Rap & Hip-Hop forms a tighter, more isolated cluster with fewer bridges to others. <strong style="color:var(--teal3);">→ Genre boundaries in pop music are permeability gradients, not hard category lines.</strong></p>
-            <img src="https://klaire03.github.io/images/spotify2.png" alt="Average Audio Features of Billboard Hot 100 Songs over the Years" style="width:100%;display:block;border:1px solid rgba(255,255,255,0.08);" />
-          </div>
+          <p>Despite being treated as distinct genres in casual discourse, cosine similarity places many contemporary R&B and pop tags into the same hierarchical cluster because the same artists are routinely tagged with both. The network graph makes this visible as a thick edge — heavy co-occurrence. Soul & Jazz, by contrast, sits near but distinct from this cluster. Rap & Hip-Hop forms a tighter, more isolated cluster with fewer bridges to others. <strong style="color:var(--teal3);">→ Genre boundaries in pop music are permeability gradients, not hard category lines.</strong></p>
         </div>
       </div>
 
