@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaaS Churn & Revenue Intelligence — Portfolio</title>
+<title>SaaS Churn & Revenue Intelligence · Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,16 +23,13 @@
   --light:   #e8f5f3;
   --amber:   #c8821a;
   --amberbg: #fdf3e3;
-  --red:     #b5372a;
-  --red-l:   #fae0de;
-  --blue:    #1a6fa0;
-  --blue-l:  #ddeef8;
-  --green:   #1a7a5e;
-  --green-l: #d4efe7;
+  --purple:  #7b4fa6;
+  --risk-high:   #e05050;
+  --risk-med:    #c8821a;
+  --risk-low:    #4caf7d;
 }
 
 html { scroll-behavior: smooth; font-size: 16px; }
-
 body {
   font-family: 'Instrument Sans', sans-serif;
   background: var(--paper);
@@ -41,1566 +38,980 @@ body {
   font-weight: 300;
 }
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--navy); }
-::-webkit-scrollbar-thumb { background: var(--teal2); border-radius: 2px; }
-
 /* ── NAV ── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(21, 36, 56, 0.97);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(21,36,56,0.97);
   backdrop-filter: blur(8px);
   padding: 0 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   height: 56px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-
 .nav-brand {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--teal3);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 11px; color: var(--teal3);
+  letter-spacing: 0.12em; text-transform: uppercase;
 }
-
-.nav-links {
-  display: flex;
-  gap: 32px;
-  list-style: none;
-}
-
+.nav-links { display: flex; gap: 32px; list-style: none; }
 .nav-links a {
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  text-decoration: none;
-  letter-spacing: 0.05em;
-  transition: color 0.2s;
-  font-weight: 400;
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  text-decoration: none; letter-spacing: 0.05em;
+  transition: color 0.2s; font-weight: 400;
 }
-
 .nav-links a:hover { color: var(--teal3); }
 
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
   background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 120px 80px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   position: relative;
   overflow: hidden;
 }
+.hero-grid-lines, .hero-glow, .hero-glow2, .hero-glow3 { z-index: 0; }
+.hero-inner { display: contents; }
+.hero-left-anim {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 64px 80px;
+  position: relative; z-index: 1; max-width: 680px;
+}
+.hero-chart-wrap {
+  background: rgba(8,16,28,0.55);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 48px; position: relative; z-index: 1;
+}
+.hero-chart-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--teal2); margin-bottom: 20px; text-align: center; width: 100%;
+}
+
+/* funnel bar draw animation */
+.funnel-bar {
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: fbarGrow 1s ease forwards;
+}
+@keyframes fbarGrow { to { transform: scaleX(1); } }
 
 .hero-grid-lines {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background-image:
     linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
 }
-
 .hero-glow {
-  position: absolute;
-  top: -200px; right: -200px;
+  position: absolute; top: -200px; right: -200px;
   width: 700px; height: 700px;
   background: radial-gradient(ellipse, rgba(26,122,110,0.15) 0%, transparent 65%);
   pointer-events: none;
 }
-
 .hero-glow2 {
-  position: absolute;
-  bottom: -100px; left: 5%;
+  position: absolute; bottom: -100px; left: 5%;
   width: 500px; height: 400px;
-  background: radial-gradient(ellipse, rgba(26,122,110,0.07) 0%, transparent 60%);
+  background: radial-gradient(ellipse, rgba(192,56,122,0.08) 0%, transparent 60%);
   pointer-events: none;
 }
-
+.hero-glow3 {
+  position: absolute; top: 30%; left: 55%;
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(200,130,26,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
 .hero-tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--teal2);
-  margin-bottom: 32px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--teal2); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 12px;
 }
-
-.hero-tag::before {
-  content: '';
-  display: inline-block;
-  width: 32px; height: 1px;
-  background: var(--teal2);
-}
-
+.hero-tag::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--teal2); }
 .hero h1 {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(3rem, 6vw, 6rem);
-  color: #fff;
-  line-height: 1.05;
-  margin-bottom: 32px;
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
+  font-size: clamp(2.8rem, 4.5vw, 4.8rem);
+  color: #fff; line-height: 1.05; margin-bottom: 32px;
 }
-
-.hero h1 em {
-  font-style: italic;
-  color: var(--teal3);
-}
-
+.hero h1 em { font-style: italic; color: var(--teal3); }
 .hero-desc {
-  font-size: 1.05rem;
-  color: rgba(255,255,255,0.5);
-  max-width: 560px;
-  line-height: 1.75;
-  margin-bottom: 56px;
-  position: relative;
-  z-index: 1;
-  font-weight: 300;
+  font-size: 1.05rem; color: rgba(255,255,255,0.5);
+  max-width: 520px; line-height: 1.75; margin-bottom: 56px; font-weight: 300;
 }
-
 .hero-bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-  position: relative;
-  z-index: 1;
-  flex-wrap: wrap;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 40px; flex-wrap: wrap;
 }
-
-.stats-row {
-  display: flex;
-  gap: 0;
-}
-
+.stats-row { display: flex; gap: 0; }
 .stat {
-  padding: 20px 32px;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-right: none;
-  text-align: center;
-  background: rgba(255,255,255,0.02);
+  padding: 20px 26px;
+  border: 1px solid rgba(255,255,255,0.08); border-right: none;
+  text-align: center; background: rgba(255,255,255,0.02);
 }
 .stat:last-child { border-right: 1px solid rgba(255,255,255,0.08); }
-
 .stat strong {
-  display: block;
-  font-family: 'Instrument Serif', serif;
-  font-size: 2.4rem;
-  color: var(--teal3);
-  line-height: 1;
-  margin-bottom: 4px;
+  display: block; font-family: 'Instrument Serif', serif;
+  font-size: 2.2rem; color: var(--teal3); line-height: 1; margin-bottom: 4px;
 }
-
 .stat span {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
   color: rgba(255,255,255,0.3);
 }
-
-.hero-links {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
+.hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
 .hero-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 10px 18px;
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.6);
-  text-decoration: none;
-  transition: all 0.2s;
-  border-radius: 2px;
+  font-size: 11px; letter-spacing: 0.08em;
+  padding: 10px 18px; border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6); text-decoration: none;
+  transition: all 0.2s; border-radius: 2px;
 }
+.hero-link:hover { border-color: var(--teal2); color: var(--teal3); background: rgba(26,122,110,0.08); }
+.hero-link svg { width: 13px; height: 13px; fill: currentColor; }
 
-.hero-link:hover {
-  border-color: var(--teal2);
-  color: var(--teal3);
-  background: rgba(26,122,110,0.08);
-}
-
-/* ── PIPELINE BAR ── */
-.pipeline-bar {
-  background: var(--navy2);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding: 18px 80px;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  overflow-x: auto;
-}
-
-.pb-step { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-.pb-n {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  color: var(--teal3); letter-spacing: 0.1em;
-}
-.pb-name { font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8); }
-.pb-tag {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  color: rgba(255,255,255,0.3); padding: 3px 8px;
-  border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
-}
-.pb-arrow { margin: 0 22px; color: rgba(255,255,255,0.2); flex-shrink: 0; font-size: 0.9rem; }
-
-/* ── SECTION WRAPPERS ── */
-.section {
-  padding: 100px 80px;
-  max-width: 1160px;
-  margin: 0 auto;
-}
-
-.section-sm {
-  padding: 80px 80px;
-  max-width: 1160px;
-  margin: 0 auto;
-}
-
+/* ── SECTIONS ── */
+.section { padding: 100px 80px; max-width: 1160px; margin: 0 auto; }
+.section-sm { padding: 80px 80px; max-width: 1160px; margin: 0 auto; }
 .section-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--teal);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
 }
-
-.section-label::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--teal);
-}
-
+.section-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
 .section-title {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(1.9rem, 3vw, 2.8rem);
-  color: var(--navy);
-  line-height: 1.15;
-  margin-bottom: 14px;
+  font-size: clamp(1.9rem, 3vw, 2.8rem); color: var(--navy);
+  line-height: 1.15; margin-bottom: 14px;
 }
-
-.section-title em { font-style: italic; color: var(--teal2); }
-
 .section-intro {
-  font-size: 1rem;
-  color: var(--mid);
-  max-width: 640px;
-  line-height: 1.75;
-  margin-bottom: 56px;
-  font-weight: 300;
+  font-size: 1rem; color: var(--mid); max-width: 640px;
+  line-height: 1.75; margin-bottom: 56px; font-weight: 300;
 }
-
 .divider { border: none; border-top: 1px solid var(--border); }
 
 /* ── DARK BAND ── */
-.dark-band {
-  background: var(--navy);
-  padding: 100px 0;
-}
-
-.dark-band-inner {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 80px;
-}
-
+.dark-band { background: var(--navy); padding: 100px 0; }
+.dark-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
 .dark-band .section-label { color: var(--teal2); }
 .dark-band .section-label::before { background: var(--teal2); }
 .dark-band .section-title { color: #fff; }
 .dark-band .section-intro { color: rgba(255,255,255,0.45); }
 
 /* ── SAND BAND ── */
-.sand-band {
-  background: var(--sand);
-  padding: 100px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.sand-band-inner {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 80px;
-}
-
-/* ── PROSE ── */
-.prose {
-  font-size: 1rem; color: var(--mid); line-height: 1.85;
-  font-weight: 300; margin-bottom: 32px; max-width: 720px;
-}
-.prose strong { color: var(--ink); font-weight: 500; }
-.prose code {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
-  background: var(--light); color: var(--teal);
-  padding: 1px 6px; border: 1px solid rgba(26,122,110,0.18);
-}
-.prose em { font-style: italic; color: var(--navy); }
-
-.micro-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--muted);
-  margin-bottom: 14px; display: block;
-}
-
-/* ── SCHEMA GRID ── */
-.schema-grid {
-  display: grid; grid-template-columns: repeat(5,1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); margin-bottom: 40px;
-}
-.sch-tbl { background: white; padding: 18px; }
-.sch-name {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  color: var(--teal); font-weight: 500;
-  padding-bottom: 8px; border-bottom: 1px solid var(--border);
-  margin-bottom: 10px; display: block;
-}
-.sch-field {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  color: var(--muted); padding: 2px 0;
-}
-.sch-field .pk { color: var(--teal); }
-.sch-field .fk { color: var(--navy2); }
-
-/* ── STAGING CARDS ── */
-.stg-grid {
-  display: grid; grid-template-columns: repeat(4,1fr);
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-.stg-card { background: white; padding: 20px; }
-.stg-name {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  color: var(--teal); font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px; margin-bottom: 10px; display: block;
-}
-.stg-row {
-  font-size: 0.82rem; color: var(--mid); padding: 3.5px 0;
-  line-height: 1.45; display: flex; gap: 7px;
-}
-.stg-row::before { content: '—'; color: var(--border); flex-shrink: 0; }
-
-/* ── AGG CARDS ── */
-.agg-grid {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-.agg-card { background: white; padding: 20px; }
-.agg-name {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  color: var(--teal2); font-weight: 500;
-  border-bottom: 1px solid var(--light);
-  padding-bottom: 8px; margin-bottom: 10px; display: block;
-}
-.agg-field {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  color: var(--muted); padding: 3px 0;
-}
-
-/* ── RISK TIERS ── */
-.risk-tiers {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-  margin-bottom: 24px;
-}
-.rt { background: white; padding: 18px 20px; }
-.rt-badge {
-  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
-  letter-spacing: 0.1em; padding: 4px 9px;
-  display: inline-block; font-weight: 500; margin-bottom: 6px;
-}
-.rt-badge.h { background: var(--red-l); color: var(--red); }
-.rt-badge.m { background: var(--amberbg); color: var(--amber); }
-.rt-badge.l { background: var(--green-l); color: var(--green); }
-.rt-cond { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+.sand-band { background: var(--sand); padding: 100px 0; }
+.sand-band-inner { max-width: 1160px; margin: 0 auto; padding: 0 80px; }
 
 /* ── METHOD GRID ── */
 .method-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
 }
-
 .method-item {
-  background: var(--paper);
-  padding: 36px;
-  transition: background 0.2s;
-  position: relative;
+  background: var(--paper); padding: 36px;
+  transition: background 0.2s; position: relative;
 }
-
 .method-item:hover { background: #f0ede7; }
-
+.method-item.full { grid-column: span 2; }
 .method-num {
   font-family: 'Instrument Serif', serif;
-  font-size: 3rem;
-  color: var(--border);
-  line-height: 1;
-  position: absolute;
-  top: 20px; right: 24px;
-  pointer-events: none;
+  font-size: 3rem; color: var(--border); line-height: 1;
+  position: absolute; top: 20px; right: 24px; pointer-events: none;
 }
-
 .method-step {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--teal);
-  margin-bottom: 10px;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px;
 }
-
 .method-item h4 {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--navy);
-  margin-bottom: 10px;
+  font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 10px;
 }
-
 .method-item p {
-  font-size: 0.9rem;
-  color: var(--mid);
-  line-height: 1.7;
-  font-weight: 300;
-  max-width: 420px;
+  font-size: 0.9rem; color: var(--mid);
+  line-height: 1.7; font-weight: 300;
 }
-
 .method-callout {
-  margin-top: 14px;
-  padding: 10px 14px;
-  background: var(--amberbg);
-  border-left: 2px solid var(--amber);
-  font-size: 0.82rem;
-  color: #7a5010;
-  line-height: 1.55;
-  font-weight: 400;
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--amberbg); border-left: 2px solid var(--amber);
+  font-size: 0.82rem; color: #7a5010; line-height: 1.55; font-weight: 400;
 }
-
+.method-callout strong { color: var(--amber); }
 .method-win {
-  margin-top: 14px;
-  padding: 10px 14px;
-  background: var(--light);
-  border-left: 2px solid var(--teal);
-  font-size: 0.82rem;
-  color: #0e5048;
-  line-height: 1.55;
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--light); border-left: 2px solid var(--teal);
+  font-size: 0.82rem; color: #0e5048; line-height: 1.55;
+}
+.method-image {
+  margin-top: 16px; width: 100%; display: block;
+  border: 1px solid var(--border);
 }
 
-/* ── CALLOUT ── */
-.callout {
-  border-left: 3px solid var(--teal);
-  background: var(--light);
-  padding: 16px 22px; margin: 24px 0;
-  font-size: 0.92rem; color: var(--ink); line-height: 1.72;
+/* ── PHASE TIMELINE ── */
+.phase-timeline {
+  margin-bottom: 56px;
+  padding: 32px 0 8px;
 }
-.callout.amber { border-left-color: var(--amber); background: var(--amberbg); }
-.callout em { font-style: italic; color: var(--navy); }
-
-/* ── DASHBOARD CARDS ── */
-.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
-.dash-card {
-  background: white; border: 1px solid var(--border); padding: 28px;
-  position: relative; overflow: hidden;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-.dash-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--teal);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-.dash-card:hover::after { transform: scaleX(1); }
-.dash-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(21,36,56,0.08); }
-.dash-card.full { grid-column: 1/-1; }
-.dash-icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
-.dash-name {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.2rem; color: var(--navy); margin-bottom: 8px;
-}
-.dash-desc { font-size: 0.87rem; color: var(--mid); line-height: 1.65; font-weight: 300; margin-bottom: 16px; }
-.kpis { display: flex; flex-wrap: wrap; gap: 6px; }
-.kpi {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  padding: 4px 8px; background: var(--light); color: var(--teal); border-radius: 1px;
-}
-
-/* ── MODEL CARDS ── */
-.model-grid {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 16px; margin-bottom: 28px;
-}
-.model-card {
-  background: white; border: 1px solid var(--border); padding: 24px;
-  position: relative; transition: transform 0.22s, box-shadow 0.22s;
-}
-.model-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(21,36,56,0.07); }
-.model-card.winner {
-  background: var(--light); border-color: var(--teal2);
-}
-.model-card.winner::after {
-  content: 'SELECTED'; position: absolute; top: 14px; right: 14px;
-  font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em;
-  padding: 3px 8px; background: var(--teal2); color: white;
-}
-.m-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 5px; letter-spacing: 0.1em; }
-.m-name {
-  font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: var(--navy); margin-bottom: 8px;
-}
-.m-rat { font-size: 0.85rem; color: var(--mid); line-height: 1.65; font-weight: 300; }
-.m-metrics { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
-.mm { font-family: 'JetBrains Mono', monospace; font-size: 9px; }
-.mm .v { display: block; font-family: 'Instrument Serif', serif; font-weight: 300; font-size: 1.1rem; color: var(--navy); margin-bottom: 1px; }
-.mm .l { color: var(--muted); letter-spacing: 0.06em; }
-
-/* ── FORMULA ── */
-.formula-box {
-  display: flex; align-items: center; gap: 22px;
-  padding: 24px 28px; background: white;
-  border: 1px solid var(--border); border-left: 3px solid var(--teal2);
-  margin: 24px 0;
-}
-.formula-eq {
-  font-family: 'Instrument Serif', serif; font-size: 1.3rem;
-  color: var(--navy); font-weight: 300; white-space: nowrap;
-}
-.formula-note { font-size: 0.87rem; color: var(--mid); line-height: 1.6; font-weight: 300; }
-
-/* ── SCORE TABLE ── */
-.score-wrap { overflow-x: auto; border: 1px solid var(--border); margin: 20px 0; }
-table.score { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-table.score th { padding: 10px 16px; background: var(--sand); color: var(--navy); font-weight: 500; text-align: left; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
-table.score td { padding: 10px 16px; color: var(--mid); border-bottom: 1px solid var(--border); }
-table.score tr:last-child td { border-bottom: none; }
-table.score tr:hover td { background: var(--light); color: var(--ink); }
-.hi { color: var(--red); font-weight: 500; }
-.me { color: var(--amber); font-weight: 500; }
-.lo { color: var(--green); font-weight: 500; }
-
-/* ── CODE DROPDOWN ── */
-details.code-fold { margin: 20px 0; }
-
-details.code-fold summary {
-  display: flex; align-items: center; gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.08em;
-  color: var(--mid); padding: 11px 16px;
-  background: var(--sand); border: 1px solid var(--border);
-  cursor: pointer; list-style: none; user-select: none;
-  transition: all 0.18s;
-}
-details.code-fold summary::-webkit-details-marker { display: none; }
-details.code-fold summary:hover { border-color: var(--teal2); color: var(--teal); background: var(--light); }
-details.code-fold[open] summary { border-bottom: none; color: var(--teal); background: var(--light); border-color: var(--teal2); }
-
-.fold-arrow {
-  width: 13px; height: 13px; flex-shrink: 0;
-  transition: transform 0.2s;
-}
-details[open] .fold-arrow { transform: rotate(90deg); }
-
-.fold-badge {
-  margin-left: auto; font-size: 8.5px; letter-spacing: 0.12em;
-  padding: 2px 7px; border: 1px solid var(--border);
-  background: white; color: var(--muted);
-}
-details[open] .fold-badge { border-color: rgba(26,122,110,0.2); }
-
-.code-body {
-  background: #0e1d2e; border: 1px solid rgba(125,216,208,0.2);
-  border-top: none; padding: 22px 26px;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
-  line-height: 1.95; color: rgba(255,255,255,0.4);
-  overflow-x: auto; white-space: pre;
-}
-.kw  { color: #7dd8d0; }
-.fn  { color: #25a99a; }
-.str { color: #fcd34d; }
-.cm  { color: rgba(255,255,255,0.2); }
-.num { color: #fca5a5; }
-
-/* ── STEPS ── */
-.steps { margin-bottom: 32px; }
-.step {
-  display: grid; grid-template-columns: 44px 1fr;
-  border-bottom: 1px solid var(--border); transition: background 0.15s;
-}
-.step:first-child { border-top: 1px solid var(--border); }
-.step:hover { background: var(--light); }
-.step-n {
-  display: flex; align-items: flex-start;
-  justify-content: center; padding-top: 20px;
-  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
-  color: var(--teal); border-right: 1px solid var(--border);
-}
-.step-b { padding: 18px 22px; }
-.step-t { font-size: 0.9rem; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
-.step-d { font-size: 0.87rem; color: var(--mid); line-height: 1.65; font-weight: 300; }
-.step-d code {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.79rem;
-  background: var(--light); color: var(--teal);
-  padding: 1px 5px; border: 1px solid rgba(26,122,110,0.18);
-}
-
-/* ── INSIGHTS ── */
-.insights-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.insight-item {
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  transition: background 0.2s;
-}
-
-.insight-item:last-child { border-bottom: none; }
-.insight-item:hover { background: rgba(26,122,110,0.04); }
-
-.insight-num {
+.phase-track {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  gap: 0;
+}
+.phase-node-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 140px;
+}
+.phase-node-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px; text-align: center;
+}
+.phase-node {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--light);
+  border: 2px solid var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.1rem; color: var(--teal); font-weight: 400;
+  margin-bottom: 12px;
+  position: relative;
+}
+.phase-node-end {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+.phase-node-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--muted); text-align: center;
+  line-height: 1.65; letter-spacing: 0.02em;
+}
+.phase-connector {
+  flex: 1;
+  margin-top: 53px; /* align with node centre */
+  padding: 0 4px;
+  min-width: 60px;
+}
+
+/* ── MODEL COMPARISON CARDS ── */
+.model-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.model-card {
+  background: var(--paper); padding: 32px 28px;
+  position: relative; transition: background 0.2s;
+}
+.model-card:hover { background: #f0ede7; }
+.model-card.winner { background: var(--light); }
+.model-card.winner:hover { background: #daeee9; }
+.model-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+}
+.model-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem; color: var(--navy); margin-bottom: 12px; line-height: 1.2;
+}
+.model-auc {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.6rem; color: var(--teal3); line-height: 1; margin-bottom: 4px;
+}
+.model-auc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 14px;
+}
+.model-desc {
+  font-size: 0.87rem; color: var(--mid); line-height: 1.7; font-weight: 300;
+}
+.model-badge {
+  display: inline-block; margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.08em;
+  padding: 4px 10px; border-radius: 1px;
+  background: var(--light); color: var(--teal);
+  border: 1px solid rgba(26,122,110,0.2);
+}
+.model-card.winner .model-badge {
+  background: var(--teal); color: #fff; border-color: var(--teal);
+}
+
+/* ── RISK TABLE ── */
+.risk-table-wrap {
+  margin-top: 32px;
+  background: #0d1e30;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.risk-table-header {
+  padding: 16px 24px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.risk-table-header p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal2); margin: 0;
+}
+.risk-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.87rem;
+}
+.risk-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 12px 20px;
+  color: rgba(255,255,255,0.4); text-align: left; font-weight: 400;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+.risk-table td {
+  padding: 13px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+  vertical-align: middle; line-height: 1.4; font-weight: 300;
+}
+.risk-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--teal3); font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-table tr:hover td { background: rgba(255,255,255,0.03); }
+.risk-segment {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.08em; padding: 3px 9px; border-radius: 1px;
+}
+.risk-high { background: rgba(224,80,80,0.15); color: #f08080; border: 1px solid rgba(224,80,80,0.3); }
+.risk-med  { background: rgba(200,130,26,0.15); color: #e8a040; border: 1px solid rgba(200,130,26,0.3); }
+.risk-low  { background: rgba(76,175,61,0.15);  color: #7dd880; border: 1px solid rgba(76,175,61,0.3); }
+.risk-note {
+  padding: 12px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: rgba(255,255,255,0.3);
+  letter-spacing: 0.04em; line-height: 1.6;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+}
+.risk-note strong { color: var(--teal3); }
+
+/* ── SHAP CALLOUT ── */
+.shap-callout {
+  margin-top: 28px; padding: 20px 24px;
+  background: rgba(26,122,110,0.08); border: 1px solid rgba(26,169,154,0.2);
+  border-left: 3px solid var(--teal2);
+}
+.shap-callout p {
+  font-size: 0.92rem; color: var(--mid); line-height: 1.7; font-style: italic;
+  font-weight: 300;
+}
+.shap-callout strong { color: var(--teal); font-style: normal; }
+
+/* ── INSIGHTS ── */
+.insights-list { display: flex; flex-direction: column; gap: 0; border: 1px solid rgba(255,255,255,0.1); }
+.insight-item {
+  display: grid; grid-template-columns: 64px 1fr;
+  border-bottom: 1px solid rgba(255,255,255,0.08); transition: background 0.2s;
+}
+.insight-item:last-child { border-bottom: none; }
+.insight-item:hover { background: rgba(26,122,110,0.08); }
+.insight-num {
+  display: flex; align-items: flex-start; justify-content: center;
   padding-top: 28px;
   font-family: 'Instrument Serif', serif;
-  font-size: 1.5rem;
-  color: var(--teal3);
-  border-right: 1px solid rgba(255,255,255,0.07);
-  background: rgba(26,122,110,0.03);
+  font-size: 1.5rem; color: var(--teal3);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: rgba(26,122,110,0.06);
 }
-
 .insight-body { padding: 28px 32px; }
-
 .insight-body h4 {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 8px;
-  line-height: 1.3;
+  font-size: 1rem; font-weight: 600; color: #fff;
+  margin-bottom: 10px; line-height: 1.3;
 }
-
-.insight-body p {
-  font-size: 0.92rem;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.72;
-  font-weight: 300;
+.insight-body p { font-size: 0.92rem; color: rgba(255,255,255,0.65); line-height: 1.78; font-weight: 300; }
+.insight-takeaway {
+  margin-top: 12px;
+  font-size: 0.88rem !important; color: var(--teal3) !important;
+  font-weight: 500 !important; line-height: 1.5 !important;
+  padding-left: 12px; border-left: 2px solid var(--teal2);
 }
-
 .insight-rec {
-  font-size: 0.85rem;
-  color: var(--teal3);
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  margin-top: 10px; padding: 9px 14px;
+  background: rgba(200,130,26,0.1); border-left: 2px solid var(--amber);
+  font-size: 0.84rem; color: #e8a040; line-height: 1.55; font-weight: 300;
 }
-.insight-rec::before { content: '↳ '; }
-
-/* ── INSIGHT TABS (dark band version) ── */
-.itabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 0; }
-.itab {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 10px 20px;
-  border: 1px solid transparent; border-bottom: none;
-  color: rgba(255,255,255,0.35); cursor: pointer; background: none; transition: all 0.18s;
-}
-.itab.on { color: var(--teal3); border-color: rgba(255,255,255,0.08); background: rgba(26,122,110,0.06); margin-bottom: -1px; }
-.ins-panel { display: none; }
-.ins-panel.on { display: block; }
 
 /* ── FURTHER WORK ── */
-.further-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
+.further-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .further-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 28px;
-  transition: background 0.2s;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  padding: 28px; transition: background 0.2s;
 }
-
 .further-card:hover { background: rgba(26,122,110,0.06); }
-
-.further-card .icon {
-  font-size: 1.4rem;
-  margin-bottom: 14px;
-  display: block;
-}
-
-.further-card h4 {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.1rem;
-  color: #fff;
-  margin-bottom: 10px;
-  line-height: 1.3;
-}
-
-.further-card p {
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.7;
-  font-weight: 300;
-}
+.further-card .icon { font-size: 1.4rem; margin-bottom: 14px; display: block; }
+.further-card h4 { font-size: 0.92rem; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.3; }
+.further-card p { font-size: 0.85rem; color: rgba(255,255,255,0.42); line-height: 1.7; font-weight: 300; }
 
 /* ── CAVEATS ── */
-.caveats-row {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 16px;
-}
-
-.caveat-card {
-  background: white;
-  border: 1px solid var(--border);
-  padding: 28px;
-  transition: border-color 0.2s;
-}
-.caveat-card:hover { border-color: var(--teal2); }
-
-.caveat-card h4 {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 0.95rem; font-weight: 600; color: var(--navy);
-  margin-bottom: 10px;
-}
-
-.caveat-card p {
-  font-size: 0.88rem; color: var(--mid); line-height: 1.7; font-weight: 300;
-}
+.caveats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.caveat-card { padding: 28px; border: 1px solid var(--border); background: var(--sand); }
+.caveat-card h4 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.caveat-card p { font-size: 0.87rem; color: var(--mid); line-height: 1.68; font-weight: 300; }
 
 /* ── FOOTER ── */
 footer {
-  background: var(--navy);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 40px 80px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 80px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; flex-wrap: wrap;
 }
-
 .footer-info p {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.06em;
-  line-height: 1.8;
+  font-size: 10px; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25); margin-bottom: 4px;
 }
-
-.footer-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
+.footer-tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .tool-pill {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  padding: 4px 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.3);
-  border-radius: 1px;
+  font-size: 9px; letter-spacing: 0.06em;
+  padding: 5px 10px; border: 1px solid rgba(26,169,154,0.25);
+  color: var(--teal2); border-radius: 1px;
 }
 
-/* ── FADE-UP ANIMATION ── */
-.fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.fade-up.visible { opacity: 1; transform: none; }
-
-.stagger .fade-up:nth-child(1) { transition-delay: 0s; }
-.stagger .fade-up:nth-child(2) { transition-delay: 0.08s; }
-.stagger .fade-up:nth-child(3) { transition-delay: 0.16s; }
-.stagger .fade-up:nth-child(4) { transition-delay: 0.24s; }
-.stagger .fade-up:nth-child(5) { transition-delay: 0.32s; }
-.stagger .fade-up:nth-child(6) { transition-delay: 0.40s; }
-
-/* hero entrance */
-.hero-inner > * {
-  opacity: 0; transform: translateY(14px);
-  animation: rise 0.65s ease forwards;
-}
-.hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
-.hero-inner > *:nth-child(2) { animation-delay: 0.22s; }
-.hero-inner > *:nth-child(3) { animation-delay: 0.34s; }
-.hero-inner > *:nth-child(4) { animation-delay: 0.46s; }
-.hero-inner > *:nth-child(5) { animation-delay: 0.58s; }
-@keyframes rise { to { opacity: 1; transform: none; } }
+/* ── ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.10s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+.stagger > *:nth-child(7) { transition-delay: 0.40s; }
+.stagger > *:nth-child(8) { transition-delay: 0.46s; }
+.hero-left-anim > * { opacity: 0; transform: translateY(22px); animation: fadeup 0.8s ease forwards; }
+.hero-left-anim > *:nth-child(1) { animation-delay: 0.10s; }
+.hero-left-anim > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-left-anim > *:nth-child(3) { animation-delay: 0.40s; }
+.hero-left-anim > *:nth-child(4) { animation-delay: 0.55s; }
+@keyframes fadeup { to { opacity: 1; transform: translateY(0); } }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 860px) {
-  nav { padding: 0 20px; }
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
   .nav-links { display: none; }
-  .hero { padding: 90px 24px 60px; }
-  .pipeline-bar { padding: 14px 24px; }
-  .section, .section-sm { padding: 60px 24px; }
-  .dark-band-inner, .sand-band-inner { padding: 0 24px; }
-  footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
-  .schema-grid, .model-grid { grid-template-columns: 1fr; }
-  .stg-grid, .agg-grid, .dash-grid, .risk-tiers { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-left-anim { padding: 100px 32px 48px; }
+  .hero-chart-wrap { display: none; }
+  .section, .section-sm { padding: 60px 32px; }
+  .dark-band-inner, .sand-band-inner { padding: 0 32px; }
+  .dark-band, .sand-band { padding: 60px 0; }
   .stats-row { flex-wrap: wrap; }
-  .stat { border-right: 1px solid rgba(255,255,255,0.08); }
-  .formula-box { flex-direction: column; align-items: flex-start; }
-  .further-grid, .caveats-row { grid-template-columns: 1fr; }
-  .method-grid { grid-template-columns: 1fr; }
+  .method-grid, .model-grid, .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  .method-item.full { grid-column: 1; }
+  .phase-track { flex-direction: column; align-items: center; gap: 8px; }
+  .phase-connector { display: none; }
+  footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 
-<!-- ─── NAV ─────────────────────────────────────────────── -->
+<!-- ══ NAV ══ -->
 <nav>
-  <span class="nav-brand"><a href="https://klaire03.github.io" style="color:inherit;text-decoration:none;" title="Back to portfolio">portfolio</a> / SaaS Churn Intelligence</span>
+  <span class="nav-brand"><a href="https://klaire03.github.io" style="color:inherit;text-decoration:none;" title="Back to portfolio">portfolio</a> / saas_churn_intelligence</span>
   <ul class="nav-links">
-    <li><a href="#goal">Goal</a></li>
-    <li><a href="#sql">Data Layer</a></li>
-    <li><a href="#tableau">Dashboards</a></li>
-    <li><a href="#ml">ML Models</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#methodology">Methodology</a></li>
     <li><a href="#insights">Insights</a></li>
+    <li><a href="#further">Further work</a></li>
   </ul>
 </nav>
 
-<!-- ─── HERO ─────────────────────────────────────────────── -->
-<div class="hero">
+<!-- ══ HERO ══ -->
+<section class="hero" id="top">
   <div class="hero-grid-lines"></div>
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
+  <div class="hero-glow3"></div>
+
   <div class="hero-inner">
-    <div class="hero-tag">End-to-end Analytics · SQL · Tableau · Python</div>
-    <h1>SaaS <em>Churn</em> &<br>Revenue Intelligence</h1>
-    <p class="hero-desc">An end-to-end churn analytics framework for a SaaS cybersecurity product — from raw relational data through BI dashboards to an XGBoost risk engine that turns churn probability into financial exposure.</p>
-    <div class="hero-bottom">
-      <div class="stats-row">
-        <div class="stat"><strong>22%</strong><span>Overall churn rate</span></div>
-        <div class="stat"><strong>5</strong><span>Source tables</span></div>
-        <div class="stat"><strong>3</strong><span>ML models</span></div>
-        <div class="stat"><strong>3</strong><span>Tableau dashboards</span></div>
-      </div>
-      <div class="hero-links">
-        <a class="hero-link" href="#">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-        <a class="hero-link" href="#">Kaggle Dataset</a>
-        <a class="hero-link" href="#">Colab Notebook</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── PIPELINE BAR ── -->
-<div class="pipeline-bar">
-  <div class="pb-step">
-    <span class="pb-n">01</span>
-    <span class="pb-name">Data Engineering</span>
-    <span class="pb-tag">SQL · ETL · Data Modeling</span>
-  </div>
-  <span class="pb-arrow">→</span>
-  <div class="pb-step">
-    <span class="pb-n">02</span>
-    <span class="pb-name">BI & Visualisation</span>
-    <span class="pb-tag">Tableau · Calculated Fields</span>
-  </div>
-  <span class="pb-arrow">→</span>
-  <div class="pb-step">
-    <span class="pb-n">03</span>
-    <span class="pb-name">Predictive Modelling</span>
-    <span class="pb-tag">Python · XGBoost · SHAP</span>
-  </div>
-</div>
-
-
-<!-- ═══ GOAL ══════════════════════════════════════════════════ -->
-<div id="goal" class="section stagger">
-  <p class="section-label fade-up">Business goal</p>
-  <h2 class="section-title fade-up">Why this project <em>exists</em></h2>
-  <p class="prose fade-up">
-    The goal was to simulate a <strong>production-grade churn analytics framework</strong> for a SaaS cybersecurity product — moving from raw operational data through descriptive reporting to a predictive system that quantifies revenue at risk. Three questions framed every decision: <em>what behaviour predicts churn, who is at risk today, and how much revenue is exposed?</em>
-  </p>
-  <p class="prose fade-up">
-    The data covered account profiles, subscription history, feature usage, support interactions, and churn events. Getting useful answers required building the full stack — cleaning and modelling the data in SQL, surfacing it in Tableau dashboards, and finally feeding it into a machine learning pipeline.
-  </p>
-</div>
-
-<hr class="divider">
-
-<!-- ═══ PHASE 1: SQL ══════════════════════════════════════════ -->
-<div id="sql" class="sand-band">
-<div class="sand-band-inner">
-
-  <div class="stagger">
-    <p class="section-label fade-up">Phase 1 — Data Engineering</p>
-    <h2 class="section-title fade-up">Building the <em>SQL foundation</em></h2>
-    <p class="prose fade-up">
-      Before any analysis, the raw relational schema needed transforming into something analytical tools could trust. The source data lived across five tables — accounts, subscriptions, feature_usage, churn_events, and support_tickets — connected through foreign keys but full of inconsistent date formats, text-encoded booleans, and unnormalised flags. The work happened in three layers: clean first, aggregate second, then produce a single master mart row per account.
-    </p>
-  </div>
-
-  <span class="micro-label fade-up">Source schema — 5 tables</span>
-  <div class="schema-grid fade-up">
-    <div class="sch-tbl">
-      <span class="sch-name">accounts</span>
-      <div class="sch-field"><span class="pk">PK</span> account_id</div>
-      <div class="sch-field">industry · country</div>
-      <div class="sch-field">signup_date TEXT</div>
-      <div class="sch-field">plan_tier · seats</div>
-      <div class="sch-field">is_trial · churn_flag</div>
-    </div>
-    <div class="sch-tbl">
-      <span class="sch-name">subscriptions</span>
-      <div class="sch-field"><span class="pk">PK</span> subscription_id</div>
-      <div class="sch-field"><span class="fk">FK</span> account_id</div>
-      <div class="sch-field">start_date · end_date</div>
-      <div class="sch-field">mrr_amount · arr_amount</div>
-      <div class="sch-field">upgrade / downgrade flags</div>
-      <div class="sch-field">auto_renew_flag</div>
-    </div>
-    <div class="sch-tbl">
-      <span class="sch-name">feature_usage</span>
-      <div class="sch-field"><span class="pk">PK</span> id</div>
-      <div class="sch-field"><span class="fk">FK</span> subscription_id</div>
-      <div class="sch-field">feature_name · usage_date</div>
-      <div class="sch-field">usage_count · duration_secs</div>
-      <div class="sch-field">error_count · is_beta</div>
-    </div>
-    <div class="sch-tbl">
-      <span class="sch-name">churn_events</span>
-      <div class="sch-field"><span class="pk">PK</span> churn_event_id</div>
-      <div class="sch-field"><span class="fk">FK</span> account_id</div>
-      <div class="sch-field">churn_date · reason_code</div>
-      <div class="sch-field">refund_amount_usd</div>
-      <div class="sch-field">preceding_upgrade/downgrade</div>
-    </div>
-    <div class="sch-tbl">
-      <span class="sch-name">support_tickets</span>
-      <div class="sch-field"><span class="pk">PK</span> ticket_id</div>
-      <div class="sch-field"><span class="fk">FK</span> account_id</div>
-      <div class="sch-field">submitted_at · closed_at</div>
-      <div class="sch-field">resolution_time_hours</div>
-      <div class="sch-field">satisfaction_score · escalation</div>
-    </div>
-  </div>
-
-  <p class="prose fade-up">
-    The <strong>staging layer</strong> created one clean view per source table. Each view solved the same categories of problems — parsing dates with <code>STR_TO_DATE</code>, converting text flags to 0/1 integers, normalising categorical fields — so every downstream query could trust the inputs without defensive casting.
-  </p>
-
-  <div class="stg-grid fade-up">
-    <div class="stg-card">
-      <span class="stg-name">stg_accounts</span>
-      <div class="stg-row">signup_date parsed via STR_TO_DATE — prevents failures in Tableau and Python</div>
-      <div class="stg-row">is_trial and churn_flag normalised to 0/1</div>
-      <div class="stg-row">Clean categoricals; referential integrity confirmed</div>
-    </div>
-    <div class="stg-card">
-      <span class="stg-name">stg_subscriptions</span>
-      <div class="stg-row">Start/end dates parsed; upgrade, downgrade, auto_renew flags normalised</div>
-      <div class="stg-row">Billing frequency cleaned; MRR and ARR fields preserved</div>
-    </div>
-    <div class="stg-card">
-      <span class="stg-name">stg_support</span>
-      <div class="stg-row">submitted_at and closed_at converted to datetime</div>
-      <div class="stg-row">satisfaction_score cast to numeric; escalation_flag normalised to 0/1</div>
-    </div>
-    <div class="stg-card">
-      <span class="stg-name">stg_feature_usage</span>
-      <div class="stg-row">Usage dates converted; is_beta_feature standardised</div>
-      <div class="stg-row">usage_count, duration_secs, error_count preserved for aggregation</div>
-    </div>
-  </div>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — stg_support staging view
-      <span class="fold-badge">SQL</span>
-    </summary>
-    <div class="code-body"><span class="kw">CREATE OR REPLACE VIEW</span> stg_support <span class="kw">AS</span>
-<span class="kw">SELECT</span>
-    ticket_id,
-    account_id,
-    <span class="fn">STR_TO_DATE</span>(submitted_at, <span class="str">'%Y-%m-%d %H:%i:%s'</span>) <span class="kw">AS</span> submitted_at,
-    <span class="fn">STR_TO_DATE</span>(closed_at, <span class="str">'%Y-%m-%d %H:%i:%s'</span>)    <span class="kw">AS</span> closed_at,
-    resolution_time_hours,
-    priority,
-    first_response_time_minutes,
-    <span class="fn">CAST</span>(satisfaction_score <span class="kw">AS UNSIGNED</span>)             <span class="kw">AS</span> satisfaction_score,
-    <span class="kw">CASE WHEN</span> escalation_flag = <span class="str">'true'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END AS</span> escalation_flag
-<span class="kw">FROM</span> support_tickets;</div>
-  </details>
-
-  <p class="prose fade-up" style="margin-top:44px;">
-    With clean staging views in place, the <strong>aggregation layer</strong> collapsed each domain down to one row per account. Three views handled revenue health, product engagement, and support performance — generating the lifetime signals that would eventually feed both the Tableau mart and the ML model.
-  </p>
-
-  <div class="agg-grid fade-up">
-    <div class="agg-card">
-      <span class="agg-name">agg_account_revenue</span>
-      <div class="agg-field">total_mrr · total_arr</div>
-      <div class="agg-field">ever_upgraded · ever_downgraded</div>
-      <div class="agg-field">auto_renew_enabled</div>
-    </div>
-    <div class="agg-card">
-      <span class="agg-name">agg_account_usage</span>
-      <div class="agg-field">features_used (distinct count)</div>
-      <div class="agg-field">total_usage · total_usage_time</div>
-      <div class="agg-field">total_errors · avg_errors_per_event</div>
-    </div>
-    <div class="agg-card">
-      <span class="agg-name">agg_account_support</span>
-      <div class="agg-field">total_tickets</div>
-      <div class="agg-field">avg_resolution_time · avg_first_response</div>
-      <div class="agg-field">avg_csat · escalations</div>
-    </div>
-  </div>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — agg_account_support aggregation view
-      <span class="fold-badge">SQL</span>
-    </summary>
-    <div class="code-body"><span class="kw">CREATE OR REPLACE VIEW</span> agg_account_support <span class="kw">AS</span>
-<span class="kw">SELECT</span>
-    account_id,
-    <span class="fn">COUNT</span>(ticket_id)                 <span class="kw">AS</span> total_tickets,
-    <span class="fn">AVG</span>(resolution_time_hours)       <span class="kw">AS</span> avg_resolution_time,
-    <span class="fn">AVG</span>(first_response_time_minutes) <span class="kw">AS</span> avg_first_response_time,
-    <span class="fn">AVG</span>(satisfaction_score)          <span class="kw">AS</span> avg_csat,
-    <span class="fn">SUM</span>(escalation_flag)            <span class="kw">AS</span> escalations
-<span class="kw">FROM</span> stg_support
-<span class="kw">GROUP BY</span> account_id;</div>
-  </details>
-
-  <p class="prose fade-up" style="margin-top:44px;">
-    Before reaching for machine learning, a <strong>rule-based SQL risk model</strong> was built to test whether simple weighted signals could separate churners from non-churners. The <code>mart_account_risk</code> view assigned point scores to behavioural flags — low usage, high errors, support escalations, low CSAT, recent downgrades, disabled auto-renew — and segmented accounts into three tiers.
-  </p>
-
-  <div class="risk-tiers fade-up">
-    <div class="rt"><span class="rt-badge h">HIGH RISK</span><p class="rt-cond">churn_risk_score ≥ 8</p></div>
-    <div class="rt"><span class="rt-badge m">MEDIUM RISK</span><p class="rt-cond">churn_risk_score ≥ 4</p></div>
-    <div class="rt"><span class="rt-badge l">LOW RISK</span><p class="rt-cond">churn_risk_score &lt; 4</p></div>
-  </div>
-
-  <p class="prose fade-up">
-    Validating the tiers against actual churn rates revealed <strong>limited separation between segments</strong> — a useful negative result. Rather than manually recalibrating the weights, this finding became the data-driven case for progressing to machine learning.
-  </p>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — mart_account_risk scoring model
-      <span class="fold-badge">SQL</span>
-    </summary>
-    <div class="code-body"><span class="kw">CREATE OR REPLACE VIEW</span> mart_account_risk <span class="kw">AS</span>
-<span class="kw">SELECT</span>
-    m.*,
-    <span class="cm">-- Weighted behavioural + contract signals</span>
-    <span class="kw">CASE WHEN</span> m.total_usage   &lt; <span class="num">50</span>          <span class="kw">THEN</span> <span class="num">2</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-  + <span class="kw">CASE WHEN</span> m.total_errors  &gt; <span class="num">20</span>          <span class="kw">THEN</span> <span class="num">2</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-  + <span class="kw">CASE WHEN</span> m.escalations  &gt;= <span class="num">1</span>           <span class="kw">THEN</span> <span class="num">2</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-  + <span class="kw">CASE WHEN</span> m.avg_csat     &lt;= <span class="num">2</span>           <span class="kw">THEN</span> <span class="num">2</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-  + <span class="kw">CASE WHEN</span> s.downgrade_flag  = <span class="str">'true'</span> <span class="kw">THEN</span> <span class="num">3</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-  + <span class="kw">CASE WHEN</span> s.auto_renew_flag = <span class="str">'false'</span><span class="kw">THEN</span> <span class="num">3</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>
-    <span class="kw">AS</span> churn_risk_score
-<span class="kw">FROM</span> mart_account_health m
-<span class="kw">LEFT JOIN</span> subscriptions s <span class="kw">ON</span> m.account_id = s.account_id;</div>
-  </details>
-
-</div>
-</div>
-
-<hr class="divider">
-
-<!-- ═══ PHASE 2: TABLEAU ══════════════════════════════════════ -->
-<div id="tableau" class="section stagger">
-
-  <p class="section-label fade-up">Phase 2 — Business Intelligence</p>
-  <h2 class="section-title fade-up">Three Tableau <em>dashboards</em></h2>
-  <p class="section-intro fade-up">
-    With the SQL mart producing clean, aggregated data, three dashboards were built to serve different audiences. The design principle throughout was KPI standardisation at source — churn rate, escalation percentages, time formatting, tenure buckets, and risk tiers were all defined through Tableau calculated fields.
-  </p>
-
-  <div class="dash-grid stagger">
-    <div class="dash-card fade-up">
-      <span class="dash-icon">📈</span>
-      <p class="dash-name">Executive View</p>
-      <p class="dash-desc">Leadership-level visibility combining acquisition momentum, revenue by plan tier and industry, and a global distribution map. Built to answer the top-line question: where is the business growing, and where is the revenue concentrated?</p>
-      <img src="https://klaire03.github.io/images/churn3.png" alt="Executive View dashboard" style="width:100%;margin:16px 0;border:1px solid var(--border);display:block;" />
-      <div class="kpis">
-        <span class="kpi">New signup trend</span>
-        <span class="kpi">Revenue by tier (ARR)</span>
-        <span class="kpi">Revenue by industry</span>
-        <span class="kpi">Global user map</span>
-      </div>
-    </div>
-    <div class="dash-card fade-up">
-      <span class="dash-icon">🔴</span>
-      <p class="dash-name">Customer Retention & Risk</p>
-      <p class="dash-desc">Dedicated churn intelligence — retention signals, lifecycle trends, plan movement, and an at-risk accounts table that gives CS teams an account-level intervention queue ranked by churn risk score.</p>
-      <img src="https://klaire03.github.io/images/churn2.png" alt="Customer Retention dashboard" style="width:100%;margin:16px 0;border:1px solid var(--border);display:block;" />
-      <div class="kpis">
-        <span class="kpi">Overall churn: 22%</span>
-        <span class="kpi">Churn vs tenure</span>
-        <span class="kpi">Plan tier movement</span>
-        <span class="kpi">Churn reasons</span>
-        <span class="kpi">At-risk table</span>
-      </div>
-    </div>
-    <div class="dash-card full fade-up">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
-        <div>
-          <span class="dash-icon">🛠️</span>
-          <p class="dash-name">Product Usage & Support Performance</p>
-          <p class="dash-desc">Operational metrics linking product experience and support quality to retention. The headline figures — 87-hour average first response and 19% escalation rate — both emerged as significant churn correlates in the later ML analysis, confirming this dashboard wasn't just measuring satisfaction, it was measuring churn risk.</p>
-          <div class="kpis">
-            <span class="kpi">Resolution time: 35h 39m</span>
-            <span class="kpi">First response: 87h 8m</span>
-            <span class="kpi">Escalation rate: 19%</span>
-            <span class="kpi">CSAT by plan tier</span>
-            <span class="kpi">Feature adoption rates</span>
-          </div>
+    <div class="hero-left-anim">
+      <p class="hero-tag">End-to-end Analytics · SQL · Tableau · Python</p>
+      <h1>SaaS <em>Churn</em> & Revenue Intelligence</h1>
+      <p class="hero-desc">An end-to-end churn analytics framework for a SaaS cybersecurity product — from raw relational data through BI dashboards to an XGBoost risk engine that turns churn probability into financial exposure.</p>
+      <div class="hero-bottom">
+        <div class="stats-row">
+          <div class="stat"><strong>22%</strong><span>churn rate</span></div>
+          <div class="stat"><strong>5</strong><span>source tables</span></div>
+          <div class="stat"><strong>3</strong><span>ML models</span></div>
+          <div class="stat"><strong>3</strong><span>dashboards</span></div>
         </div>
-        <div>
-          <img src="https://klaire03.github.io/images/churn1.png" alt="Product Usage dashboard" style="width:100%;border:1px solid var(--border);display:block;" />
+        <div class="hero-links">
+          <a class="hero-link" href="#" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a class="hero-link" href="#" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+            Kaggle Dataset
+          </a>
+          <a class="hero-link" href="https://colab.research.google.com" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+            Notebook
+          </a>
         </div>
       </div>
     </div>
+
+    <!-- Hero viz: churn funnel + risk breakdown -->
+    <div class="hero-chart-wrap">
+      <p class="hero-chart-label">Account lifecycle · revenue at risk · 22% churn</p>
+      <svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:300px;display:block;">
+
+        <!-- ── FUNNEL ── -->
+        <!-- Total accounts bar (full width) -->
+        <text x="150" y="22" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="0.1em">TOTAL ACCOUNTS</text>
+        <rect x="20" y="28" width="260" height="22" fill="rgba(255,255,255,0.07)" rx="1"/>
+        <rect class="funnel-bar" x="20" y="28" width="260" height="22" fill="rgba(125,216,208,0.3)" rx="1" style="animation-delay:0.2s;"/>
+        <text x="150" y="43" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">100% · all accounts</text>
+
+        <!-- Arrow -->
+        <line x1="150" y1="52" x2="150" y2="62" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <polygon points="145,62 155,62 150,68" fill="rgba(255,255,255,0.15)"/>
+
+        <!-- Active accounts -->
+        <text x="150" y="82" fill="rgba(125,216,208,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="0.1em">RETAINED</text>
+        <rect x="40" y="88" width="220" height="22" fill="rgba(255,255,255,0.07)" rx="1"/>
+        <rect class="funnel-bar" x="40" y="88" width="220" height="22" fill="rgba(76,175,61,0.35)" rx="1" style="animation-delay:0.5s;"/>
+        <text x="150" y="103" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">78% · active accounts</text>
+
+        <!-- Arrow -->
+        <line x1="150" y1="112" x2="150" y2="122" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <polygon points="145,122 155,122 150,128" fill="rgba(255,255,255,0.15)"/>
+
+        <!-- Churned -->
+        <text x="150" y="142" fill="#f08080" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="0.1em">CHURNED</text>
+        <rect x="80" y="148" width="140" height="22" fill="rgba(255,255,255,0.07)" rx="1"/>
+        <rect class="funnel-bar" x="80" y="148" width="140" height="22" fill="rgba(224,80,80,0.4)" rx="1" style="animation-delay:0.8s;"/>
+        <text x="150" y="163" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">22% · churned</text>
+
+        <!-- Divider -->
+        <line x1="20" y1="185" x2="280" y2="185" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+        <!-- ── RISK SEGMENTS ── -->
+        <text x="150" y="202" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="0.1em">ACTIVE ACCOUNTS BY RISK</text>
+
+        <!-- High risk bar -->
+        <text x="68" y="222" fill="#f08080" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">HIGH</text>
+        <rect x="74" y="212" width="196" height="14" fill="rgba(255,255,255,0.05)" rx="1"/>
+        <rect class="funnel-bar" x="74" y="212" width="68" height="14" fill="rgba(224,80,80,0.5)" rx="1" style="animation-delay:1.1s;"/>
+        <text x="280" y="222" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono,monospace" font-size="8">35%</text>
+
+        <!-- Medium risk bar -->
+        <text x="68" y="242" fill="#e8a040" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">MED</text>
+        <rect x="74" y="232" width="196" height="14" fill="rgba(255,255,255,0.05)" rx="1"/>
+        <rect class="funnel-bar" x="74" y="232" width="88" height="14" fill="rgba(200,130,26,0.5)" rx="1" style="animation-delay:1.3s;"/>
+        <text x="280" y="242" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono,monospace" font-size="8">45%</text>
+
+        <!-- Low risk bar -->
+        <text x="68" y="262" fill="#7dd880" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">LOW</text>
+        <rect x="74" y="252" width="196" height="14" fill="rgba(255,255,255,0.05)" rx="1"/>
+        <rect class="funnel-bar" x="74" y="252" width="39" height="14" fill="rgba(76,175,61,0.5)" rx="1" style="animation-delay:1.5s;"/>
+        <text x="280" y="262" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono,monospace" font-size="8">20%</text>
+
+        <!-- Divider -->
+        <line x1="20" y1="277" x2="280" y2="277" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+        <!-- Revenue at risk formula -->
+        <text x="150" y="294" fill="rgba(255,255,255,0.25)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="0.04em">Revenue at Risk = P(Churn) × MRR</text>
+
+        <!-- XGBoost badge -->
+        <rect x="70" y="305" width="160" height="22" fill="rgba(26,122,110,0.12)" stroke="rgba(125,216,208,0.2)" stroke-width="1" rx="1"/>
+        <text x="150" y="315" fill="var(--teal3)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="middle" letter-spacing="0.06em">XGBoost · PR-AUC optimised</text>
+        <text x="150" y="324" fill="rgba(255,255,255,0.25)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">scale_pos_weight · SHAP explainability</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ OVERVIEW ══ -->
+<div id="overview" class="section">
+  <p class="section-label">Project overview</p>
+  <h2 class="section-title">Why this project exists</h2>
+  <p class="section-intro">The goal was to simulate a production-grade churn analytics framework for a SaaS cybersecurity product — moving from raw operational data through descriptive reporting to a predictive system that quantifies revenue at risk. Three questions framed every decision: what behaviour predicts churn, who is at risk today, and how much revenue is exposed?</p>
+
+  <!-- Phase timeline -->
+  <div class="phase-timeline">
+    <div class="phase-track">
+      <div class="phase-node-wrap">
+        <p class="phase-node-label">Data Engineering</p>
+        <div class="phase-node">01</div>
+        <p class="phase-node-sub">SQL · ETL · Data Modeling<br>5 source tables → clean mart</p>
+      </div>
+      <div class="phase-connector">
+        <svg viewBox="0 0 120 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:12px;display:block;">
+          <line x1="0" y1="6" x2="108" y2="6" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <polygon points="108,2 120,6 108,10" fill="var(--teal)" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="phase-node-wrap">
+        <p class="phase-node-label">BI & Visualisation</p>
+        <div class="phase-node">02</div>
+        <p class="phase-node-sub">Tableau · Calculated Fields<br>3 dashboards · 3 audiences</p>
+      </div>
+      <div class="phase-connector">
+        <svg viewBox="0 0 120 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:12px;display:block;">
+          <line x1="0" y1="6" x2="108" y2="6" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <polygon points="108,2 120,6 108,10" fill="var(--teal)" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="phase-node-wrap">
+        <p class="phase-node-label">Predictive Modelling</p>
+        <div class="phase-node phase-node-end">03</div>
+        <p class="phase-node-sub">Python · XGBoost · SHAP<br>Churn probability → £ at risk</p>
+      </div>
+    </div>
   </div>
 
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View calculated fields — churn rate, escalation rate, tenure buckets, plan movement, risk tiers
-      <span class="fold-badge">Tableau</span>
-    </summary>
-    <div class="code-body"><span class="cm">// CHURN RATE</span>
-SUM([Churn Flag]) / COUNT([Account Id])
-
-
-<span class="cm">// ESCALATION RATE (%)</span>
-STR(ROUND((SUM([Escalations]) / COUNT([Total Tickets])) * <span class="num">100</span>, <span class="num">1</span>)) + <span class="str">"%"</span>
-
-
-<span class="cm">// AVG RESOLUTION TIME — formatted as "35h 39m"</span>
-STR(INT(AVG([Avg Resolution Time]))) + <span class="str">"h "</span>
-+ STR(INT((AVG([Avg Resolution Time]) - INT(AVG([Avg Resolution Time]))) * <span class="num">60</span>)) + <span class="str">"m"</span>
-
-
-<span class="cm">// TENURE BUCKET</span>
-IF [Tenure Months] &lt;= <span class="num">6</span>  THEN <span class="str">"0-6"</span>
-ELSEIF [Tenure Months] &lt;= <span class="num">12</span> THEN <span class="str">"6-12"</span>
-ELSEIF [Tenure Months] &lt;= <span class="num">24</span> THEN <span class="str">"12-24"</span>
-ELSEIF [Tenure Months] &lt;= <span class="num">50</span> THEN <span class="str">"24-50"</span>
-ELSE <span class="str">"50+"</span> END
-
-
-<span class="cm">// PLAN MOVEMENT (UPGRADE / DOWNGRADE)</span>
-IF [Plan Tier] = <span class="str">"Basic"</span> AND [Ever Upgraded]   = <span class="num">1</span> THEN <span class="str">"Upgraded from Basic"</span>
-ELSEIF [Plan Tier] = <span class="str">"Pro"</span>  AND [Ever Downgraded] = <span class="num">1</span> THEN <span class="str">"Downgraded from Pro"</span>
-ELSE <span class="str">"No Change"</span> END
-
-
-<span class="cm">// RISK TIER</span>
-IF [Churn Risk Score] >= <span class="num">8</span> THEN <span class="str">"High"</span>
-ELSEIF [Churn Risk Score] >= <span class="num">4</span> THEN <span class="str">"Medium"</span>
-ELSE <span class="str">"Low"</span> END</div>
-  </details>
-
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">The data</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">Five relational tables — accounts, subscriptions, feature_usage, churn_events, and support_tickets — connected through foreign keys but full of inconsistent date formats, text-encoded booleans, and unnormalised flags.</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Key design decision</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">KPI definitions — churn rate, escalation %, tenure buckets, risk tiers — are standardised in the SQL mart and Tableau calculated fields first. This ensures the dashboard and the ML model are always measuring the same thing.</p>
+    </div>
+    <div style="background:var(--paper);padding:32px;">
+      <p class="method-step" style="margin-bottom:12px;">Why PR-AUC, not ROC-AUC</p>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.72;font-weight:300;">At 22% churn the dataset is moderately imbalanced. ROC-AUC can look good by exploiting the majority class. PR-AUC measures precision and recall on the minority class — the churners we actually need to find.</p>
+    </div>
+  </div>
 </div>
 
 <hr class="divider">
 
-<!-- ═══ PHASE 3: ML ═══════════════════════════════════════════ -->
-<div id="ml" class="dark-band">
-<div class="dark-band-inner">
+<!-- ══ METHODOLOGY ══ -->
+<div id="methodology" class="sand-band">
+  <div class="sand-band-inner">
+    <p class="section-label">Methodology</p>
+    <h2 class="section-title">How it was built</h2>
+    <p class="section-intro">Three phases in sequence — SQL data engineering, Tableau BI, and Python ML. Each phase is documented with the specific decisions made and why, including where a simpler approach was deliberately tried first.</p>
 
-  <div class="stagger">
-    <p class="section-label fade-up">Phase 3 — Predictive Modelling</p>
-    <h2 class="section-title fade-up">Three models, <em>one winner</em></h2>
-    <p class="section-intro fade-up">
-      With the SQL risk model showing limited separation, three ML classifiers were trained on the same mart features. Each was chosen for a specific reason — and each diagnostic revealed something the previous couldn't.
-    </p>
-  </div>
+    <!-- ── PHASE 1 ── -->
+    <p class="method-step" style="margin-bottom:16px;font-size:10px;">Phase 1 · Data Engineering</p>
+    <div class="method-grid stagger" style="margin-bottom:40px;">
 
-  <div class="model-grid stagger">
-    <div class="model-card fade-up">
-      <p class="m-num">MODEL 01</p>
-      <p class="m-name">Logistic Regression</p>
-      <p class="m-rat">Interpretable baseline. Establishes whether a linear boundary separates churners from retained accounts. Provides odds ratios and a reference AUC against which tree models must improve.</p>
-      <div class="m-metrics">
-        <div class="mm"><span class="v">0.555</span><span class="l">ROC-AUC</span></div>
-        <div class="mm"><span class="v">Baseline</span><span class="l">Role</span></div>
+      <div class="method-item fade-up">
+        <span class="method-num">01</span>
+        <p class="method-step">Staging layer</p>
+        <h4>🧹 One clean view per source table</h4>
+        <p>Each staging view solved the same categories of problems: dates parsed with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">STR_TO_DATE</code>, text flags like <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">'true'/'false'</code> converted to 0/1 integers via <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">CASE WHEN</code>, categorical fields normalised, referential integrity confirmed. Four staging views — <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">stg_accounts</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">stg_subscriptions</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">stg_support</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">stg_feature_usage</code> — so every downstream query could trust its inputs without defensive casting.</p>
+        <div class="method-win">✦ Centralising data cleaning in staging views means a fix in one place propagates everywhere. If a date format changes upstream, one view update corrects all dashboards and the ML mart simultaneously.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">02</span>
+        <p class="method-step">Aggregation layer</p>
+        <h4>📊 One row per account — three aggregation views</h4>
+        <p>Three views collapsed each domain to one row per account: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">agg_account_revenue</code> (total MRR/ARR, upgrade/downgrade/auto-renew flags), <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">agg_account_usage</code> (distinct features used, total usage time, total errors, average errors per event), and <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">agg_account_support</code> (ticket count, average resolution time, average first response, average CSAT, escalation count). These lifetime signals feed both Tableau and the ML model.</p>
+        <div class="method-win">✦ Aggregating to account level in SQL before Tableau eliminates row-level duplication in joins. Tableau's LOD expressions can do this — but doing it upstream is faster, cleaner, and keeps the mart reusable outside Tableau.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">03</span>
+        <p class="method-step">Mart layer</p>
+        <h4>🏗️ mart_account_health — single analytical row per account</h4>
+        <p>A final mart view joins all aggregation views to produce one trusted, denormalised row per account: account profile, revenue metrics, usage signals, support history, and churn flag. This is the single source of truth — the mart feeds both the Tableau workbook and the Python ML pipeline, guaranteeing both are working from identical feature values.</p>
+        <div class="method-win">✦ A shared mart means dashboard numbers and model scores will always be consistent. If the Tableau churn rate is 22%, the model is trained on the same 22%. Divergence between reporting and modelling is a common production failure this design explicitly prevents.</div>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">04</span>
+        <p class="method-step">Rule-based baseline</p>
+        <h4>⚖️ mart_account_risk — SQL risk scoring model</h4>
+        <p>Before progressing to ML, a rule-based scoring view assigned point weights to behavioural flags: low usage (+2), high error count (+2), support escalations (+2), low CSAT (+2), downgrade history (+3), auto-renew disabled (+3). Accounts were segmented into High (≥8), Medium (≥4), and Low (&lt;4) risk tiers. Validating these tiers against actual churn rates revealed limited separation between segments — a useful negative result that provided the data-driven justification for building the ML model.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> The rule-based model's limited separation isn't a failure — it's the expected finding. Churn is rarely caused by one signal in isolation. Weighted rules can't capture the interaction between low usage AND downgrade history AND disabled auto-renew. That's precisely what XGBoost is built to find.</div>
+      </div>
+
+    </div>
+
+    <!-- ── PHASE 2 ── -->
+    <p class="method-step" style="margin-bottom:16px;font-size:10px;">Phase 2 · Business Intelligence</p>
+    <div class="method-grid stagger" style="margin-bottom:40px;">
+
+      <div class="method-item fade-up">
+        <span class="method-num">05</span>
+        <p class="method-step">Executive dashboard</p>
+        <h4>📈 Leadership-level visibility</h4>
+        <p>Acquisition momentum, ARR by plan tier and industry, and a global user distribution map. Built to answer the top-line question: where is the business growing and where is the revenue concentrated? KPI definitions — churn rate, tenure buckets, plan movement — were standardised as Tableau calculated fields so all three dashboards use the same logic.</p>
+        <img src="https://klaire03.github.io/images/churn3.png" alt="Executive View dashboard" class="method-image"/>
+      </div>
+
+      <div class="method-item fade-up">
+        <span class="method-num">06</span>
+        <p class="method-step">Retention dashboard</p>
+        <h4>🔴 Customer retention & risk</h4>
+        <p>Dedicated churn intelligence — 22% overall churn rate, churn by tenure cohort, plan tier movement, churn reason breakdown, and an at-risk accounts table giving CS teams an account-level intervention queue ranked by SQL churn risk score. The plan movement calculated field distinguishes "Upgraded from Basic", "Downgraded from Pro", and "No Change" — making contraction visible before it becomes churn.</p>
+        <img src="https://klaire03.github.io/images/churn2.png" alt="Customer Retention dashboard" class="method-image"/>
+      </div>
+
+      <div class="method-item full fade-up">
+        <span class="method-num">07</span>
+        <p class="method-step">Product & support dashboard</p>
+        <h4>🛠️ Product usage & support performance — the churn signal dashboard</h4>
+        <p>Operational metrics linking product experience and support quality to retention. The headline figures — 87-hour average first response and 19% escalation rate — both emerged as significant churn correlates in the XGBoost feature importance analysis, confirming this dashboard wasn't just measuring satisfaction: it was measuring churn risk. CSAT by plan tier surfaces whether support quality varies across account value segments. Feature adoption rates show which capabilities drive engagement and which are underused. Calculated fields: escalation rate as a formatted percentage; resolution time formatted as "35h 39m"; risk tier derived from the mart's <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">churn_risk_score</code>.</p>
+        <div class="method-callout"><strong>⚠ Note:</strong> The 87-hour first response time isn't just bad for CSAT — it ranked as a direct churn predictor in the ML model. Operational dashboard metrics and ML feature importance converging on the same signals increases confidence in both.</div>
+        <img src="https://klaire03.github.io/images/churn1.png" alt="Product Usage & Support dashboard" class="method-image" style="margin-top:20px;"/>
+      </div>
+
+    </div>
+
+    <!-- ── PHASE 3 ── -->
+    <p class="method-step" style="margin-bottom:16px;font-size:10px;">Phase 3 · Predictive Modelling</p>
+
+    <!-- Model comparison cards -->
+    <div class="model-grid stagger">
+      <div class="model-card fade-up">
+        <p class="model-tag">Model 01 · Baseline</p>
+        <h3 class="model-name">Logistic Regression</h3>
+        <p class="model-auc">0.555</p>
+        <p class="model-auc-label">ROC-AUC</p>
+        <p class="model-desc">Interpretable baseline. Establishes whether a linear decision boundary separates churners from retained accounts. Provides odds ratios and a reference AUC against which tree models must demonstrate improvement. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">class_weight="balanced"</code> applied to handle class imbalance.</p>
+        <span class="model-badge">Baseline</span>
+      </div>
+      <div class="model-card fade-up">
+        <p class="model-tag">Model 02 · Intermediate</p>
+        <h3 class="model-name">Random Forest</h3>
+        <p class="model-auc">0.623</p>
+        <p class="model-auc-label">ROC-AUC</p>
+        <p class="model-desc">Captures non-linear feature interactions logistic regression misses. Churn rarely emerges from one factor — it typically combines low usage with downgrade history. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">n_estimators=300</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">class_weight="balanced"</code>. Also provides feature importance as a diagnostic for the SHAP analysis.</p>
+        <span class="model-badge">n=300 estimators</span>
+      </div>
+      <div class="model-card winner fade-up">
+        <p class="model-tag">Model 03 · Production</p>
+        <h3 class="model-name">XGBoost</h3>
+        <p class="model-auc">Best</p>
+        <p class="model-auc-label">PR-AUC · primary metric</p>
+        <p class="model-desc">Gradient boosting reduces both bias and variance simultaneously. Tuned for class imbalance via <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">scale_pos_weight = n_negative / n_positive</code>. Delivered the strongest precision-recall balance — best suited when minority-class (churner) performance is the critical metric. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">max_depth=4</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">learning_rate=0.05</code>, <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">subsample=0.8</code>.</p>
+        <span class="model-badge">Production model</span>
       </div>
     </div>
-    <div class="model-card fade-up">
-      <p class="m-num">MODEL 02</p>
-      <p class="m-name">Random Forest</p>
-      <p class="m-rat">Captures non-linear interactions logistic regression misses. Churn is rarely one factor — it often emerges from combinations like low usage plus downgrade history. Also provides feature importance as a diagnostic.</p>
-      <div class="m-metrics">
-        <div class="mm"><span class="v">0.623</span><span class="l">ROC-AUC</span></div>
-        <div class="mm"><span class="v">n = 300</span><span class="l">Estimators</span></div>
-      </div>
+
+    <!-- SHAP callout -->
+    <div class="shap-callout">
+      <p><strong>SHAP explainability:</strong> Feature importance reveals the population-level churn drivers — auto-renew status, downgrade history, error frequency, support escalations. SHAP values go further, quantifying each feature's contribution to each individual prediction: <em>"This account's 72% churn risk is primarily driven by downgrade history and disabled auto-renew."</em> SHAP transforms a black-box score into an actionable narrative. A customer success team can respond to a reason, not just a number.</p>
     </div>
-    <div class="model-card winner fade-up">
-      <p class="m-num">MODEL 03</p>
-      <p class="m-name">XGBoost</p>
-      <p class="m-rat">Gradient boosting reduces both bias and variance. Tuned for class imbalance via <code style="background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:2px;font-size:.8rem;">scale_pos_weight</code>, it delivered the strongest precision-recall balance — best suited when minority-class performance is critical.</p>
-      <div class="m-metrics">
-        <div class="mm"><span class="v">Best</span><span class="l">PR-AUC</span></div>
-        <div class="mm"><span class="v">Production</span><span class="l">Status</span></div>
+
+    <!-- Revenue at risk table -->
+    <div class="risk-table-wrap" style="margin-top:36px;">
+      <div class="risk-table-header">
+        <p>Revenue at risk · top accounts by P(Churn) × MRR · XGBoost output</p>
       </div>
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>Account ID</th>
+            <th>Churn Probability</th>
+            <th>Total MRR</th>
+            <th>Risk Segment</th>
+            <th>Revenue at Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A-acb7f7</td>
+            <td>0.866</td>
+            <td>£32,574</td>
+            <td><span class="risk-segment risk-high">High</span></td>
+            <td>£28,200</td>
+          </tr>
+          <tr>
+            <td>A-e3bd71</td>
+            <td>0.605</td>
+            <td>£41,630</td>
+            <td><span class="risk-segment risk-med">Medium</span></td>
+            <td>£25,172</td>
+          </tr>
+          <tr>
+            <td>A-02cd81</td>
+            <td>0.740</td>
+            <td>£32,966</td>
+            <td><span class="risk-segment risk-high">High</span></td>
+            <td>£24,382</td>
+          </tr>
+          <tr style="background:rgba(200,130,26,0.06);">
+            <td>A-d4e004</td>
+            <td>0.163</td>
+            <td>£138,060</td>
+            <td><span class="risk-segment risk-low">Low</span></td>
+            <td>£22,535</td>
+          </tr>
+          <tr>
+            <td>A-aa3200</td>
+            <td>0.729</td>
+            <td>£28,913</td>
+            <td><span class="risk-segment risk-high">High</span></td>
+            <td>£21,069</td>
+          </tr>
+          <tr>
+            <td>A-c1dfe1</td>
+            <td>0.676</td>
+            <td>£25,790</td>
+            <td><span class="risk-segment risk-med">Medium</span></td>
+            <td>£17,437</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="risk-note"><strong>Key finding:</strong> A-d4e004 has a Low churn probability (0.163) but ranks 4th by revenue exposure at £22,535 — above several High-risk accounts — because its MRR is £138,060. Sorting the intervention queue by probability alone would miss this account entirely. <strong>Sort by P(Churn) × MRR, not by probability.</strong></p>
     </div>
+
   </div>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — all three model pipelines + evaluation curves
-      <span class="fold-badge">Python</span>
-    </summary>
-    <div class="code-body"><span class="cm"># MODEL 1: LOGISTIC REGRESSION</span>
-log_pipeline = Pipeline([
-    (<span class="str">"preprocessing"</span>, preprocessor),
-    (<span class="str">"model"</span>, LogisticRegression(max_iter=<span class="num">1000</span>, class_weight=<span class="str">"balanced"</span>))
-])
-log_pipeline.fit(X_train, y_train)
-log_proba = log_pipeline.predict_proba(X_test)[:,<span class="num">1</span>]
-
-<span class="cm"># MODEL 2: RANDOM FOREST</span>
-rf_pipeline = Pipeline([
-    (<span class="str">"preprocessing"</span>, preprocessor),
-    (<span class="str">"model"</span>, RandomForestClassifier(
-        n_estimators=<span class="num">300</span>, random_state=<span class="num">42</span>, class_weight=<span class="str">"balanced"</span>
-    ))
-])
-rf_pipeline.fit(X_train, y_train)
-rf_proba = rf_pipeline.predict_proba(X_test)[:,<span class="num">1</span>]
-
-<span class="cm"># MODEL 3: XGBOOST — production candidate</span>
-xgb_pipeline = Pipeline([
-    (<span class="str">"preprocessing"</span>, preprocessor),
-    (<span class="str">"model"</span>, XGBClassifier(
-        n_estimators=<span class="num">300</span>, max_depth=<span class="num">4</span>, learning_rate=<span class="num">0.05</span>,
-        subsample=<span class="num">0.8</span>, colsample_bytree=<span class="num">0.8</span>,
-        <span class="cm"># Weight minority class to address class imbalance</span>
-        scale_pos_weight=len(y_train[y_train==<span class="num">0</span>]) / len(y_train[y_train==<span class="num">1</span>]),
-        random_state=<span class="num">42</span>, eval_metric=<span class="str">"logloss"</span>
-    ))
-])
-xgb_pipeline.fit(X_train, y_train)
-xgb_proba = xgb_pipeline.predict_proba(X_test)[:,<span class="num">1</span>]
-
-<span class="cm"># EVALUATION: compare ROC curves; use PR-AUC as primary metric</span>
-fpr_log, tpr_log, _ = roc_curve(y_test, log_proba)
-fpr_rf,  tpr_rf,  _ = roc_curve(y_test, rf_proba)
-fpr_xgb, tpr_xgb, _ = roc_curve(y_test, xgb_proba)
-
-precision, recall, _ = precision_recall_curve(y_test, xgb_proba)
-pr_auc = auc(recall, precision)</div>
-  </details>
-
-  <p class="section-intro fade-up" style="margin-top:56px;margin-bottom:24px;">
-    Predictive accuracy isn't enough on its own. For a model to change real behaviour, stakeholders need to understand <em>why</em> it flagged a particular account. Feature importance revealed the population-level drivers — auto-renew status, downgrade history, error frequency, support escalations. <strong style="color:#fff;">SHAP values</strong> went further, quantifying each feature's contribution to each individual prediction.
-  </p>
-
-  <div style="border:1px solid rgba(125,216,208,0.2);background:rgba(26,122,110,0.06);padding:20px 24px;margin-bottom:32px;" class="fade-up">
-    <p style="font-style:italic;color:rgba(255,255,255,0.7);margin-bottom:10px;font-family:'Instrument Serif',serif;font-size:1.05rem;">"This account's 72% churn risk is primarily driven by downgrade history and disabled auto-renew."</p>
-    <p style="font-size:0.87rem;color:rgba(255,255,255,0.4);font-weight:300;">SHAP transforms a black-box number into an actionable narrative. A customer success team can respond to a reason — not just a score.</p>
-  </div>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — feature importance + SHAP explainability
-      <span class="fold-badge">Python</span>
-    </summary>
-    <div class="code-body"><span class="cm"># FEATURE IMPORTANCE — extract names from pipeline transformers</span>
-xgb_model = xgb_pipeline.named_steps[<span class="str">"model"</span>]
-feature_names = (
-    numeric_features.tolist() +
-    xgb_pipeline.named_steps[<span class="str">"preprocessing"</span>]
-        .named_transformers_[<span class="str">"cat"</span>]
-        .get_feature_names_out(categorical_features).tolist()
-)
-
-importance_df = pd.DataFrame({
-    <span class="str">"feature"</span>:    feature_names,
-    <span class="str">"importance"</span>: xgb_model.feature_importances_
-}).sort_values(<span class="str">"importance"</span>, ascending=False)
-
-sns.barplot(data=importance_df.head(<span class="num">15</span>), x=<span class="str">"importance"</span>, y=<span class="str">"feature"</span>)
-plt.title(<span class="str">"Top 15 Churn Drivers (XGBoost)"</span>)
-
-
-<span class="cm"># SHAP — individual-level transparency</span>
-X_test_transformed = xgb_pipeline.named_steps[<span class="str">"preprocessing"</span>].transform(X_test)
-explainer   = shap.TreeExplainer(xgb_model)
-shap_values = explainer.shap_values(X_test_transformed)
-
-<span class="cm"># Summary plot: colour = feature value (high/low), position = impact on prediction</span>
-shap.summary_plot(shap_values, X_test_transformed, feature_names=feature_names)</div>
-  </details>
-
-  <p class="section-intro fade-up" style="margin-top:56px;margin-bottom:24px;">
-    The final step moved beyond binary churn predictions. Each active account received a churn probability, which was multiplied by its MRR to produce a <strong style="color:#fff;">revenue-at-risk figure</strong>. This changes the intervention queue entirely: a medium-probability account at £140k MRR represents more exposure than a high-probability account at £8k.
-  </p>
-
-  <div class="formula-box fade-up">
-    <p class="formula-eq">Revenue at Risk = P(Churn) × MRR</p>
-    <p class="formula-note">Converts model output into financial exposure. Enables revenue-weighted retention prioritisation and ROI-driven intervention planning — rather than chasing the highest probability scores.</p>
-  </div>
-
-  <div class="score-wrap fade-up">
-    <table class="score">
-      <thead>
-        <tr><th>account_id</th><th>churn_prob</th><th>total_mrr</th><th>risk_segment</th><th>revenue_at_risk</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>A-acb7f7</td><td>0.866</td><td>32,574</td><td><span class="hi">High</span></td><td>28,200</td></tr>
-        <tr><td>A-e3bd71</td><td>0.605</td><td>41,630</td><td><span class="me">Medium</span></td><td>25,172</td></tr>
-        <tr><td>A-02cd81</td><td>0.740</td><td>32,966</td><td><span class="hi">High</span></td><td>24,382</td></tr>
-        <tr><td>A-d4e004</td><td>0.163</td><td>138,060</td><td><span class="lo">Low</span></td><td>22,535</td></tr>
-        <tr><td>A-aa3200</td><td>0.729</td><td>28,913</td><td><span class="hi">High</span></td><td>21,069</td></tr>
-        <tr><td>A-c1dfe1</td><td>0.676</td><td>25,790</td><td><span class="me">Medium</span></td><td>17,437</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="fade-up" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);margin-top:8px;">Note: A-d4e004 has a Low churn probability but ranks 4th by revenue exposure — illustrating why sorting by probability alone misses the highest-risk accounts.</p>
-
-  <details class="code-fold fade-up">
-    <summary>
-      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      View code — revenue-at-risk scoring framework
-      <span class="fold-badge">Python</span>
-    </summary>
-    <div class="code-body"><span class="cm"># Score all active accounts (full dataset, not just test set)</span>
-full_proba = xgb_pipeline.predict_proba(X)[:, <span class="num">1</span>]
-
-scoring_df = pd.DataFrame({
-    <span class="str">"account_id"</span>:        account_ids,
-    <span class="str">"churn_flag"</span>:        y,
-    <span class="str">"churn_probability"</span>: full_proba,
-    <span class="str">"total_mrr"</span>:         df[<span class="str">"total_mrr"</span>]
-})
-
-active = scoring_df[scoring_df[<span class="str">"churn_flag"</span>] == <span class="num">0</span>].copy()
-
-active[<span class="str">"risk_segment"</span>] = np.where(
-    active[<span class="str">"churn_probability"</span>] >= <span class="num">0.7</span>, <span class="str">"High"</span>,
-    np.where(active[<span class="str">"churn_probability"</span>] >= <span class="num">0.4</span>, <span class="str">"Medium"</span>, <span class="str">"Low"</span>)
-)
-
-<span class="cm"># Revenue-weighted exposure — the key metric for CS prioritisation</span>
-active[<span class="str">"revenue_at_risk"</span>] = active[<span class="str">"churn_probability"</span>] * active[<span class="str">"total_mrr"</span>]
-
-top_10 = active.sort_values(<span class="str">"revenue_at_risk"</span>, ascending=False).head(<span class="num">10</span>)</div>
-  </details>
-
-</div>
 </div>
 
 <hr class="divider">
 
-<!-- ═══ INSIGHTS ════════════════════════════════════════════ -->
-<div id="insights" class="dark-band" style="background:#0d1f33;">
-<div class="dark-band-inner">
+<!-- ══ INSIGHTS ══ -->
+<div id="insights" class="dark-band">
+  <div class="dark-band-inner">
+    <p class="section-label">Key findings & recommendations</p>
+    <h2 class="section-title">What the data says</h2>
+    <p class="section-intro">Two themes emerged: the operational and behavioural drivers of churn, and the commercial picture that determines where retention effort creates the most revenue value.</p>
 
-  <div class="stagger">
-    <p class="section-label fade-up">Key findings & recommendations</p>
-    <h2 class="section-title fade-up">What the data <em>says</em></h2>
-    <p class="section-intro fade-up">Two themes emerged: the operational and behavioural drivers of churn, and the commercial picture that determines where retention effort creates the most revenue value.</p>
-  </div>
-
-  <div class="itabs fade-up">
-    <button class="itab on" onclick="switchTab('ret',this)">Retention</button>
-    <button class="itab" onclick="switchTab('grw',this)">Growth & Revenue</button>
-  </div>
-
-  <div id="tab-ret" class="ins-panel on">
     <div class="insights-list stagger">
+
       <div class="insight-item fade-up">
         <div class="insight-num">1</div>
         <div class="insight-body">
-          <h4>22% churn rate — retention is the primary growth lever</h4>
-          <p>With acquisition steady at 15–30 signups per period and not accelerating, the compounding effect of reducing churn outweighs new logo acquisition at current growth rates. Every retained account is revenue that doesn't need replacing.</p>
-          <p class="insight-rec">Model the revenue impact of a 2–3 pp churn reduction before committing further acquisition budget.</p>
+          <h4>📉 22% churn — retention is the primary growth lever at current acquisition rates</h4>
+          <p>With acquisition steady at 15–30 signups per period and not accelerating, the compounding effect of reducing churn outweighs new logo acquisition. Every retained account is revenue that doesn't need replacing. Modelling a 2–3 percentage point reduction in churn shows greater NPV than the equivalent spend on acquisition at current CAC.</p>
+          <p class="insight-takeaway">→ Model the revenue impact of a 2–3 pp churn reduction before committing further acquisition budget.</p>
         </div>
       </div>
+
       <div class="insight-item fade-up">
         <div class="insight-num">2</div>
         <div class="insight-body">
-          <h4>Churn rises with tenure: 18% → 27%</h4>
-          <p>Longer-tenured accounts churn at higher rates — a signal of weak long-term value expansion. The product delivers initial value but appears to struggle growing with customer needs in the 24–50 month window.</p>
-          <p class="insight-rec">Introduce mid-lifecycle health checks and expansion playbooks for accounts approaching the 24-month mark.</p>
+          <h4>📅 Churn rises with tenure: 18% → 27% in the 24–50 month window</h4>
+          <p>Longer-tenured accounts churn at higher rates — a signal of weak long-term value expansion. The product delivers initial value but appears to struggle growing with customer needs past the two-year mark. This is the inverse of the typical SaaS pattern where tenure reduces churn risk as switching costs accumulate.</p>
+          <p class="insight-takeaway">→ Introduce mid-lifecycle health checks and expansion playbooks for accounts approaching the 24-month mark.</p>
         </div>
       </div>
+
       <div class="insight-item fade-up">
         <div class="insight-num">3</div>
         <div class="insight-body">
-          <h4>Pro downgrades (36%) signal contraction before churn</h4>
-          <p>Downgrades are a leading indicator. The 36% downgrade rate among Pro accounts points to value perception issues — customers are contracting before they leave entirely, giving a clear intervention window.</p>
-          <p class="insight-rec">Trigger proactive outreach and a value review conversation immediately after any downgrade event, not at renewal.</p>
+          <h4>⬇️ Pro downgrades (36%) signal contraction before churn</h4>
+          <p>Downgrades are a leading indicator. The 36% downgrade rate among Pro accounts points to value perception issues — customers are contracting before they leave entirely, giving a clear intervention window. This is also the feature with the third-highest SHAP importance in the XGBoost model, confirming it's a genuine signal and not noise.</p>
+          <p class="insight-takeaway">→ Trigger proactive outreach and a value review immediately after any downgrade event, not at renewal.</p>
         </div>
       </div>
+
       <div class="insight-item fade-up">
         <div class="insight-num">4</div>
         <div class="insight-body">
-          <h4>Churn is partly economic — pricing is a top driver</h4>
-          <p>Alongside support friction and product gaps, pricing and budget feature prominently among churn reasons. This means retention strategy needs commercial flexibility, not just product or service improvements.</p>
-          <p class="insight-rec">Test flexible pricing, annual commitment incentives, or tailored packaging for price-sensitive at-risk accounts.</p>
+          <h4>💰 Churn is partly economic — pricing ranks as a top stated reason</h4>
+          <p>Alongside support friction and product gaps, pricing and budget feature prominently among churn reason codes. This means retention strategy needs commercial flexibility, not just product or service improvements. The XGBoost model's strong performance on these accounts suggests pricing sensitivity has a distinct behavioural signature detectable before the stated reason is given.</p>
+          <p class="insight-takeaway">→ Test flexible pricing, annual commitment incentives, or tailored packaging for price-sensitive at-risk accounts.</p>
         </div>
       </div>
+
       <div class="insight-item fade-up">
         <div class="insight-num">5</div>
         <div class="insight-body">
-          <h4>87-hour first response and 19% escalations are churn signals</h4>
-          <p>Support failure isn't just a satisfaction issue — both metrics ranked as significant churn drivers in the XGBoost feature importance analysis. Operational friction translates directly to customer exits.</p>
-          <p class="insight-rec">Set tighter SLA targets for high-MRR accounts and implement escalation monitoring with automated senior routing.</p>
+          <h4>🔧 87h first response and 19% escalation rate are direct churn signals</h4>
+          <p>Support failure isn't just a satisfaction issue — both metrics ranked as significant churn drivers in XGBoost feature importance, confirming what the Product & Support dashboard surfaced. The convergence of dashboard operational metrics and ML feature importance on the same signals increases confidence in both. Operational friction translates directly to customer exits, especially for high-MRR accounts.</p>
+          <p class="insight-takeaway">→ Set tighter SLA targets for high-MRR accounts and implement escalation monitoring with automated senior routing.</p>
         </div>
       </div>
+
       <div class="insight-item fade-up">
         <div class="insight-num">6</div>
         <div class="insight-body">
-          <h4>Revenue-weighted prioritisation is non-negotiable</h4>
-          <p>High-MRR accounts create disproportionate exposure even at moderate churn probability. The scoring table shows a "Low" risk account with £138k MRR ranked 4th by actual revenue exposure — above several "High" risk accounts.</p>
-          <p class="insight-rec">Sort the intervention queue by P(Churn) × MRR, not by churn probability alone.</p>
+          <h4>💎 Revenue-weighted prioritisation is non-negotiable</h4>
+          <p>The scoring table proves the point directly: A-d4e004 has a Low churn probability (0.163) but ranks 4th by actual revenue exposure (£22,535) because its MRR is £138,060 — above three High-risk accounts. A CS team working from a probability-sorted queue would never reach it. The FinTech vertical, which generates the highest ARR, requires dedicated monitoring for exactly this reason.</p>
+          <p class="insight-takeaway">→ Sort the intervention queue by P(Churn) × MRR, not by churn probability alone.</p>
         </div>
       </div>
+
+      <div class="insight-item fade-up">
+        <div class="insight-num">7</div>
+        <div class="insight-body">
+          <h4>🌍 France is the strongest geographic churn predictor</h4>
+          <p>Country emerged as a significant feature in the XGBoost model, with France ranking as the top geographic churn predictor. This points to localised pricing, competitive, or localisation factors beyond what global product and support improvements would address. It also suggests the model has learned something the dashboard aggregate figures don't surface — geographic segmentation of churn is underexplored in the current BI layer.</p>
+          <p class="insight-takeaway">→ Conduct a France regional deep-dive: competitive benchmarking, pricing analysis, and localisation gaps.</p>
+        </div>
+      </div>
+
     </div>
   </div>
-
-  <div id="tab-grw" class="ins-panel">
-    <div class="insights-list stagger">
-      <div class="insight-item fade-up">
-        <div class="insight-num">1</div>
-        <div class="insight-body">
-          <h4>Basic tier drives the largest total ARR</h4>
-          <p>Despite lower per-account value, Basic tier volume makes it the dominant ARR contributor. Even small improvements in Basic retention compound into material revenue impact at scale — more so than optimising Enterprise accounts alone.</p>
-          <p class="insight-rec">Invest in scalable, low-touch retention programmes at the Basic tier rather than high-touch enterprise-style interventions.</p>
-        </div>
-      </div>
-      <div class="insight-item fade-up">
-        <div class="insight-num">2</div>
-        <div class="insight-body">
-          <h4>FinTech is the highest-revenue vertical</h4>
-          <p>FinTech accounts generate the most ARR, meaning churn in this segment carries outsized financial impact. A cluster of FinTech churns in a single quarter would significantly affect the revenue base.</p>
-          <p class="insight-rec">Assign dedicated retention monitoring to high-value industries — FinTech, DevTools, and Cybersecurity.</p>
-        </div>
-      </div>
-      <div class="insight-item fade-up">
-        <div class="insight-num">3</div>
-        <div class="insight-body">
-          <h4>France is the strongest geographic churn predictor</h4>
-          <p>Country emerged as a significant feature in the XGBoost model, with France ranking as the top geographic churn predictor. This suggests localised pricing, competitive, or localisation factors beyond what global product and support improvements would address.</p>
-          <p class="insight-rec">Conduct a France regional deep-dive: competitive benchmarking, pricing analysis, and localisation gaps.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
 </div>
 
 <hr class="divider">
 
-<!-- ═══ FURTHER WORK ══════════════════════════════════════════ -->
-<div class="dark-band" style="background:#0a1828;padding-top:80px;padding-bottom:80px;">
+<!-- ══ FURTHER WORK ══ -->
+<div id="further" class="dark-band" style="background:#0f1e30;padding-top:80px;padding-bottom:80px;">
   <div class="dark-band-inner">
-    <p class="section-label fade-up">Further work</p>
-    <h2 class="section-title fade-up" style="color:#fff;">What I'd build next</h2>
-    <p class="section-intro fade-up">Three directions that would sharpen and extend these findings.</p>
-
+    <p class="section-label">Further work</p>
+    <h2 class="section-title" style="color:#fff;">What I'd build next</h2>
+    <p class="section-intro">Three directions that would sharpen and extend these findings — each addressing a known limitation of the current pipeline.</p>
     <div class="further-grid stagger">
-
       <div class="further-card fade-up">
         <span class="icon">🔁</span>
         <h4>Churn prediction at the event level</h4>
-        <p>The current model operates on lifetime account aggregates. Rebuilding it on time-windowed features — rolling 90-day usage, recent ticket velocity — would detect deterioration as it happens rather than retrospectively.</p>
+        <p>The current model operates on lifetime account aggregates. Rebuilding it on time-windowed features — rolling 90-day usage, recent ticket velocity, login cadence — would detect deterioration as it happens rather than retrospectively. An account that used to log in daily but hasn't in three weeks is at risk in a way the lifetime average misses entirely.</p>
       </div>
-
       <div class="further-card fade-up">
         <span class="icon">💰</span>
         <h4>Revenue simulation model</h4>
-        <p>Model the MRR impact of reducing churn by 1, 2, and 5 percentage points under different acquisition scenarios. This turns the analysis from descriptive to financial planning — and makes the business case for retention spend concrete.</p>
+        <p>Model the MRR impact of reducing churn by 1, 2, and 5 percentage points under different acquisition scenarios. This turns the analysis from descriptive to financial planning — and makes the business case for retention spend concrete. The data and the model are already in place; a simulation layer is the natural next step.</p>
       </div>
-
       <div class="further-card fade-up">
         <span class="icon">🧪</span>
         <h4>A/B test the intervention hypotheses</h4>
-        <p>The recommendation to trigger outreach after downgrades and improve SLA response for high-MRR accounts is directional. Running controlled tests on these interventions would validate whether the model's feature signals translate to actual retention lift.</p>
+        <p>The recommendation to trigger outreach after downgrades and improve SLA response for high-MRR accounts is directional. Running controlled tests on these interventions would validate whether the model's feature signals translate to actual retention lift — closing the loop between prediction and measurable outcome.</p>
       </div>
-
     </div>
   </div>
 </div>
 
 <hr class="divider">
 
-<!-- ═══ CAVEATS ═══════════════════════════════════════════════ -->
+<!-- ══ CAVEATS ══ -->
 <div class="section-sm">
-  <p class="section-label fade-up">Limitations</p>
-  <h2 class="section-title fade-up">Caveats worth knowing</h2>
-
+  <p class="section-label">Limitations</p>
+  <h2 class="section-title">Caveats worth knowing</h2>
   <div class="caveats-row stagger">
     <div class="caveat-card fade-up">
       <h4>📊 Simulated dataset</h4>
-      <p>The underlying data is synthetic — designed to reflect realistic SaaS patterns but not derived from a live product. The modelling approach and analytical decisions are production-grade; the specific numbers are illustrative.</p>
+      <p>The underlying data is synthetic — designed to reflect realistic SaaS patterns but not derived from a live product. The modelling approach and analytical decisions are production-grade; the specific numbers are illustrative. In a live deployment, all thresholds and weights would require calibration against real churn outcomes.</p>
     </div>
     <div class="caveat-card fade-up">
       <h4>⚖️ Class imbalance handled, not eliminated</h4>
-      <p>At 22% churn, the dataset is moderately imbalanced. <code style="font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--light);color:var(--teal);padding:1px 5px;">scale_pos_weight</code> and PR-AUC prioritisation address this, but real-world deployment would require threshold calibration against actual cost-of-misclassification data.</p>
+      <p>At 22% churn the dataset is moderately imbalanced. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">scale_pos_weight</code> and PR-AUC prioritisation address this, but real-world deployment would require threshold calibration against actual cost-of-misclassification data — the cost of a false negative (missed churner) is rarely equal to a false positive (unnecessary outreach).</p>
     </div>
     <div class="caveat-card fade-up">
       <h4>💬 Stated reasons vs. behavioural signals</h4>
-      <p>Churn reason codes are self-reported and often imprecise. Behavioural data — actual usage patterns, login cadence, feature adoption — would sharpen and validate these findings. This analysis is a strong starting point, not a finished picture.</p>
+      <p>Churn reason codes are self-reported and often imprecise. Behavioural data — actual usage patterns, login cadence, feature adoption depth — would sharpen and validate these findings. This analysis is a strong starting point; a live deployment would layer in behavioural event data to improve signal quality.</p>
     </div>
   </div>
 </div>
 
 <hr class="divider">
 
-<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<!-- ══ FOOTER ══ -->
 <footer>
   <div class="footer-info">
     <p>SaaS Churn & Revenue Intelligence · klaire03</p>
@@ -1614,7 +1025,8 @@ top_10 = active.sort_values(<span class="str">"revenue_at_risk"</span>, ascendin
     <span class="tool-pill">Python</span>
     <span class="tool-pill">XGBoost</span>
     <span class="tool-pill">SHAP</span>
-    <span class="tool-pill">Churn Prediction</span>
+    <span class="tool-pill">scikit-learn</span>
+    <span class="tool-pill">pandas</span>
     <span class="tool-pill">Predictive Analytics</span>
     <span class="tool-pill">Business Intelligence</span>
   </div>
@@ -1628,21 +1040,8 @@ top_10 = active.sort_values(<span class="str">"revenue_at_risk"</span>, ascendin
         observer.unobserve(e.target);
       }
     });
-  }, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
-
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-  function switchTab(id, btn) {
-    document.querySelectorAll('.ins-panel').forEach(p => p.classList.remove('on'));
-    document.querySelectorAll('.itab').forEach(b => b.classList.remove('on'));
-    document.getElementById('tab-' + id).classList.add('on');
-    btn.classList.add('on');
-    // Re-trigger scroll animations for newly visible items
-    document.querySelectorAll('#tab-' + id + ' .fade-up').forEach(el => {
-      observer.observe(el);
-    });
-  }
 </script>
-
 </body>
 </html>
