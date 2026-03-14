@@ -904,7 +904,7 @@ footer {
 
   <div class="hero-inner">
     <div class="hero-left-anim">
-      <p class="hero-tag">Audio Feature Analysis · Unsupervised ML · Music Intelligence</p>
+      <p class="hero-tag">Audio Feature Analysis · Unsupervised ML </p>
 
       <h1>30 years of<br><em>Billboard</em><br><span class="purple-em">decoded</span></h1>
 
@@ -1065,7 +1065,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">01</span>
-        <p class="method-step">Stage 1 · Data collection</p>
+        <p class="method-step">Data collection</p>
         <h4>🌐 Wikipedia scraping + Spotify API enrichment</h4>
         <p>BeautifulSoup scrapes each year's Billboard Year-End Hot 100 Wikipedia page. The <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">wikitable</code> class is parsed row by row to extract rank, title, and artist. Two Spotify API calls are then made per track — one for artist genres, one for the audio features vector — via the Spotipy wrapper.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> 2016 is excluded due to a formatting inconsistency in the Wikipedia source page. Always print the first 3 rows after each year's scrape to confirm the table was parsed correctly — a missing column silently shifts all values.</div>
@@ -1073,7 +1073,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">02</span>
-        <p class="method-step">Stage 1 · API enrichment</p>
+        <p class="method-step">API enrichment</p>
         <h4>🎵 Spotify audio features</h4>
         <p>Two calls per track: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.search(artist)</code> for genre tags, then <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.audio_features([track_id])</code> for the 12-feature acoustic vector. Both return empty structures on no-match rather than raising, keeping the pipeline from halting mid-loop. Uses <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">SpotifyClientCredentials</code> via the Spotipy wrapper.</p>
         <div class="method-win">✦ Spotify's Audio Features endpoint was restricted to paid/approved tiers in 2024. The pre-collected dataset is included as <code style="font-size:.8rem;">billboard_tracks.csv</code> for full reproducibility.</div>
@@ -1081,7 +1081,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">03</span>
-        <p class="method-step">Stage 2 · Feature engineering</p>
+        <p class="method-step">Feature engineering</p>
         <h4>🔧 JSON flattening + Min-Max normalisation</h4>
         <p>The Spotify API returns audio features as a nested dict per row. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">df['Audio Features'].apply(pd.Series)</code> expands this into individual columns. MinMaxScaler then normalises all numeric features to [0, 1] so trend lines for tempo, energy, valence, danceability, and speechiness sit on the same axis.</p>
         <div class="method-win">✦ Min-Max was chosen over Standard scaling because Spotify features are already designed to be bounded (0–1 natively for most). Standardising would warp the natural floor and ceiling, making "danceability = 1.0" visually equivalent to an outlier rather than the defined maximum.</div>
@@ -1089,7 +1089,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">04</span>
-        <p class="method-step">Stage 3 · Temporal analysis</p>
+        <p class="method-step">Temporal analysis</p>
         <h4>📈 Temporal averaging — full 100 and top-20 sensitivity check</h4>
         <p>Audio features are averaged per year using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">groupby('Year').mean()</code> and plotted as overlapping line charts. A second pass filters to the top 20 ranked songs per year to test whether the same trends hold for the chart's dominant tracks, or whether they are diluted by lower-ranked entries.</p>
         <img src="https://klaire03.github.io/images/spotify1.png" alt="Average audio features of Billboard Hot 100 songs over the years" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
@@ -1098,7 +1098,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">05</span>
-        <p class="method-step">Stage 4 · Artist analysis</p>
+        <p class="method-step">Artist analysis</p>
         <h4>🎤 Most-charted artists — feature fingerprinting by artist</h4>
         <p>The top 5 most frequently appearing artists are identified with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">value_counts().head(5)</code>. Each artist's normalised feature averages are plotted side by side, producing an acoustic "signature" for each — and revealing whether an artist's sound is consistent across years or shifts across the dataset period.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> Artist name matching is exact string comparison against the scraped chart data. Artists listed with featured acts (e.g. "Drake featuring Rihanna") will not match either artist individually — feature credits inflate misses.</div>
@@ -1107,7 +1107,7 @@ footer {
 
       <div class="method-item fade-up">
         <span class="method-num">06</span>
-        <p class="method-step">Stages 5 & 6 · Unsupervised ML + Visualisation</p>
+        <p class="method-step">Unsupervised ML + Visualisation</p>
         <h4>🧩 Genre clustering — cosine similarity → Ward's hierarchical → NetworkX graph</h4>
         <p>Each Spotify genre tag is binary-encoded as a column — 1 if the track's artist carries that genre, 0 otherwise. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity(genre_matrix.T)</code> computes pairwise genre similarity, normalised for frequency. Ward's linkage hierarchical clustering is applied to this similarity matrix, minimising within-cluster variance at each merge. 7 clusters are extracted with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">fcluster(Z, 7, criterion='maxclust')</code> and labelled via keyword matching (e.g. any genre containing "pop" → Cluster 5). The 7 clusters become nodes in a NetworkX graph; edges are weighted by mean cosine similarity between cluster pairs, with the spring layout (<code style="font-size:.8rem;background:var(--light);padding:1px 4px;">seed=42</code>) placing structurally similar clusters closer together. Edge weight is drawn as line width — a thick edge between Soul & Jazz and Pop indicates heavy tag co-occurrence.</p>
         <img src="https://klaire03.github.io/images/spotify2.png" alt="Genre clusters network graph" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
