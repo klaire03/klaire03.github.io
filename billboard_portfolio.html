@@ -78,12 +78,90 @@ nav {
 .hero {
   min-height: 100vh;
   background: var(--navy);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 120px 80px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   position: relative;
   overflow: hidden;
+}
+
+/* decorative elements sit behind both halves */
+.hero-grid-lines,
+.hero-glow, .hero-glow2, .hero-glow3 { z-index: 0; }
+
+.hero-inner {
+  display: contents; /* children (left + right) become direct grid children of .hero */
+}
+
+.hero-left-anim {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 64px 80px;
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+
+/* Right half — slightly darker panel */
+.hero-chart-wrap {
+  background: rgba(8, 16, 28, 0.55);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 56px;
+  position: relative;
+  z-index: 1;
+}
+.hero-chart-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal2);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* SVG lines draw-on animation */
+.hline {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 2s ease forwards;
+}
+.hline-valence  { animation-delay: 0.2s; }
+.hline-energy   { animation-delay: 0.4s; }
+.hline-dance    { animation-delay: 0.6s; }
+.hline-speech   { animation-delay: 0.8s; }
+.hline-tempo    { animation-delay: 1.0s; }
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Legend */
+.hero-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.hcl-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+}
+.hcl-dot {
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
 }
 
 .hero-grid-lines {
@@ -471,31 +549,102 @@ nav {
 /* ── INSIGHTS ── */
 .insights-list {
   display: flex; flex-direction: column; gap: 0;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 .insight-item {
   display: grid;
   grid-template-columns: 64px 1fr;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   transition: background 0.2s;
 }
 .insight-item:last-child { border-bottom: none; }
-.insight-item:hover { background: rgba(26,122,110,0.03); }
+.insight-item:hover { background: rgba(26,122,110,0.08); }
 .insight-num {
   display: flex; align-items: flex-start; justify-content: center;
   padding-top: 28px;
   font-family: 'Instrument Serif', serif;
   font-size: 1.5rem; color: var(--teal3);
-  border-right: 1px solid var(--border);
-  background: rgba(26,122,110,0.02);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: rgba(26,122,110,0.06);
 }
 .insight-body { padding: 28px 32px; }
 .insight-body h4 {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: 1rem; font-weight: 600; color: var(--navy);
-  margin-bottom: 8px; line-height: 1.3;
+  font-size: 1rem; font-weight: 600; color: #fff;
+  margin-bottom: 10px; line-height: 1.3;
 }
-.insight-body p { font-size: 0.92rem; color: var(--mid); line-height: 1.72; font-weight: 300; }
+.insight-body p { font-size: 0.92rem; color: rgba(255,255,255,0.65); line-height: 1.78; font-weight: 300; margin-bottom: 0; }
+.insight-takeaway {
+  margin-top: 12px;
+  font-size: 0.88rem !important;
+  color: var(--teal3) !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  padding-left: 12px;
+  border-left: 2px solid var(--teal2);
+}
+
+/* ── ERA CARDS (dark variant) ── */
+.era-card-dark {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, background 0.22s ease;
+}
+.era-card-dark::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.nineties-dark::after  { background: #4a9fd4; }
+.noughties-dark::after { background: #c4a0e8; }
+.tens-dark::after      { background: #e87ab0; }
+.era-card-dark:hover::after { transform: scaleX(1); }
+.era-card-dark:hover { transform: translateY(-4px); background: rgba(255,255,255,0.07); }
+.era-meta-dark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal2);
+  margin-bottom: 8px;
+}
+.era-name-dark {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.era-range-dark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+  letter-spacing: 0.06em;
+}
+.era-desc-dark {
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+  font-weight: 300;
+}
+.tag-dark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  background: rgba(26,169,154,0.12);
+  color: var(--teal3);
+  border-radius: 1px;
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+}
 
 /* ── FURTHER WORK ── */
 .further-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -578,6 +727,86 @@ nav {
   border-radius: 1px;
 }
 
+/* ── FEATURES DROPDOWN ── */
+.features-dropdown {
+  border: 1px solid var(--teal);
+  background: var(--paper);
+}
+.features-dropdown[open] { background: #fff; }
+
+.features-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  background: var(--light);
+  border-bottom: 1px solid transparent;
+  transition: background 0.2s;
+  gap: 16px;
+}
+.features-toggle::-webkit-details-marker { display: none; }
+.features-dropdown[open] .features-toggle {
+  background: var(--teal);
+  border-bottom: 1px solid var(--teal2);
+}
+.features-toggle:hover { background: var(--teal2); }
+.features-dropdown[open] .features-toggle:hover { background: var(--teal2); }
+
+.features-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.features-toggle-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.features-toggle-title {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 500;
+}
+.features-dropdown[open] .features-toggle-title,
+.features-toggle:hover .features-toggle-title { color: #fff; }
+
+.features-toggle-sub {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--teal2);
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+.features-dropdown[open] .features-toggle-sub,
+.features-toggle:hover .features-toggle-sub { color: rgba(255,255,255,0.65); }
+
+.features-chevron {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  color: var(--teal);
+  transition: transform 0.25s ease, color 0.2s;
+}
+.features-chevron svg { width: 100%; height: 100%; }
+.features-dropdown[open] .features-chevron { transform: rotate(180deg); color: #fff; }
+.features-toggle:hover .features-chevron { color: #fff; }
+
+.features-body {
+  overflow: hidden;
+  animation: slideDown 0.25s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── FOOTER ── */
 footer {
   background: var(--navy);
@@ -639,12 +868,15 @@ footer {
 @media (max-width: 960px) {
   nav { padding: 0 24px; }
   .nav-links { display: none; }
-  .hero { padding: 90px 32px 64px; }
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-left-anim { padding: 100px 32px 48px; }
+  .hero-chart-wrap { display: none; }
   .section, .section-sm { padding: 60px 32px; }
   .dark-band-inner, .sand-band-inner { padding: 0 32px; }
   .dark-band, .sand-band { padding: 60px 0; }
   .stats-row { flex-wrap: wrap; }
   .era-split, .method-grid, .technique-grid, .further-grid, .caveats-row { grid-template-columns: 1fr; }
+  .era-card-dark { margin-bottom: 0; }
   .technique-card.wide { grid-column: 1; }
   footer { padding: 40px 32px; flex-direction: column; align-items: flex-start; }
 }
@@ -670,37 +902,126 @@ footer {
   <div class="hero-glow2"></div>
   <div class="hero-glow3"></div>
 
-  <div class="hero-left-anim">
-    <p class="hero-tag">Audio Feature Analysis · Unsupervised ML · Music Intelligence</p>
+  <div class="hero-inner">
+    <div class="hero-left-anim">
+      <p class="hero-tag">Audio Feature Analysis · Unsupervised ML · Music Intelligence</p>
 
-    <h1>30 years of<br><em>Billboard</em><br><span class="purple-em">decoded</span></h1>
+      <h1>30 years of<br><em>Billboard</em><br><span class="purple-em">decoded</span></h1>
 
-    <p class="hero-desc">An end-to-end data science pipeline that scrapes 3,000 Billboard Hot 100 chart-toppers (1992–2022), enriches each track with Spotify audio features and genre data, and applies cosine similarity, hierarchical clustering, and network graph visualisation to map the evolution of popular music.</p>
+      <p class="hero-desc">An end-to-end data science pipeline that scrapes 3,000 Billboard Hot 100 chart-toppers (1992–2022), enriches each track with Spotify audio features and genre data, and applies cosine similarity, hierarchical clustering, and network graph visualisation to map the evolution of popular music.</p>
 
-    <div class="hero-bottom">
-      <div class="stats-row">
-        <div class="stat"><strong>3,000</strong><span>tracks</span></div>
-        <div class="stat"><strong>30</strong><span>years</span></div>
-        <div class="stat"><strong>12</strong><span>audio features</span></div>
-        <div class="stat"><strong>7</strong><span>genre clusters</span></div>
+      <div class="hero-bottom">
+        <div class="stats-row">
+          <div class="stat"><strong>3,000</strong><span>tracks</span></div>
+          <div class="stat"><strong>30</strong><span>years</span></div>
+          <div class="stat"><strong>12</strong><span>audio features</span></div>
+          <div class="stat"><strong>7</strong><span>genre clusters</span></div>
+        </div>
+
+        <div class="hero-links">
+          <a class="hero-link" href="https://github.com" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a class="hero-link" href="https://colab.research.google.com" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
+            Notebook
+          </a>
+          <a class="hero-link" href="#">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+            Dataset CSV
+          </a>
+        </div>
       </div>
+    </div>
 
-      <div class="hero-links">
-        <a class="hero-link" href="https://github.com" target="_blank">
-          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-        <a class="hero-link" href="https://colab.research.google.com" target="_blank">
-          <svg viewBox="0 0 24 24"><path d="M16.9 4.8C13.9 2 9.3 2 6.2 4.8L4.8 6.2C1.9 9.1 1.9 14 4.8 16.9l4.7 4.7 1.4-1.4-4.7-4.7c-2.1-2.1-2.1-5.5 0-7.6l1.4-1.4c2.1-2.1 5.5-2.1 7.6 0l1.4 1.4c2.1 2.1 2.1 5.5 0 7.6l-1.4 1.4 1.4 1.4 1.4-1.4c2.9-2.9 2.9-7.7 0-10.6l-1.4-1.5zm-1.3 3.9l-1.4 1.4c.7.7.7 1.9 0 2.6l-2.7 2.7c-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6l1.4-1.4-1.4-1.4-1.4 1.4c-1.5 1.5-1.5 3.9 0 5.3 1.5 1.5 3.9 1.5 5.3 0l2.7-2.7c1.5-1.5 1.5-3.9 0-5.3h-.1l.2.1z"/></svg>
-          Notebook
-        </a>
-        <a class="hero-link" href="#">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
-          Dataset CSV
-        </a>
+    <!-- Hero chart — avg audio features 1992–2022 line chart -->
+    <div class="hero-chart-wrap">
+      <p class="hero-chart-label">Avg. audio features · Billboard Hot 100 · 1992 – 2022</p>
+
+      <!-- SVG line chart. plotW=320 plotH=200, margins: top=10 right=8 bottom=28 left=8 -->
+      <!-- x: 1992..2022 = 31 pts, step = 320/30 = 10.67px -->
+      <!-- y: 0..1 mapped to 200..0 px -->
+      <svg viewBox="0 0 336 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;" class="hero-svg">
+        <defs>
+          <!-- clip path so lines don't overflow plot area -->
+          <clipPath id="plotClip">
+            <rect x="0" y="0" width="320" height="200"/>
+          </clipPath>
+          <!-- draw-on animation mask -->
+          <mask id="revealMask">
+            <rect x="0" y="0" width="320" height="200" fill="white"
+              style="animation: revealLine 2s ease forwards; transform-origin: left center;"/>
+          </mask>
+        </defs>
+
+        <g transform="translate(8,10)">
+
+          <!-- Grid lines y: 0.0, 0.2, 0.4, 0.6, 0.8, 1.0 -->
+          <line x1="0" y1="200" x2="320" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <line x1="0" y1="160" x2="320" y2="160" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <line x1="0" y1="120" x2="320" y2="120" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <line x1="0" y1="80"  x2="320" y2="80"  stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <line x1="0" y1="40"  x2="320" y2="40"  stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <line x1="0" y1="0"   x2="320" y2="0"   stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+          <!-- Y-axis labels -->
+          <text x="-6" y="203" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">0.0</text>
+          <text x="-6" y="163" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">0.2</text>
+          <text x="-6" y="123" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">0.4</text>
+          <text x="-6" y="83"  fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">0.6</text>
+          <text x="-6" y="43"  fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">0.8</text>
+          <text x="-6" y="4"   fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">1.0</text>
+
+          <!-- X-axis labels: 1992, 1997, 2002, 2007, 2012, 2017, 2022 -->
+          <!-- step = 320/30 = 10.667 per year. 1992=0, 1997=53.3, 2002=106.7, 2007=160, 2012=213.3, 2017=266.7, 2022=320 -->
+          <text x="0"     y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">1992</text>
+          <text x="53"    y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">1997</text>
+          <text x="107"   y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">2002</text>
+          <text x="160"   y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">2007</text>
+          <text x="213"   y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">2012</text>
+          <text x="267"   y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">2017</text>
+          <text x="320"   y="218" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">2022</text>
+
+          <g clip-path="url(#plotClip)" class="hero-lines">
+            <!-- VALENCE (teal) — starts ~0.57, dips ~0.52, rises back ~0.55 by 2022 -->
+            <polyline class="hline hline-valence" fill="none" stroke="#25a99a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+              points="0,86 11,90 21,86 32,90 43,88 53,94 64,92 75,88 85,92 96,92 107,90 117,92 128,88 139,92 149,94 160,90 171,92 181,100 192,100 203,104 213,102 224,106 235,100 245,96 256,102 267,100 277,102 288,100 299,98 309,96 320,90"/>
+            <!-- ENERGY (amber/orange) — starts ~0.62, peaks ~0.69 2005, dips to ~0.60 2022 -->
+            <polyline class="hline hline-energy" fill="none" stroke="#c8821a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+              points="0,76 11,72 21,74 32,70 43,72 53,68 64,66 75,66 85,68 96,66 107,62 117,64 128,62 139,60 149,56 160,62 171,64 181,64 192,62 203,60 213,66 224,64 235,66 245,68 256,72 267,76 277,76 288,78 299,80 309,82 320,80"/>
+            <!-- DANCEABILITY (green) — stays high 0.62–0.69, slight rise -->
+            <polyline class="hline hline-dance" fill="none" stroke="#4caf7d" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+              points="0,76 11,72 21,70 32,72 43,70 53,66 64,68 75,66 85,66 96,64 107,66 117,64 128,64 139,62 149,62 160,64 171,60 181,60 192,58 203,58 213,56 224,58 235,58 245,60 256,62 267,62 277,64 288,66 299,68 309,68 320,70"/>
+            <!-- SPEECHINESS (pink/red) — low 0.07 rising to ~0.12 by 2022 -->
+            <polyline class="hline hline-speech" fill="none" stroke="#e06080" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+              points="0,186 11,184 21,182 32,180 43,178 53,180 64,176 75,174 85,162 96,162 107,164 117,166 128,162 139,160 149,162 160,180 171,176 181,174 192,178 203,180 213,184 224,176 235,174 245,172 256,168 267,164 277,162 288,162 299,164 309,176 320,176"/>
+            <!-- TEMPO (purple) — stays ~0.40–0.47 throughout -->
+            <polyline class="hline hline-tempo" fill="none" stroke="#c4a0e8" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+              points="0,118 11,118 21,120 32,116 43,118 53,118 64,120 75,120 85,116 96,118 107,116 117,114 128,116 139,112 149,110 160,110 171,112 181,108 192,110 203,110 213,112 224,112 235,114 245,114 256,114 267,114 277,114 288,114 299,114 309,114 320,112"/>
+          </g>
+
+          <!-- End-of-line labels -->
+          <text x="324" y="93"  fill="#25a99a"  font-family="JetBrains Mono,monospace" font-size="8">Val</text>
+          <text x="324" y="83"  fill="#c8821a"  font-family="JetBrains Mono,monospace" font-size="8">Eng</text>
+          <text x="324" y="73"  fill="#4caf7d"  font-family="JetBrains Mono,monospace" font-size="8">Dnc</text>
+          <text x="324" y="179" fill="#e06080"  font-family="JetBrains Mono,monospace" font-size="8">Spe</text>
+          <text x="324" y="115" fill="#c4a0e8"  font-family="JetBrains Mono,monospace" font-size="8">Tmp</text>
+
+        </g>
+      </svg>
+
+      <!-- Legend -->
+      <div class="hero-chart-legend">
+        <span class="hcl-item"><span class="hcl-dot" style="background:#25a99a"></span>Valence</span>
+        <span class="hcl-item"><span class="hcl-dot" style="background:#c8821a"></span>Energy</span>
+        <span class="hcl-item"><span class="hcl-dot" style="background:#4caf7d"></span>Danceability</span>
+        <span class="hcl-item"><span class="hcl-dot" style="background:#e06080"></span>Speechiness</span>
+        <span class="hcl-item"><span class="hcl-dot" style="background:#c4a0e8"></span>Tempo</span>
       </div>
     </div>
   </div>
+
 </section>
 
 <hr class="divider">
@@ -710,46 +1031,6 @@ footer {
   <p class="section-label">Project overview</p>
   <h2 class="section-title">What this project does</h2>
   <p class="section-intro">Popular music is measurably different today from what it was in 1992. This project quantifies exactly how — by building an automated pipeline that collects three decades of chart data, enriches it with Spotify's acoustic measurements, and surfaces trends, clusters, and patterns that are invisible to casual listening.</p>
-
-  <div class="era-split stagger">
-
-    <div class="era-card nineties fade-up">
-      <p class="era-meta">Era 1</p>
-      <h3 class="era-name">The 90s</h3>
-      <p class="era-range">1992 – 1999 · 800 tracks</p>
-      <p class="era-desc">New Jack Swing, grunge, and R&B domination. High acoustic variety — Boyz II Men and Sir Mix-a-Lot occupy the same chart. Genre lines are sharp; crossover is unusual. Valence tends high; tempo varies widely.</p>
-      <div class="era-tags">
-        <span class="tag">r&b dominance</span>
-        <span class="tag">high valence</span>
-        <span class="tag">acoustic variety</span>
-      </div>
-    </div>
-
-    <div class="era-card noughties fade-up">
-      <p class="era-meta">Era 2</p>
-      <h3 class="era-name">The 2000s</h3>
-      <p class="era-range">2000 – 2009 · 1,000 tracks</p>
-      <p class="era-desc">Pop–R&B fusion peaks. Dance pop, teen pop, and hip-hop converge. Electronic production increases danceability and energy. Genre tags multiply; artists blend across clusters. Taylor Swift, Rihanna, and Pink enter the dataset.</p>
-      <div class="era-tags">
-        <span class="tag">dance pop rise</span>
-        <span class="tag">hip-hop x pop</span>
-        <span class="tag">genre blending</span>
-      </div>
-    </div>
-
-    <div class="era-card tens fade-up">
-      <p class="era-meta">Era 3</p>
-      <h3 class="era-name">The 2010s–20s</h3>
-      <p class="era-range">2010 – 2022 · 1,200 tracks</p>
-      <p class="era-desc">Streaming-era compression: louder, shorter, more speech-heavy. Trap and drill elevate speechiness. Electronic production flattens timbre variance. Latin and K-pop infiltrate the Hot 100 in the 2020s.</p>
-      <div class="era-tags">
-        <span class="tag">speechiness spike</span>
-        <span class="tag">latin crossover</span>
-        <span class="tag">loudness war</span>
-      </div>
-    </div>
-
-  </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);">
     <div style="background:var(--paper);padding:32px;">
@@ -785,7 +1066,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">01</span>
         <p class="method-step">Stage 1 · Data collection</p>
-        <h4>Wikipedia scraping + Spotify API enrichment</h4>
+        <h4>🌐 Wikipedia scraping + Spotify API enrichment</h4>
         <p>BeautifulSoup scrapes each year's Billboard Year-End Hot 100 Wikipedia page. The <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">wikitable</code> class is parsed row by row to extract rank, title, and artist. Two Spotify API calls are then made per track — one for artist genres, one for the audio features vector — via the Spotipy wrapper.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> 2016 is excluded due to a formatting inconsistency in the Wikipedia source page. Always print the first 3 rows after each year's scrape to confirm the table was parsed correctly — a missing column silently shifts all values.</div>
       </div>
@@ -793,7 +1074,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">02</span>
         <p class="method-step">Stage 1 · API enrichment</p>
-        <h4>Spotify audio features</h4>
+        <h4>🎵 Spotify audio features</h4>
         <p>Two calls per track: <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.search(artist)</code> for genre tags, then <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">sp.audio_features([track_id])</code> for the 12-feature acoustic vector. Both return empty structures on no-match rather than raising, keeping the pipeline from halting mid-loop. Uses <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">SpotifyClientCredentials</code> via the Spotipy wrapper.</p>
         <div class="method-win">✦ Spotify's Audio Features endpoint was restricted to paid/approved tiers in 2024. The pre-collected dataset is included as <code style="font-size:.8rem;">billboard_tracks.csv</code> for full reproducibility.</div>
       </div>
@@ -801,7 +1082,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">03</span>
         <p class="method-step">Stage 2 · Feature engineering</p>
-        <h4>JSON flattening + Min-Max normalisation</h4>
+        <h4>🔧 JSON flattening + Min-Max normalisation</h4>
         <p>The Spotify API returns audio features as a nested dict per row. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">df['Audio Features'].apply(pd.Series)</code> expands this into individual columns. MinMaxScaler then normalises all numeric features to [0, 1] so trend lines for tempo, energy, valence, danceability, and speechiness sit on the same axis.</p>
         <div class="method-win">✦ Min-Max was chosen over Standard scaling because Spotify features are already designed to be bounded (0–1 natively for most). Standardising would warp the natural floor and ceiling, making "danceability = 1.0" visually equivalent to an outlier rather than the defined maximum.</div>
       </div>
@@ -809,7 +1090,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">04</span>
         <p class="method-step">Stage 3 · Temporal analysis</p>
-        <h4>Temporal averaging — full 100 and top-20 sensitivity check</h4>
+        <h4>📈 Temporal averaging — full 100 and top-20 sensitivity check</h4>
         <p>Audio features are averaged per year using <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">groupby('Year').mean()</code> and plotted as overlapping line charts. A second pass filters to the top 20 ranked songs per year to test whether the same trends hold for the chart's dominant tracks, or whether they are diluted by lower-ranked entries.</p>
         <img src="https://klaire03.github.io/images/spotify1.png" alt="Average audio features of Billboard Hot 100 songs over the years" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
         <div class="method-win">✦ Running the analysis on both the full 100 and the top 20 is a deliberate sensitivity check — not redundancy. If the top-20 trends diverge from the full-100 trends, the most-played songs are acoustically distinct from the rest of the chart.</div>
@@ -818,7 +1099,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">05</span>
         <p class="method-step">Stage 4 · Artist analysis</p>
-        <h4>Most-charted artists — feature fingerprinting by artist</h4>
+        <h4>🎤 Most-charted artists — feature fingerprinting by artist</h4>
         <p>The top 5 most frequently appearing artists are identified with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">value_counts().head(5)</code>. Each artist's normalised feature averages are plotted side by side, producing an acoustic "signature" for each — and revealing whether an artist's sound is consistent across years or shifts across the dataset period.</p>
         <div class="method-callout"><strong>⚠ Note:</strong> Artist name matching is exact string comparison against the scraped chart data. Artists listed with featured acts (e.g. "Drake featuring Rihanna") will not match either artist individually — feature credits inflate misses.</div>
         <div class="method-win">✦ Top 5 in the 30-year dataset: Taylor Swift, Mariah Carey, Rihanna, Pink, Kelly Clarkson — a profile that itself tells a story about which artists sustained mainstream presence across decades.</div>
@@ -827,7 +1108,7 @@ footer {
       <div class="method-item fade-up">
         <span class="method-num">06</span>
         <p class="method-step">Stages 5 & 6 · Unsupervised ML + Visualisation</p>
-        <h4>Genre clustering — cosine similarity → Ward's hierarchical → NetworkX graph</h4>
+        <h4>🧩 Genre clustering — cosine similarity → Ward's hierarchical → NetworkX graph</h4>
         <p>Each Spotify genre tag is binary-encoded as a column — 1 if the track's artist carries that genre, 0 otherwise. <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">cosine_similarity(genre_matrix.T)</code> computes pairwise genre similarity, normalised for frequency. Ward's linkage hierarchical clustering is applied to this similarity matrix, minimising within-cluster variance at each merge. 7 clusters are extracted with <code style="font-size:.8rem;background:var(--light);padding:1px 4px;">fcluster(Z, 7, criterion='maxclust')</code> and labelled via keyword matching (e.g. any genre containing "pop" → Cluster 5). The 7 clusters become nodes in a NetworkX graph; edges are weighted by mean cosine similarity between cluster pairs, with the spring layout (<code style="font-size:.8rem;background:var(--light);padding:1px 4px;">seed=42</code>) placing structurally similar clusters closer together. Edge weight is drawn as line width — a thick edge between Soul & Jazz and Pop indicates heavy tag co-occurrence.</p>
         <img src="https://klaire03.github.io/images/spotify2.png" alt="Genre clusters network graph" style="width:100%;display:block;margin:14px 0;border:1px solid var(--border);" />
         <div class="method-win">✦ Cosine similarity is preferred over Euclidean distance for sparse binary vectors. Two rare genres that always co-occur together score highly similar even if they appear in only a handful of tracks. Euclidean distance would penalise low-frequency genres unfairly, pulling them toward the origin regardless of their relationships.</div>
@@ -863,7 +1144,20 @@ footer {
 
     <!-- Audio features reference table -->
     <div style="margin-top:56px;">
-      <p class="method-step" style="margin-bottom:16px;">Spotify audio features — reference</p>
+      <details class="features-dropdown">
+        <summary class="features-toggle">
+          <span class="features-toggle-left">
+            <span class="features-toggle-icon">📋</span>
+            <span>
+              <span class="features-toggle-title">Spotify audio features — reference</span>
+              <span class="features-toggle-sub">12 features · ranges, definitions & usage</span>
+            </span>
+          </span>
+          <span class="features-chevron">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </summary>
+        <div class="features-body">
       <table class="feature-table">
         <thead>
           <tr>
@@ -948,6 +1242,8 @@ footer {
           </tr>
         </tbody>
       </table>
+        </div>
+      </details>
     </div>
   </div>
 </div>
@@ -962,45 +1258,92 @@ footer {
     <h2 class="section-title">What the data reveals</h2>
     <p class="section-intro">These are the analytical conclusions the pipeline is designed to surface — each one emerges from a specific stage of the notebook and leads to a concrete follow-up question.</p>
 
+    <!-- Era cards -->
+    <div class="era-split stagger" style="margin-bottom:56px;">
+
+      <div class="era-card-dark nineties-dark fade-up">
+        <p class="era-meta-dark">Era 1</p>
+        <h3 class="era-name-dark">The 90s</h3>
+        <p class="era-range-dark">1992 – 1999 · 800 tracks</p>
+        <p class="era-desc-dark">New Jack Swing, grunge, and R&B domination. High acoustic variety — Boyz II Men and Sir Mix-a-Lot occupy the same chart. Genre lines are sharp; crossover is unusual. Valence tends high; tempo varies widely.</p>
+        <div class="era-tags" style="margin-top:14px;">
+          <span class="tag-dark">r&b dominance</span>
+          <span class="tag-dark">high valence</span>
+          <span class="tag-dark">acoustic variety</span>
+        </div>
+      </div>
+
+      <div class="era-card-dark noughties-dark fade-up">
+        <p class="era-meta-dark">Era 2</p>
+        <h3 class="era-name-dark">The 2000s</h3>
+        <p class="era-range-dark">2000 – 2009 · 1,000 tracks</p>
+        <p class="era-desc-dark">Pop–R&B fusion peaks. Dance pop, teen pop, and hip-hop converge. Electronic production increases danceability and energy. Genre tags multiply; artists blend across clusters. Taylor Swift, Rihanna, and Pink enter the dataset.</p>
+        <div class="era-tags" style="margin-top:14px;">
+          <span class="tag-dark">dance pop rise</span>
+          <span class="tag-dark">hip-hop x pop</span>
+          <span class="tag-dark">genre blending</span>
+        </div>
+      </div>
+
+      <div class="era-card-dark tens-dark fade-up">
+        <p class="era-meta-dark">Era 3</p>
+        <h3 class="era-name-dark">The 2010s–20s</h3>
+        <p class="era-range-dark">2010 – 2022 · 1,200 tracks</p>
+        <p class="era-desc-dark">Streaming-era compression: louder, shorter, more speech-heavy. Trap and drill elevate speechiness. Electronic production flattens timbre variance. Latin and K-pop infiltrate the Hot 100 in the 2020s.</p>
+        <div class="era-tags" style="margin-top:14px;">
+          <span class="tag-dark">speechiness spike</span>
+          <span class="tag-dark">latin crossover</span>
+          <span class="tag-dark">loudness war</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Insight items -->
     <div class="insights-list stagger">
 
       <div class="insight-item fade-up">
         <div class="insight-num">1</div>
         <div class="insight-body">
-          <h4>Valence has fallen — popular music has measurably got sadder since the 90s</h4>
-          <p>The temporal trend chart shows a clear multi-decade decline in mean valence across the Billboard Hot 100. The 90s produced chart-toppers with high average positivity; by the mid-2010s, sad and melancholic tracks dominate. This tracks the cultural shift documented in academic music research: streaming algorithms amplify slower, more emotionally ambiguous material because it sustains longer listening sessions. <strong style="color:var(--teal3);">→ Valence is the single most informative feature for capturing the emotional trajectory of mainstream popular music.</strong></p>
+          <h4>📉 Valence has fallen — popular music has measurably got sadder since the 90s</h4>
+          <p>The temporal trend chart shows a clear multi-decade decline in mean valence across the Billboard Hot 100. The 90s produced chart-toppers with high average positivity; by the mid-2010s, sad and melancholic tracks dominate. This tracks the cultural shift documented in academic music research: streaming algorithms amplify slower, more emotionally ambiguous material because it sustains longer listening sessions.</p>
+          <p class="insight-takeaway">→ Valence is the single most informative feature for capturing the emotional trajectory of mainstream popular music.</p>
         </div>
       </div>
 
       <div class="insight-item fade-up">
         <div class="insight-num">2</div>
         <div class="insight-body">
-          <h4>Speechiness spikes from 2010 — the chart data captures hip-hop's dominance precisely</h4>
-          <p>Speechiness was the lowest-variance feature throughout the 90s and 2000s, then rises sharply after 2010 and again after 2017. This corresponds exactly to hip-hop becoming the most-streamed genre globally. Speechiness is not a genre label — it is a pure acoustic measurement — yet it reliably tracks the rap share of chart positions without requiring any genre classification. <strong style="color:var(--teal3);">→ A single acoustic feature outperforms manual genre annotation as a proxy for hip-hop's chart share.</strong></p>
+          <h4>🎤 Speechiness spikes from 2010 — the chart data captures hip-hop's dominance precisely</h4>
+          <p>Speechiness was the lowest-variance feature throughout the 90s and 2000s, then rises sharply after 2010 and again after 2017. This corresponds exactly to hip-hop becoming the most-streamed genre globally. Speechiness is not a genre label — it is a pure acoustic measurement — yet it reliably tracks the rap share of chart positions without requiring any genre classification.</p>
+          <p class="insight-takeaway">→ A single acoustic feature outperforms manual genre annotation as a proxy for hip-hop's chart share.</p>
         </div>
       </div>
 
       <div class="insight-item fade-up">
         <div class="insight-num">3</div>
         <div class="insight-body">
-          <h4>Top-20 trends diverge from full-100 trends — the hits and the chart tell different stories</h4>
-          <p>The sensitivity analysis comparing the top-20 tracks to the full 100 per year reveals that the most dominant chart entries have consistently higher danceability and energy than the rest of the chart. The full-100 valence trend is smoother and less extreme than the top-20 trend — lower-ranked tracks moderate the signal. This means any analysis using only chart position 1–10 is measuring a different musical phenomenon from one using positions 1–100. <strong style="color:var(--teal3);">→ Chart rank is a signal, not noise. Scope the analysis to match the hypothesis.</strong></p>
+          <h4>📊 Top-20 trends diverge from full-100 trends — the hits and the chart tell different stories</h4>
+          <p>The sensitivity analysis comparing the top-20 tracks to the full 100 per year reveals that the most dominant chart entries have consistently higher danceability and energy than the rest of the chart. The full-100 valence trend is smoother and less extreme than the top-20 trend — lower-ranked tracks moderate the signal. This means any analysis using only chart position 1–10 is measuring a different musical phenomenon from one using positions 1–100.</p>
+          <p class="insight-takeaway">→ Chart rank is a signal, not noise. Scope the analysis to match the hypothesis.</p>
         </div>
       </div>
 
       <div class="insight-item fade-up">
         <div class="insight-num">4</div>
         <div class="insight-body">
-          <h4>Genre clustering reveals that Pop and R&B are structurally the same cluster — not two</h4>
-          <p>Despite being treated as distinct genres in casual discourse, cosine similarity places many contemporary R&B and pop tags into the same hierarchical cluster because the same artists are routinely tagged with both. The network graph makes this visible as a thick edge — heavy co-occurrence. Soul & Jazz, by contrast, sits near but distinct from this cluster. Rap & Hip-Hop forms a tighter, more isolated cluster with fewer bridges to others. <strong style="color:var(--teal3);">→ Genre boundaries in pop music are permeability gradients, not hard category lines.</strong></p>
+          <h4>🧩 Genre clustering reveals that Pop and R&B are structurally the same cluster — not two</h4>
+          <p>Despite being treated as distinct genres in casual discourse, cosine similarity places many contemporary R&B and pop tags into the same hierarchical cluster because the same artists are routinely tagged with both. The network graph makes this visible as a thick edge — heavy co-occurrence. Soul & Jazz, by contrast, sits near but distinct from this cluster. Rap & Hip-Hop forms a tighter, more isolated cluster with fewer bridges to others.</p>
+          <p class="insight-takeaway">→ Genre boundaries in pop music are permeability gradients, not hard category lines.</p>
         </div>
       </div>
 
       <div class="insight-item fade-up">
         <div class="insight-num">5</div>
         <div class="insight-body">
-          <h4>The most-charted artists have acoustically distinct signatures — except at crossover</h4>
-          <p>The artist feature fingerprinting shows that Taylor Swift, Rihanna, Pink, and Kelly Clarkson have meaningfully different mean audio profiles — different danceability, energy, and tempo averages — despite all occupying the mainstream pop chart. Mariah Carey sits closest to the R&B cluster centroid. The one convergence point across all five artists is mid-range valence in their most recent entries: mainstream success now requires a narrow emotional range. <strong style="color:var(--teal3);">→ An artist's chart longevity is partly acoustic conservatism — sustained presence correlates with staying near the centre of the chart's feature distribution.</strong></p>
+          <h4>🎵 The most-charted artists have acoustically distinct signatures — except at crossover</h4>
+          <p>The artist feature fingerprinting shows that Taylor Swift, Rihanna, Pink, and Kelly Clarkson have meaningfully different mean audio profiles — different danceability, energy, and tempo averages — despite all occupying the mainstream pop chart. Mariah Carey sits closest to the R&B cluster centroid. The one convergence point across all five artists is mid-range valence in their most recent entries: mainstream success now requires a narrow emotional range.</p>
+          <p class="insight-takeaway">→ An artist's chart longevity is partly acoustic conservatism — sustained presence correlates with staying near the centre of the chart's feature distribution.</p>
         </div>
       </div>
 
