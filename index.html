@@ -455,69 +455,62 @@ nav {
   justify-content: center;
 }
 
-/* Animated SVG chart placeholder */
+/* Animated SVG line chart */
 .chart-viz {
   width: 100%;
   height: 100%;
   min-height: 380px;
-  padding: 48px;
+  padding: 40px 44px 32px 36px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   justify-content: center;
 }
 
-.chart-bar-wrap {
+.chart-line-label {
+  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(125,216,208,0.5);
+  margin-bottom: 16px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.chart-legend-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.chart-bar-label {
+  gap: 6px;
   font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
-  font-size: 9px;
-  color: rgba(255,255,255,0.25);
-  width: 60px;
-  text-align: right;
-  letter-spacing: 0.06em;
+  font-size: 8.5px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+}
+.chart-legend-dot {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
 }
 
-.chart-bar-track {
-  flex: 1;
-  height: 6px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 2px;
-  overflow: hidden;
+/* draw-on animation for line chart */
+.feat-hline {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: featDrawLine 2s ease forwards;
 }
-
-.chart-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--teal) 0%, var(--teal3) 100%);
-  transform-origin: left;
-  animation: barGrow 1.4s ease forwards;
-  transform: scaleX(0);
-}
-
-@keyframes barGrow { to { transform: scaleX(1); } }
-
-.chart-bar-fill:nth-child(1) { animation-delay: 0.1s; }
-
-.chart-bar-wrap:nth-child(1) .chart-bar-fill { animation-delay: 0.0s; width: 82%; }
-.chart-bar-wrap:nth-child(2) .chart-bar-fill { animation-delay: 0.1s; width: 67%; }
-.chart-bar-wrap:nth-child(3) .chart-bar-fill { animation-delay: 0.2s; width: 91%; background: linear-gradient(90deg, #c8821a 0%, #f0b060 100%); }
-.chart-bar-wrap:nth-child(4) .chart-bar-fill { animation-delay: 0.3s; width: 54%; }
-.chart-bar-wrap:nth-child(5) .chart-bar-fill { animation-delay: 0.4s; width: 76%; }
-.chart-bar-wrap:nth-child(6) .chart-bar-fill { animation-delay: 0.5s; width: 43%; }
-.chart-bar-wrap:nth-child(7) .chart-bar-fill { animation-delay: 0.6s; width: 88%; background: linear-gradient(90deg, var(--teal) 0%, var(--teal3) 100%); }
-.chart-bar-wrap:nth-child(8) .chart-bar-fill { animation-delay: 0.7s; width: 61%; }
-
-.chart-bar-val {
-  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
-  font-size: 9px;
-  color: rgba(255,255,255,0.2);
-  width: 32px;
-}
+.feat-hline-valence { animation-delay: 0.2s; }
+.feat-hline-energy  { animation-delay: 0.45s; }
+.feat-hline-dance   { animation-delay: 0.7s; }
+.feat-hline-speech  { animation-delay: 0.95s; }
+.feat-hline-tempo   { animation-delay: 1.2s; }
+@keyframes featDrawLine { to { stroke-dashoffset: 0; } }
 
 .feat-tag {
   font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
@@ -958,7 +951,7 @@ footer {
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
- <a class="nav-cta" href="mailto:clairyec@gmail.com">Get in touch →</a>
+ <a class="nav-cta" href="/cdn-cgi/l/email-protection#1d7e717c746f64787e5d7a707c7471337e7270">Get in touch →</a>
 </nav>
 
 <!-- ── HERO ── -->
@@ -1105,14 +1098,75 @@ footer {
       <div class="feat-visual-wrap">
         <div class="feat-visual">
           <div class="chart-viz">
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Valence</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.82</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Energy</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.67</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Speechiness</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.91</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Dance</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.54</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Tempo</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.76</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Acoustic</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.43</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Loudness</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.88</span></div>
-            <div class="chart-bar-wrap"><span class="chart-bar-label">Instr.</span><div class="chart-bar-track"><div class="chart-bar-fill"></div></div><span class="chart-bar-val">0.61</span></div>
+            <p class="chart-line-label">Avg. audio features · Billboard Hot 100 · 1992–2022</p>
+
+            <!-- SVG line chart. viewBox 400×220, plot area 340×160 offset by l=36 t=10 -->
+            <!-- x: 1992–2022 = 31 pts, step = 340/30 = 11.33px -->
+            <!-- y: 0..1 → 160..0px -->
+            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+              <defs>
+                <clipPath id="featClip">
+                  <rect x="0" y="0" width="340" height="160"/>
+                </clipPath>
+              </defs>
+              <g transform="translate(36,10)">
+
+                <!-- Grid lines -->
+                <line x1="0" y1="160" x2="340" y2="160" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <line x1="0" y1="128" x2="340" y2="128" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <line x1="0" y1="96"  x2="340" y2="96"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <line x1="0" y1="64"  x2="340" y2="64"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <line x1="0" y1="32"  x2="340" y2="32"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <line x1="0" y1="0"   x2="340" y2="0"   stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+                <!-- Y labels -->
+                <text x="-5" y="163" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="end">0.0</text>
+                <text x="-5" y="99"  fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="end">0.4</text>
+                <text x="-5" y="35"  fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="end">0.8</text>
+
+                <!-- X labels -->
+                <text x="0"   y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">1992</text>
+                <text x="57"  y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">1997</text>
+                <text x="113" y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">2002</text>
+                <text x="170" y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">2007</text>
+                <text x="227" y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">2012</text>
+                <text x="283" y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">2017</text>
+                <text x="340" y="176" fill="rgba(255,255,255,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">2022</text>
+
+                <g clip-path="url(#featClip)">
+                  <!-- VALENCE (teal) ~0.57 declining to ~0.55 -->
+                  <polyline class="feat-hline feat-hline-valence" fill="none" stroke="#25a99a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+                    points="0,69 11,72 23,69 34,72 45,70 57,75 68,74 79,70 91,74 102,74 113,72 125,74 136,70 147,74 159,75 170,72 181,74 193,80 204,80 215,83 227,82 238,85 249,80 261,77 272,82 283,80 295,82 306,80 317,78 329,77 340,72"/>
+                  <!-- ENERGY (amber) ~0.62 peaking ~0.70 then ~0.60 -->
+                  <polyline class="feat-hline feat-hline-energy" fill="none" stroke="#c8821a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+                    points="0,61 11,58 23,59 34,56 45,58 57,54 68,53 79,53 91,54 102,53 113,50 125,51 136,50 147,48 159,45 170,50 181,51 193,51 204,50 215,48 227,53 238,51 249,53 261,54 272,58 283,61 295,61 306,62 317,64 329,66 340,64"/>
+                  <!-- DANCEABILITY (green) ~0.62–0.69 slight rise -->
+                  <polyline class="feat-hline feat-hline-dance" fill="none" stroke="#4caf7d" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+                    points="0,61 11,58 23,56 34,58 45,56 57,53 68,54 79,53 91,53 102,51 113,53 125,51 136,51 147,50 159,50 170,51 181,48 193,48 204,46 215,46 227,45 238,46 249,46 261,48 272,50 283,50 295,51 306,53 317,54 329,54 340,56"/>
+                  <!-- SPEECHINESS (pink) low ~0.07 rising to ~0.12 -->
+                  <polyline class="feat-hline feat-hline-speech" fill="none" stroke="#e06080" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+                    points="0,149 11,147 23,146 34,144 45,142 57,144 68,141 79,139 91,130 102,130 113,131 125,133 136,130 147,128 159,130 170,144 181,141 193,139 204,142 215,144 227,147 238,141 249,139 261,138 272,134 283,131 295,130 306,130 317,141 329,141 340,141"/>
+                  <!-- TEMPO (purple) ~0.40–0.47 -->
+                  <polyline class="feat-hline feat-hline-tempo" fill="none" stroke="#c4a0e8" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+                    points="0,95 11,95 23,96 34,93 45,95 57,95 68,96 79,96 91,93 102,95 113,93 125,91 136,93 147,90 159,88 170,88 181,90 193,86 204,88 215,88 227,90 238,90 249,91 261,91 272,91 283,91 295,91 306,91 317,91 329,91 340,90"/>
+                </g>
+
+                <!-- End labels -->
+                <text x="344" y="75"  fill="#25a99a" font-family="JetBrains Mono,monospace" font-size="7">Val</text>
+                <text x="344" y="67"  fill="#c8821a" font-family="JetBrains Mono,monospace" font-size="7">Eng</text>
+                <text x="344" y="59"  fill="#4caf7d" font-family="JetBrains Mono,monospace" font-size="7">Dnc</text>
+                <text x="344" y="143" fill="#e06080" font-family="JetBrains Mono,monospace" font-size="7">Spe</text>
+                <text x="344" y="93"  fill="#c4a0e8" font-family="JetBrains Mono,monospace" font-size="7">Tmp</text>
+              </g>
+            </svg>
+
+            <div class="chart-legend">
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#25a99a"></span>Valence</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#c8821a"></span>Energy</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#4caf7d"></span>Danceability</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#e06080"></span>Speechiness</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#c4a0e8"></span>Tempo</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1391,7 +1445,7 @@ footer {
     <div class="contact-actions">
       <a class="btn-primary" href="/cdn-cgi/l/email-protection#c1a2ada0a8b3a49aa0b59ca4b9a0acb1ada49aa5aeb59ca2aeac">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-        clairyec@gmail.com
+        <span class="__cf_email__" data-cfemail="791a1518100b001c1a391e14181015571a1614">[email&#160;protected]</span>
       </a>
       <a class="btn-ghost" href="https://linkedin.com/in/claireeconomopoulou" target="_blank">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
@@ -1421,7 +1475,7 @@ footer {
 
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Scroll fade-in
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
