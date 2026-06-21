@@ -203,7 +203,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
     <div class="wrap">
       <div class="ctx"><div class="ctx__block reveal"><h3>Background</h3><p>Meta's Workrooms is a VR productivity app — customisable personal offices and avatar-based meeting spaces. A genuinely new product category with no established norms or benchmarks.</p></div>
 <div class="ctx__block reveal"><h3>Challenge</h3><p>Analytics showed low engagement with the app's tools and high drop-off during onboarding.</p></div>
-<div class="ctx__block reveal"><h3>Approach</h3><ul><li>Formed hypotheses from behavioural data before any qualitative work</li><li>Triangulated analytics, social listening and primary research</li><li>Built accessibility testing in from the start</li></ul></div><div class="ctx__block reveal" style="grid-column:1 / -1"><h3>Research questions</h3><ul><li>In a category with no precedent, what does “working” actually mean to people in VR?</li><li>Why do users drop off during onboarding, and where does the core value fail to land?</li><li>Which tools and interactions are users avoiding — is that discoverability or difficulty?</li><li>What presence, customisation and accessibility factors decide whether VR feels usable for real work?</li></ul></div></div>
+<div class="ctx__block reveal"><h3>Research questions</h3><ul><li>In a category with no precedent, what does “working” actually mean to people in VR?</li><li>Why do users drop off during onboarding, and where does the core value fail to land?</li><li>Which tools and interactions are users avoiding — is that discoverability or difficulty?</li><li>What presence, customisation and accessibility factors decide whether VR feels usable for real work?</li></ul></div></div>
     </div>
   </section>
 
@@ -309,6 +309,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
   },{rootMargin:"0px 0px -6% 0px",threshold:0.06});
   nodes.forEach(function(n){io.observe(n);});
+  setTimeout(function(){ nodes.forEach(function(n){ n.classList.add("in"); }); }, 2500);
   var sup=document.querySelectorAll(".sup-el");
   sup.forEach(function(el,i){ setTimeout(function(){el.classList.add("in");},120+i*100); });
 })();
