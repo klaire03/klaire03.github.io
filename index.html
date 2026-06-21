@@ -165,7 +165,7 @@ a { color: inherit; }
    ==================================================== */
 .work { border-top: 2px solid var(--ink); }
 .work__item {
-  display:grid; grid-template-columns: 64px 1fr auto; gap: clamp(1rem,3vw,2.4rem);
+  display:grid; grid-template-columns: 104px 1fr auto; gap: clamp(1rem,3vw,2.4rem);
   align-items:start; padding: clamp(1.6rem,3.6vw,2.5rem) 0;
   border-bottom: 1px solid var(--line); text-decoration:none; color: var(--ink);
   position:relative; transition: padding-left .35s cubic-bezier(.2,.7,.2,1);
@@ -178,9 +178,9 @@ a { color: inherit; }
 .work__item:hover::before, .work__item:focus-visible::before { transform: scaleY(1); }
 .glyph { width:56px; height:56px; margin-top:.25rem; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
 .work__item:hover .glyph { transform: rotate(-12deg); }
-.work__logo { width:56px; height:56px; border:2px solid var(--ink); background:var(--plate); display:flex; align-items:center; justify-content:center; padding:7px; margin-top:.15rem; overflow:hidden; transition:border-color .35s ease; }
+.work__logo { width:104px; height:72px; display:flex; align-items:center; justify-content:flex-start; margin-top:.1rem; overflow:hidden; transition:transform .35s cubic-bezier(.2,.8,.2,1); }
 .work__logo img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
-.work__item:hover .work__logo, .work__item:focus-visible .work__logo { border-color:var(--red); }
+.work__item:hover .work__logo, .work__item:focus-visible .work__logo { transform:scale(1.04); }
 .work__client { font-family: var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color: var(--slate); }
 .work__title {
   font-family: var(--display); font-weight:800; font-size: clamp(1.3rem,2.6vw,1.95rem);
@@ -199,9 +199,9 @@ a { color: inherit; }
 .work__signal .num { font-family: var(--anton); font-weight:400; font-size:2rem; color: var(--blue); letter-spacing:.01em; line-height:1; }
 .work__signal .lab { font-family: var(--mono); font-size:.68rem; letter-spacing:.04em; color: var(--slate); margin-top:.5rem; display:block; line-height:1.4; }
 @media (max-width:780px){
-  .work__item { grid-template-columns: 48px 1fr; }
+  .work__item { grid-template-columns: 72px 1fr; }
   .glyph { width:40px; height:40px; }
-  .work__logo { width:44px; height:44px; padding:5px; }
+  .work__logo { width:72px; height:52px; }
   .work__signal { grid-column:2; justify-self:start; text-align:left; margin-top:.5rem; max-width:none; }
 }
 
