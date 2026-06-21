@@ -227,7 +227,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
           <p class="method__goal">Make every test a falsifiable bet.</p>
           <figure class="method__shot"><img src="https://klaire03.github.io/images/avast2.png" alt="Hypothesis framework sheet" onerror="this.closest('figure').style.display='none'"></figure>
         </div>
-        <div class="method__detail"><h4>Approach</h4><ul><li>Stakeholders added research questions from behavioural and transactional analysis to a shared sheet</li><li>Questions labelled by urgency (high / medium / low) and mapped to screens</li><li>Each rewritten as a clear, testable hypothesis</li></ul></div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Stakeholders added research questions from behavioural and transactional analysis to a shared sheet</li><li>Questions labelled by urgency (high / medium / low) and mapped to screens</li><li>Each rewritten as a clear, testable hypothesis</li></ul><h4>How it helped</h4><ul><li>Gave the team a shared, prioritised backlog of testable hypotheses — so the A/B programme tackled the highest-urgency questions first rather than whatever was easiest to build</li><li>Made results decisive: because each hypothesis was falsifiable, every test returned a clear yes or no instead of an ambiguous read</li></ul></div>
       </div>
     </article>
 
@@ -311,6 +311,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
   },{rootMargin:"0px 0px -6% 0px",threshold:0.06});
   nodes.forEach(function(n){io.observe(n);});
+  setTimeout(function(){ nodes.forEach(function(n){ n.classList.add("in"); }); }, 2500);
   var sup=document.querySelectorAll(".sup-el");
   sup.forEach(function(el,i){ setTimeout(function(){el.classList.add("in");},120+i*100); });
 })();
