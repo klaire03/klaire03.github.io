@@ -74,6 +74,9 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 .ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,3vw,2.4rem);}
 .ctx--two{grid-template-columns:repeat(2,1fr);}
 .ctx__block{border-top:3px solid var(--ink);padding-top:1rem;}
+.ctx__block:nth-child(3n+1){border-top-color:var(--red);}
+.ctx__block:nth-child(3n+2){border-top-color:var(--blue);}
+.ctx__block:nth-child(3n+3){border-top-color:var(--ochre);}
 .ctx__block h3{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:0 0 .6rem;letter-spacing:-0.01em;}
 .ctx__block p,.ctx__block ul{color:var(--ink-2);font-size:1rem;margin:0;}
 .ctx__block ul{padding-left:1.05rem;} .ctx__block li{margin-bottom:.3rem;}
@@ -156,7 +159,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
 .plate--img{aspect-ratio:auto;}
 .plate--img img{width:100%;height:auto;display:block;object-fit:contain;}
-.method__shot{margin-top:1.1rem;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
+.method__shot{margin:1.1rem 0 0;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
 .method__shot img{width:100%;height:auto;display:block;}
 @media (max-width:720px){.method__shot{max-width:none;}}
 .findings__item .fi-body{min-width:0;}
@@ -192,7 +195,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
         <div class="p-hero__meta"><div><span class="k">Role</span><span class="v">UX Researcher</span></div><div><span class="k">Product</span><span class="v">Pixel Watch · Wear OS 3 · Fitbit integration</span></div><div><span class="k">Partners</span><span class="v">PMs, UX & Content design, Engineers, Marketing</span></div><div><span class="k">Context</span><span class="v">First-generation launch · under NDA</span></div></div>
       </div>
       <div>
-        <figure class="plate plate--img" style="margin:0"><img src="https://klaire03.github.io/images/google1.png" alt="Pixel Watch and Wear OS interface"></figure>
+        <figure class="plate plate--img" style="margin:0"><img src="https://klaire03.github.io/images/google1.png" alt="Pixel Watch and Wear OS interface" onerror="this.closest('figure').style.display='none'"></figure>
       </div>
     </div>
   </section>
@@ -280,6 +283,16 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 </section>
   
   
+
+  <section class="lessons section">
+    <div class="wrap">
+      <div class="shead"><h2>Lessons learnt</h2><span class="shead__line"></span></div>
+      <ul class="lessons__list reveal">
+        <li><strong>Reframe before you redesign.</strong> Naming the problem as experience adaptation rather than feature integration changed what the team chose to build.</li>
+        <li><strong>Research sticks when it becomes infrastructure.</strong> The personas outlived the study as a shared reference for recruitment and prioritisation across PM, design and engineering.</li>
+      </ul>
+    </div>
+  </section>
 
   <section class="pager section--tight">
     <div class="wrap pager__row">
