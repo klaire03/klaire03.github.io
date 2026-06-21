@@ -74,6 +74,9 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 .ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,3vw,2.4rem);}
 .ctx--two{grid-template-columns:repeat(2,1fr);}
 .ctx__block{border-top:3px solid var(--ink);padding-top:1rem;}
+.ctx__block:nth-child(3n+1){border-top-color:var(--red);}
+.ctx__block:nth-child(3n+2){border-top-color:var(--blue);}
+.ctx__block:nth-child(3n+3){border-top-color:var(--ochre);}
 .ctx__block h3{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:0 0 .6rem;letter-spacing:-0.01em;}
 .ctx__block p,.ctx__block ul{color:var(--ink-2);font-size:1rem;margin:0;}
 .ctx__block ul{padding-left:1.05rem;} .ctx__block li{margin-bottom:.3rem;}
@@ -156,7 +159,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
 .plate--img{aspect-ratio:auto;}
 .plate--img img{width:100%;height:auto;display:block;object-fit:contain;}
-.method__shot{margin-top:1.1rem;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
+.method__shot{margin:1.1rem 0 0;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
 .method__shot img{width:100%;height:auto;display:block;}
 @media (max-width:720px){.method__shot{max-width:none;}}
 .findings__item .fi-body{min-width:0;}
@@ -191,7 +194,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
         <div class="tags"><span class="tag">Service design</span><span class="tag">Risk & compliance</span><span class="tag">B2B SaaS</span></div>
         <div class="p-hero__meta"><div><span class="k">Role</span><span class="v">Senior UX Researcher — sole researcher on the workstream</span></div><div><span class="k">Scope</span><span class="v">Research design, recruitment, moderation, synthesis, readout</span></div><div><span class="k">Partners</span><span class="v">PMs, Engineers, Compliance SMEs, Design</span></div><div><span class="k">Context</span><span class="v">Risk & compliance platform · B2B SaaS</span></div></div>
       </div>
-      <div><figure class="plate plate--img" style="margin:0"><img src="https://klaire03.github.io/images/moodys_reporting.png" alt="Moody's reporting platform interface"></figure></div>
+      <div><figure class="plate plate--img" style="margin:0"><img src="https://klaire03.github.io/images/moodys_reporting.png" alt="Moody's reporting platform interface" onerror="this.closest('figure').style.display='none'"></figure></div>
     </div>
   </section>
 <section class="section">
@@ -243,7 +246,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
           <span class="method__n">03</span>
           <h3 class="method__name">Service blueprint</h3>
           <p class="method__goal">See the end-to-end service, not just the screen.</p>
-          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_blueprint.png" alt="Service blueprint mapping the end-to-end reporting service"></figure>
+          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_blueprint.png" alt="Service blueprint mapping the end-to-end reporting service" onerror="this.closest('figure').style.display='none'"></figure>
         </div>
         <div class="method__detail"><h4>Approach</h4><ul><li>Workshop with Account Managers, IPLs, Engineers, Compliance SMEs and Analysts (6–8)</li><li>Pre-read circulated; Miro board structured by service stage</li><li>Mapped frontstage actions, backstage systems, pain points and metrics across seven stages</li></ul></div>
       </div>
@@ -255,7 +258,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
           <span class="method__n">04</span>
           <h3 class="method__name">Prioritisation</h3>
           <p class="method__goal">Get the right work onto the roadmap.</p>
-          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_prioritisation.png" alt="Impact-versus-feasibility prioritisation matrix"></figure>
+          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_prioritisation.png" alt="Impact-versus-feasibility prioritisation matrix" onerror="this.closest('figure').style.display='none'"></figure>
         </div>
         <div class="method__detail"><h4>Approach</h4><ul><li>Readout structured as Issue → Impact → Recommendation → Feasibility → Business objective</li><li>Scored each pain-point cluster on impact and feasibility</li><li>Framed findings as activation, retention and engagement risks — not UX problems</li></ul></div>
       </div>
