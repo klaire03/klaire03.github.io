@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add('js');</script>
+<title>Moody's Analytics — Reporting Platform Redesign · Claire Economopoulou</title>
+<meta name="description" content="Reframing a reporting tool as a service — Moody's Analytics case study by Claire Economopoulou.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#ECE6D6; --paper-2:#E4DCC7; --plate:#F1ECDE; --line:#CDC1A6;
+  --ink:#15120C; --ink-2:#322C20; --slate:#6A6149;
+  --red:#CE2A1E; --blue:#1E3FA0; --ochre:#E0A92A;
+  --anton:"Anton","Arial Narrow",Impact,sans-serif;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"Space Mono",ui-monospace,"SFMono-Regular",monospace;
+  --wrap:1180px; --gut:clamp(1.25rem,5vw,4.5rem); --t-body:1.08rem;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:var(--t-body);line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+img,svg{max-width:100%;display:block;} a{color:inherit;}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gut);}
+.section{padding-block:clamp(3.25rem,7vw,6rem);}
+.section--tight{padding-block:clamp(2.25rem,5vw,4rem);}
+
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin:0;font-weight:700;display:inline-flex;align-items:center;gap:.6rem;}
+.eyebrow::before{content:"";width:11px;height:11px;background:var(--red);display:inline-block;}
+.mono{font-family:var(--mono);}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(7px);border-bottom:2px solid var(--ink);}
+.topbar__row{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:66px;}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:-0.01em;font-size:1.04rem;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:.65rem;text-transform:uppercase;}
+.brand__mark{width:18px;height:18px;display:inline-block;position:relative;}
+.brand__mark::before{content:"";position:absolute;inset:0;background:var(--ink);transform:rotate(20deg);}
+.brand__mark::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--red);}
+.navlinks{display:flex;gap:clamp(1rem,3vw,2.2rem);align-items:center;}
+.navlinks a{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink-2);padding:.35rem 0;position:relative;}
+.navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:3px;background:var(--red);transition:right .3s ease;}
+.navlinks a:hover::after,.navlinks a:focus-visible::after{right:0;}
+.navlinks a.is-cta{color:var(--red);}
+@media (max-width:560px){.navlinks .hide-sm{display:none;}}
+
+/* project hero */
+.p-hero{border-bottom:2px solid var(--ink);overflow:hidden;}
+.p-hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;padding-block:clamp(2.5rem,6vw,5rem);}
+.backlink{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:1.8rem;}
+.backlink:hover{color:var(--red);}
+.p-hero__title{font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(2.2rem,5.6vw,4.4rem);line-height:.94;letter-spacing:.01em;margin:1rem 0 0;color:var(--ink);}
+.p-hero__rule{height:6px;width:84px;background:var(--red);margin:1.3rem 0 0;}
+.p-hero__tagline{font-family:var(--serif);max-width:46ch;margin:1.3rem 0 0;font-size:1.16rem;color:var(--ink-2);}
+.p-hero__meta{margin-top:2rem;display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem 1.6rem;}
+.p-hero__meta .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);}
+.p-hero__meta .v{font-family:var(--serif);font-size:1rem;color:var(--ink);max-width:32ch;display:block;margin-top:.2rem;}
+.plate{position:relative;aspect-ratio:4/5;background:var(--plate);border:2px solid var(--ink);box-shadow:14px 14px 0 var(--ink);}
+.plate svg{width:100%;height:100%;}
+@media (max-width:880px){.p-hero__grid{grid-template-columns:1fr;gap:2.5rem;}.plate{max-width:320px;box-shadow:10px 10px 0 var(--ink);} .p-hero__meta{max-width:420px;}}
+.js .sup-el{opacity:0;}
+.js .sup-el.in{opacity:1;transition:opacity .8s ease;}
+@media (prefers-reduced-motion:reduce){.js .sup-el{opacity:1!important;}}
+
+/* section heads */
+.shead{display:flex;align-items:baseline;gap:1.1rem;margin-bottom:2.2rem;flex-wrap:wrap;}
+.shead h2{font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(1.5rem,3.4vw,2.5rem);line-height:.95;letter-spacing:.01em;margin:0;}
+.shead__line{flex:1 1 60px;height:3px;background:var(--ink);align-self:center;min-width:40px;}
+
+/* context */
+.ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,3vw,2.4rem);}
+.ctx--two{grid-template-columns:repeat(2,1fr);}
+.ctx__block{border-top:3px solid var(--ink);padding-top:1rem;}
+.ctx__block h3{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:0 0 .6rem;letter-spacing:-0.01em;}
+.ctx__block p,.ctx__block ul{color:var(--ink-2);font-size:1rem;margin:0;}
+.ctx__block ul{padding-left:1.05rem;} .ctx__block li{margin-bottom:.3rem;}
+@media (max-width:760px){.ctx,.ctx--two{grid-template-columns:1fr;}}
+
+/* ===== research spine — constructivist bar composition ===== */
+.spine{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
+.spine .eyebrow{color:var(--ochre);}
+.spine .eyebrow::before{background:var(--ochre);}
+.spine__track{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem .4rem;margin-top:2rem;}
+.spine__track::before{content:"";position:absolute;top:25px;left:var(--rail-inset,12%);right:var(--rail-inset,12%);height:2px;background:var(--ochre);opacity:.45;}
+.spine__node{flex:1 1 0;min-width:116px;max-width:210px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;}
+.spine__icon{width:52px;height:52px;border:2px solid var(--ochre);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--ink);}
+.spine__icon svg{width:25px;height:25px;stroke:var(--paper);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.spine__n{font-family:var(--mono);font-size:.7rem;color:var(--ochre);letter-spacing:.1em;margin-top:.8rem;}
+.spine__label{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:-0.01em;line-height:1.2;color:var(--paper);margin-top:.35rem;max-width:15ch;}
+.spine__node{transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);}
+.js .spine__node:not(.in){opacity:0;transform:translateY(12px);}
+.spine__through{margin-top:2.6rem;font-family:var(--mono);font-size:.8rem;letter-spacing:.03em;color:color-mix(in srgb,var(--paper) 80%,var(--ink));display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:center;}
+.spine__through .ar{color:var(--red);}
+.spine__through b{font-weight:700;color:var(--ochre);}
+@media (prefers-reduced-motion:reduce){.js .spine__node:not(.in){opacity:1;transform:none;}}
+@media (max-width:680px){.spine__node{min-width:88px;}.spine__label{font-size:.76rem;}.spine__track::before{display:none;}}
+
+/* methods */
+.method{padding-block:clamp(1.8rem,3.5vw,2.8rem);border-bottom:1px solid var(--line);}
+.method:last-of-type{border-bottom:0;}
+.method__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(1.4rem,4vw,3.5rem);align-items:start;}
+.method__n{font-family:var(--anton);font-weight:400;font-size:2.4rem;color:var(--red);line-height:1;letter-spacing:.02em;}
+.method__name{font-family:var(--display);font-weight:800;font-size:clamp(1.25rem,2.4vw,1.7rem);letter-spacing:-0.02em;margin:.4rem 0 .7rem;color:var(--ink);}
+.method__goal{color:var(--ink-2);font-size:1.02rem;}
+.method__detail h4{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin:0 0 .55rem;font-weight:700;}
+.method__detail h4+ul{margin-top:0;}
+.method__detail ul{margin:0 0 1.3rem;padding-left:1.05rem;color:var(--ink-2);font-size:1rem;}
+.method__detail li{margin-bottom:.35rem;}
+@media (max-width:720px){.method__grid{grid-template-columns:1fr;}}
+
+/* findings — inverted */
+.findings{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
+.findings .eyebrow{color:var(--ochre);} .findings .eyebrow::before{background:var(--ochre);}
+.findings__list{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
+.findings__item{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding-bottom:1.4rem;border-bottom:1px solid color-mix(in srgb,var(--paper) 18%,transparent);}
+.findings__item::before{counter-increment:f;content:counter(f,decimal-leading-zero);font-family:var(--mono);font-size:.8rem;color:var(--ochre);padding-top:.15rem;}
+.findings__item p{margin:0;color:color-mix(in srgb,var(--paper) 88%,var(--ink));font-size:1.04rem;}
+@media (max-width:700px){.findings__list{grid-template-columns:1fr;}}
+
+/* impact — geometric blocks */
+.impact__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,3vw,1.6rem);margin-top:1.5rem;}
+.impact__card{background:var(--plate);border:2px solid var(--ink);padding:1.5rem 1.4rem;position:relative;}
+.impact__card::before{content:"";position:absolute;top:-2px;left:-2px;width:26px;height:26px;background:var(--red);}
+.impact__card:nth-child(2)::before{background:var(--blue);}
+.impact__card:nth-child(3)::before{background:var(--ochre);}
+.impact__metric{font-family:var(--anton);font-weight:400;font-size:2.6rem;line-height:1;letter-spacing:.01em;color:var(--blue);margin-top:.5rem;}
+.impact__metric.is-qual{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1.15;letter-spacing:-0.02em;color:var(--ink);}
+.impact__label{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin:.75rem 0 .55rem;}
+.impact__card p{margin:0;color:var(--ink-2);font-size:.98rem;}
+@media (max-width:800px){.impact__grid{grid-template-columns:1fr;}}
+
+/* lessons */
+.lessons{background:var(--paper-2);border-top:2px solid var(--ink);}
+.lessons__list{display:grid;gap:1.6rem;max-width:62ch;margin-top:1.4rem;padding:0;}
+.lessons__list li{list-style:none;padding-left:1.6rem;position:relative;color:var(--ink-2);}
+.lessons__list li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:11px;background:var(--red);}
+.lessons__list strong{color:var(--ink);font-weight:600;}
+
+/* pager */
+.pager{border-top:2px solid var(--ink);}
+.pager__row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.pager a{text-decoration:none;color:var(--ink);display:grid;gap:.35rem;max-width:26ch;}
+.pager a.next{text-align:right;margin-left:auto;}
+.pager .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);}
+.pager .t{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-0.01em;color:var(--ink);transition:color .25s ease;}
+.pager a:hover .t,.pager a:focus-visible .t{color:var(--red);}
+
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.15rem;}
+.tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1.5px solid var(--line);padding:.22rem .6rem;white-space:nowrap;}
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);}
+.js .reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;}}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+.plate--img{aspect-ratio:auto;}
+.plate--img img{width:100%;height:auto;display:block;object-fit:contain;}
+.method__shot{margin-top:1.1rem;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
+.method__shot img{width:100%;height:auto;display:block;}
+@media (max-width:720px){.method__shot{max-width:none;}}
+.findings__item .fi-body{min-width:0;}
+.rec{margin-top:.85rem;padding-top:.8rem;border-top:1px dashed color-mix(in srgb,var(--paper) 28%,transparent);}
+.rec__lab{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ochre);display:inline-flex;align-items:center;gap:.45rem;}
+.rec__lab::before{content:"";width:8px;height:8px;background:var(--red);display:inline-block;}
+.rec__txt{margin-top:.45rem;}
+.rec__txt p{margin:.25rem 0;color:color-mix(in srgb,var(--paper) 86%,var(--ink));font-size:.98rem;}
+@media print{.topbar{display:none;}body{background:#fff;}.plate{box-shadow:none;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar__row">
+    <a class="brand" href="index.html"><span class="brand__mark"></span>Claire&nbsp;Economopoulou</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="index.html#work">Work</a>
+      <a class="hide-sm" href="index.html#about">About</a>
+      <a class="is-cta" href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="p-hero">
+    <div class="wrap p-hero__grid">
+      <div>
+        <a class="backlink" href="index.html#work">&larr; All work</a>
+        <p class="eyebrow">Moody's Analytics · Reporting</p>
+        <h1 class="p-hero__title">Reporting Platform<br>Redesign</h1>
+        <div class="p-hero__rule"></div>
+        <p class="p-hero__tagline">Reframing a reporting tool as a service — and shifting the org from validating ideas to asking better questions.</p>
+        <div class="tags"><span class="tag">Service design</span><span class="tag">Risk & compliance</span><span class="tag">B2B SaaS</span></div>
+        <div class="p-hero__meta"><div><span class="k">Role</span><span class="v">Senior UX Researcher — sole researcher on the workstream</span></div><div><span class="k">Scope</span><span class="v">Research design, recruitment, moderation, synthesis, readout</span></div><div><span class="k">Partners</span><span class="v">PMs, Engineers, Compliance SMEs, Design</span></div><div><span class="k">Context</span><span class="v">Risk & compliance platform · B2B SaaS</span></div></div>
+      </div>
+      <div><figure class="plate plate--img" style="margin:0"><img src="https://klaire03.github.io/images/moodys_reporting.png" alt="Moody's reporting platform interface"></figure></div>
+    </div>
+  </section>
+<section class="section">
+    <div class="wrap">
+      <div class="ctx"><div class="ctx__block reveal"><h3>Background</h3><p>A reporting and analytics feature inside a risk & compliance platform. Analysts use it to track the status and outcomes of client screening cases; operations leaders use it to monitor team performance and spot where bottlenecks form.</p></div>
+<div class="ctx__block reveal"><h3>Challenge</h3><p>Heavy dependency on data engineering for bespoke dashboards meant slow delivery, high cost and low adoption. The team assumed the answer was more dashboards.</p></div>
+<div class="ctx__block reveal"><h3>My role</h3><ul><li>Sole researcher across discovery, fieldwork and synthesis</li><li>Designed and ran the service blueprint workshop</li><li>Owned the stakeholder readout and prioritisation</li></ul></div><div class="ctx__block reveal" style="grid-column:1 / -1"><h3>Research questions</h3><ul><li>Who relies on the reporting feature day to day, and what decisions does it drive for analysts versus operations leaders?</li><li>Is low adoption a problem of too few dashboards, or of trust in the data behind them?</li><li>Where in the end-to-end service — not just the screen — does the workflow actually break down?</li><li>What would let compliance users trust the data enough to act on it without building workarounds?</li></ul></div></div>
+    </div>
+  </section>
+
+  
+<section class="spine section--tight">
+  <div class="wrap">
+    <p class="eyebrow">Research spine · methods in sequence</p>
+    <div class="spine__track" style="--rail-inset:10%"><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg></span><span class="spine__n">01</span><div class="spine__label">Desk research</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h12v8H8l-4 3z"/><path d="M9 13v3h7l4 3v-9h-3"/></svg></span><span class="spine__n">02</span><div class="spine__label">Customer interviews</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21c0-3 2-4.5 2.5-7.5M6 21h3.5M16 3c0 3-2 4.5-2.5 7.5M16 3h-3.5"/><circle cx="9.5" cy="13.5" r="1"/><circle cx="13" cy="10.5" r="1"/></svg></span><span class="spine__n">03</span><div class="spine__label">Contextual walkthrough</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 9h18M9 4v16M9 14h6"/></svg></span><span class="spine__n">04</span><div class="spine__label">Service blueprint</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></svg></span><span class="spine__n">05</span><div class="spine__label">Impact × Feasibility</div></div></div>
+    <div class="spine__through">Issue &rarr; Impact &rarr; Recommendation &rarr; Feasibility &rarr; <b>Business objective</b></div>
+  </div>
+</section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><h2>How I worked</h2><span class="shead__line"></span></div>
+      
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">01</span>
+          <h3 class="method__name">Understand the problem space</h3>
+          <p class="method__goal">Map real usage before assuming a solution.</p>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Reviewed usage patterns and dashboard interaction data</li><li>Analysed customer feedback and support queries</li></ul><h4>What it showed</h4><ul><li>The starting assumption — that users wanted more dashboards — didn't hold. They were avoiding the ones they already had.</li></ul></div>
+      </div>
+    </article>
+
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">02</span>
+          <h3 class="method__name">Deep-dive into user needs</h3>
+          <p class="method__goal">Find where trust and workflow actually break.</p>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Customer interviews on the real workflow around dashboards</li><li>Probed where trust in data breaks down and what workarounds reveal</li><li>Contextual walkthroughs to locate friction and errors</li></ul><h4>What it showed</h4><ul><li>Graphs lacked interactivity — no percentages, labels, values or breakdowns</li><li>Data felt static — no trend lines or contextual comparisons</li><li>No audit trail — compliance users couldn't see when data was refreshed, or by whom</li></ul></div>
+      </div>
+    </article>
+
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">03</span>
+          <h3 class="method__name">Service blueprint</h3>
+          <p class="method__goal">See the end-to-end service, not just the screen.</p>
+          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_blueprint.png" alt="Service blueprint mapping the end-to-end reporting service"></figure>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Workshop with Account Managers, IPLs, Engineers, Compliance SMEs and Analysts (6–8)</li><li>Pre-read circulated; Miro board structured by service stage</li><li>Mapped frontstage actions, backstage systems, pain points and metrics across seven stages</li></ul></div>
+      </div>
+    </article>
+
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">04</span>
+          <h3 class="method__name">Prioritisation</h3>
+          <p class="method__goal">Get the right work onto the roadmap.</p>
+          <figure class="method__shot"><img src="https://klaire03.github.io/images/moodys_prioritisation.png" alt="Impact-versus-feasibility prioritisation matrix"></figure>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Readout structured as Issue → Impact → Recommendation → Feasibility → Business objective</li><li>Scored each pain-point cluster on impact and feasibility</li><li>Framed findings as activation, retention and engagement risks — not UX problems</li></ul></div>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  
+<section class="findings section">
+  <div class="wrap">
+    <p class="eyebrow">Insights &amp; recommendations</p>
+    <div class="findings__list reveal"><div class="findings__item"><div class="fi-body"><p>Users didn't want more dashboards — they avoided the ones they had.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Stop adding dashboards; make the existing ones trustworthy and worth opening.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>The real gaps were interactivity, data context and an audit trail — trust, not volume.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Add interactivity, contextual comparisons and a visible data-refresh audit trail before building anything new.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Named as compliance and adoption risk, the findings moved onto the roadmap.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Frame every finding by the risk it carries — compliance, adoption, retention — so it competes for roadmap space.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Stakeholder requests shifted from “validate this” to “what should we be asking?”</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Keep research upstream of decisions: shape the questions, don't just validate built work.</p></div></div></div></div></div>
+  </div>
+</section>
+  
+<section class="section">
+  <div class="wrap">
+    <div class="shead"><h2>Impact</h2><span class="shead__line"></span></div>
+    <div class="impact__grid"><div class="impact__card reveal"><div class="impact__metric is-qual">Deprioritised</div><div class="impact__label">Dashboard expansion</div><p>Transparency features — including export flexibility — shipped instead of more bespoke dashboards.</p></div><div class="impact__card reveal"><div class="impact__metric is-qual">validate → inquire</div><div class="impact__label">Stakeholder ask shifted</div><p>Teams moved from asking research to confirm decisions to asking what they should be exploring.</p></div><div class="impact__card reveal"><div class="impact__metric is-qual">Cited in rationale</div><div class="impact__label">Research as evidence</div><p>Findings were referenced in the business rationale; engineering overhead down, adoption up, support queries down.</p></div></div>
+  </div>
+</section>
+  
+<section class="lessons section">
+  <div class="wrap">
+    <div class="shead"><h2>Lessons learnt</h2><span class="shead__line"></span></div>
+    <ul class="lessons__list reveal"><li><strong>Measure before you research.</strong> Instrument the metrics before fieldwork starts, not after.</li><li><strong>Name the stake, not the symptom.</strong> “No audit trail” is a symptom; “compliance risk” is the stake. Framing findings by what they threaten is what gets research onto the roadmap.</li></ul>
+  </div>
+</section>
+  
+
+  <section class="pager section--tight">
+    <div class="wrap pager__row">
+      <a class="prev" href="index.html#work"><span class="k">Index</span><span class="t">All work</span></a>
+      <a class="next" href="meta.html"><span class="k">Next &rarr;</span><span class="t">Meta — VR Workrooms Spatial Research</span></a>
+    </div>
+  </section>
+</main>
+<script>document.documentElement.classList.add('js');</script>
+</body>
+</html>
