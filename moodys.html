@@ -296,6 +296,20 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
     </div>
   </section>
 </main>
-<script>document.documentElement.classList.add('js');</script>
+<script>
+(function(){
+  "use strict";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nodes=Array.prototype.slice.call(document.querySelectorAll(".reveal, .sup-el, .spine__node"));
+  if(reduce||!("IntersectionObserver" in window)){nodes.forEach(function(n){n.classList.add("in");});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+  },{rootMargin:"0px 0px -6% 0px",threshold:0.06});
+  nodes.forEach(function(n){io.observe(n);});
+  setTimeout(function(){ nodes.forEach(function(n){ n.classList.add("in"); }); }, 2500);
+  var sup=document.querySelectorAll(".sup-el");
+  sup.forEach(function(el,i){ setTimeout(function(){el.classList.add("in");},120+i*100); });
+})();
+</script>
 </body>
 </html>
