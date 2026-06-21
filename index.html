@@ -178,8 +178,13 @@ a { color: inherit; }
 .work__item:hover::before, .work__item:focus-visible::before { transform: scaleY(1); }
 .glyph { width:56px; height:56px; margin-top:.25rem; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
 .work__item:hover .glyph { transform: rotate(-12deg); }
-.work__logo { width:104px; height:72px; display:flex; align-items:center; justify-content:flex-start; margin-top:.1rem; overflow:hidden; transition:transform .35s cubic-bezier(.2,.8,.2,1); }
-.work__logo img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+.work__logo { width:104px; height:72px; display:flex; align-items:center; justify-content:flex-start; margin-top:.1rem; overflow:visible; transition:transform .35s cubic-bezier(.2,.8,.2,1); }
+.work__logo img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; transform:scale(var(--logo-scale,1)); transform-origin:left center; }
+  /* Per-logo size: 1 = default, lower = smaller, higher = bigger */
+  .work__logo--moodys { --logo-scale:1; }
+  .work__logo--meta   { --logo-scale:1; }
+  .work__logo--google { --logo-scale:1; }
+  .work__logo--avast  { --logo-scale:1; }
 .work__item:hover .work__logo, .work__item:focus-visible .work__logo { transform:scale(1.04); }
 .work__client { font-family: var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color: var(--slate); }
 .work__title {
@@ -321,7 +326,7 @@ a { color: inherit; }
       <div class="work">
         <!-- 01 Moody's -->
         <a class="work__item reveal" href="moodys.html">
-          <span class="work__logo"><img src="https://klaire03.github.io/images/logo-moodys.png" alt="Moody's Analytics logo" loading="lazy" onerror="this.style.display='none'"></span>
+          <span class="work__logo work__logo--moodys"><img src="https://klaire03.github.io/images/logo-moodys.png" alt="Moody's Analytics logo" loading="lazy" onerror="this.style.display='none'"></span>
           <div>
             <span class="work__client">Moody's Analytics</span>
             <div class="work__title">Reporting Platform Redesign <span class="arrow">&rarr;</span></div>
@@ -333,7 +338,7 @@ a { color: inherit; }
 
         <!-- 02 Meta -->
         <a class="work__item reveal" href="meta.html">
-          <span class="work__logo"><img src="https://klaire03.github.io/images/logo-meta.png" alt="Meta logo" loading="lazy" onerror="this.style.display='none'"></span>
+          <span class="work__logo work__logo--meta"><img src="https://klaire03.github.io/images/logo-meta.png" alt="Meta logo" loading="lazy" onerror="this.style.display='none'"></span>
           <div>
             <span class="work__client">Meta — Reality Labs</span>
             <div class="work__title">VR Workrooms Spatial Research <span class="arrow">&rarr;</span></div>
@@ -345,7 +350,7 @@ a { color: inherit; }
 
         <!-- 03 Google -->
         <a class="work__item reveal" href="google.html">
-          <span class="work__logo"><img src="https://klaire03.github.io/images/logo-google.png" alt="Google logo" loading="lazy" onerror="this.style.display='none'"></span>
+          <span class="work__logo work__logo--google"><img src="https://klaire03.github.io/images/logo-google.png" alt="Google logo" loading="lazy" onerror="this.style.display='none'"></span>
           <div>
             <span class="work__client">Google</span>
             <div class="work__title">Pixel Watch &amp; Wear OS <span class="arrow">&rarr;</span></div>
@@ -357,7 +362,7 @@ a { color: inherit; }
 
         <!-- 04 Avast upsell -->
         <a class="work__item reveal" href="avast.html">
-          <span class="work__logo"><img src="https://klaire03.github.io/images/logo-avast.png" alt="Avast logo" loading="lazy" onerror="this.style.display='none'"></span>
+          <span class="work__logo work__logo--avast"><img src="https://klaire03.github.io/images/logo-avast.png" alt="Avast logo" loading="lazy" onerror="this.style.display='none'"></span>
           <div>
             <span class="work__client">Avast</span>
             <div class="work__title">Upsell Journey Optimisation <span class="arrow">&rarr;</span></div>
