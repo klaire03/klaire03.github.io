@@ -117,11 +117,11 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 /* findings — inverted */
 .findings{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
 .findings .eyebrow{color:var(--ochre);} .findings .eyebrow::before{background:var(--ochre);}
-.findings__list{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
+.findings__list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
 .findings__item{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding-bottom:1.4rem;border-bottom:1px solid color-mix(in srgb,var(--paper) 18%,transparent);}
 .findings__item::before{counter-increment:f;content:counter(f,decimal-leading-zero);font-family:var(--mono);font-size:.8rem;color:var(--ochre);padding-top:.15rem;}
 .findings__item p{margin:0;color:color-mix(in srgb,var(--paper) 88%,var(--ink));font-size:1.04rem;}
-@media (max-width:700px){.findings__list{grid-template-columns:1fr;}}
+@media (max-width:760px){.findings__list{grid-template-columns:1fr;}}
 
 /* impact — geometric blocks */
 .impact__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,3vw,1.6rem);margin-top:1.5rem;}
@@ -269,13 +269,9 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 <section class="findings section">
   <div class="wrap">
     <p class="eyebrow">Insights &amp; recommendations</p>
-    <div class="findings__list reveal">
-      <div class="findings__item"><div class="fi-body"><p>Users didn't want more dashboards — they avoided the ones they had.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Stop adding dashboards; make the existing ones trustworthy and worth opening.</p></div></div></div></div>
-      <div class="findings__item"><div class="fi-body"><p>The real gaps were interactivity, data context and an audit trail — trust, not volume.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Add interactivity, contextual comparisons and a visible data-refresh audit trail before building anything new.</p></div></div></div></div>
-      <div class="findings__item"><div class="fi-body"><p>Analysts and operations leaders needed fundamentally different things from the same feature, and serving both through one generic view satisfied neither.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Split the experience by role — case-level tracking for analysts, team-level monitoring for operations leaders — instead of forcing both through one generic view.</p></div></div></div></div>
-    </div>
+    <div class="findings__list reveal"><div class="findings__item"><div class="fi-body"><p>Users didn't want more dashboards — they avoided the ones they had.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Stop adding dashboards; make the existing ones trustworthy and worth opening.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>The real gaps were interactivity, data context and an audit trail — trust, not volume.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Add interactivity, contextual comparisons and a visible data-refresh audit trail before building anything new.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Analysts and operations leaders needed fundamentally different things from the same feature, and serving both through one generic view satisfied neither.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Split the experience by role — case-level tracking for analysts, team-level monitoring for operations leaders — instead of forcing both through one generic view.</p></div></div></div></div></div>
   </div>
-</section> 
+</section>
   
 <section class="section">
   <div class="wrap">
