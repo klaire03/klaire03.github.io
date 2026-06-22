@@ -117,11 +117,11 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 /* findings — inverted */
 .findings{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
 .findings .eyebrow{color:var(--ochre);} .findings .eyebrow::before{background:var(--ochre);}
-.findings__list{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
+.findings__list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
 .findings__item{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding-bottom:1.4rem;border-bottom:1px solid color-mix(in srgb,var(--paper) 18%,transparent);}
 .findings__item::before{counter-increment:f;content:counter(f,decimal-leading-zero);font-family:var(--mono);font-size:.8rem;color:var(--ochre);padding-top:.15rem;}
 .findings__item p{margin:0;color:color-mix(in srgb,var(--paper) 88%,var(--ink));font-size:1.04rem;}
-@media (max-width:700px){.findings__list{grid-template-columns:1fr;}}
+@media (max-width:760px){.findings__list{grid-template-columns:1fr;}}
 
 /* impact — geometric blocks */
 .impact__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,3vw,1.6rem);margin-top:1.5rem;}
@@ -259,7 +259,7 @@ img,svg{max-width:100%;display:block;} a{color:inherit;}
 <section class="findings section">
   <div class="wrap">
     <p class="eyebrow">Insights &amp; recommendations</p>
-    <div class="findings__list reveal"><div class="findings__item"><div class="fi-body"><p>The problem wasn't missing features — it was <strong>misaligned mental models</strong>.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Reframe the brief from feature integration to experience adaptation.</p><p>Reduce onboarding overload so first-run doesn't overwhelm.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Fitbit users want passive tracking, simplicity and habits; Wear OS users want a feature-rich, interactive, ecosystem-driven device.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Preserve familiar Fitbit behaviours rather than overwrite them.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Android users felt underserved versus Apple's tight hardware–software–health integration.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Design clearer multi-app ecosystem navigation.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>The differentiator was depth of health tracking and seamless Fitbit integration — not watch faces.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Simplify the key journeys — Maps, Fitbit, notifications and music.</p></div></div></div></div></div>
+    <div class="findings__list reveal"><div class="findings__item"><div class="fi-body"><p>The watch lived or died on its link to the Android phone — when pairing or sync stumbled, people lost trust in the whole device, not just that one task.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Make pairing and reconnection bulletproof and visible — a clear, always-available connection status — since every other feature depends on it.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Customising watch faces and tiles was where people made the watch feel like theirs, but first-run setup buried it under too many options at once.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Lead with a few strong default faces and a simple guided edit; reveal the full customisation depth later, not during onboarding.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Day to day, the watch earned its place through two glances — Fitbit health metrics and phone notifications — but notifications easily crowded out the health data people came for.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Keep it health-first and calm: glanceable Fitbit metrics by default, with granular per-app notification controls so the screen never gets noisy.</p></div></div></div></div></div>
   </div>
 </section>
   
