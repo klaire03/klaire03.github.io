@@ -117,6 +117,20 @@ a { color: inherit; }
   font-family: var(--serif); font-size: clamp(1.08rem,1.6vw,1.24rem); line-height:1.55;
   max-width: 42ch; margin: 1.4rem 0 0; color: var(--ink-2);
 }
+.cursor{
+  display:inline-block;
+  width:4px;
+  height:1.1em;
+  background:#15120C;
+  margin-right:.45rem;
+  vertical-align:-0.1em;
+  animation:blink 1.2s steps(1) infinite;
+}
+
+@keyframes blink{
+  0%,50%{opacity:1;}
+  51%,100%{opacity:0;}
+}
 .hero__sub b { font-weight:500; color: var(--ink); }
 .hero__meta {
   margin-top: 2rem; display:flex; flex-wrap:wrap; gap:.55rem 1.5rem;
@@ -282,7 +296,10 @@ a { color: inherit; }
         </div>
         <h1 class="hero__title">Understanding&nbsp;<span class="red">people</span>. Influencing&nbsp;<span class="blue">products</span>.</h1>
         <div class="hero__rule"></div>
-        <p class="hero__sub">I'm Claire, — a <b>Senior UX Researcher</b> who asks a lot of questions, follows the evidence, and occasionally changes people's minds.</p>
+        <p class="hero__sub">
+  <span class="cursor"></span>
+  I'm Claire — a <b>Senior UX Researcher</b> who asks a lot of questions, follows the evidence, and occasionally changes people's minds.
+</p>
         <div class="hero__meta">
           <span>7+ years</span>
           <span>Moody's · Meta · Google · Avast · UAL</span>
