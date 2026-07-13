@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add('js');</script>
+<title>Google — Pixel Watch & Wear OS · Claire Economopoulou</title>
+<meta name="description" content="Pre-launch mixed-methods research for the first Pixel Watch — Google case study by Claire Economopoulou.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#ECE6D6; --paper-2:#E4DCC7; --plate:#F1ECDE; --line:#CDC1A6;
+  --ink:#15120C; --ink-2:#322C20; --slate:#6A6149;
+  --red:#CE2A1E; --blue:#1E3FA0; --ochre:#E0A92A;
+  --anton:"Anton","Arial Narrow",Impact,sans-serif;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"Space Mono",ui-monospace,"SFMono-Regular",monospace;
+  --wrap:1180px; --gut:clamp(1.25rem,5vw,4.5rem); --t-body:1.08rem;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:var(--t-body);line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+img,svg{max-width:100%;display:block;} a{color:inherit;}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gut);}
+.section{padding-block:clamp(3.25rem,7vw,6rem);}
+.section--tight{padding-block:clamp(2.25rem,5vw,4rem);}
+
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin:0;font-weight:700;display:inline-flex;align-items:center;gap:.6rem;}
+.eyebrow::before{content:"";width:11px;height:11px;background:var(--red);display:inline-block;}
+.mono{font-family:var(--mono);}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(7px);border-bottom:2px solid var(--ink);}
+.topbar__row{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:66px;}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:-0.01em;font-size:1.04rem;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:.65rem;text-transform:uppercase;}
+.brand__mark{width:18px;height:18px;display:inline-block;position:relative;}
+.brand__mark::before{content:"";position:absolute;inset:0;background:var(--ink);transform:rotate(20deg);}
+.brand__mark::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--red);}
+.navlinks{display:flex;gap:clamp(1rem,3vw,2.2rem);align-items:center;}
+.navlinks a{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink-2);padding:.35rem 0;position:relative;}
+.navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:3px;background:var(--red);transition:right .3s ease;}
+.navlinks a:hover::after,.navlinks a:focus-visible::after{right:0;}
+.navlinks a.is-cta{color:var(--red);}
+@media (max-width:560px){.navlinks .hide-sm{display:none;}}
+
+/* project hero */
+.p-hero{border-bottom:2px solid var(--ink);overflow:hidden;}
+.p-hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;padding-block:clamp(2.5rem,6vw,5rem);}
+.backlink{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:1.8rem;}
+.backlink:hover{color:var(--red);}
+.p-hero__title{font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(2.2rem,5.6vw,4.4rem);line-height:.94;letter-spacing:.01em;margin:1rem 0 0;color:var(--ink);}
+.p-hero__rule{height:6px;width:84px;background:var(--red);margin:1.3rem 0 0;}
+.p-hero__tagline{font-family:var(--serif);max-width:46ch;margin:1.3rem 0 0;font-size:1.16rem;color:var(--ink-2);}
+.p-hero__meta{margin-top:2rem;display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem 1.6rem;}
+.p-hero__meta .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);}
+.p-hero__meta .v{font-family:var(--serif);font-size:1rem;color:var(--ink);max-width:32ch;display:block;margin-top:.2rem;}
+.plate{position:relative;aspect-ratio:4/5;background:var(--plate);border:2px solid var(--ink);box-shadow:14px 14px 0 var(--ink);}
+.plate svg{width:100%;height:100%;}
+@media (max-width:880px){.p-hero__grid{grid-template-columns:1fr;gap:2.5rem;}.plate{max-width:320px;box-shadow:10px 10px 0 var(--ink);} .p-hero__meta{max-width:420px;}}
+.js .sup-el{opacity:0;}
+.js .sup-el.in{opacity:1;transition:opacity .8s ease;}
+@media (prefers-reduced-motion:reduce){.js .sup-el{opacity:1!important;}}
+
+/* section heads */
+.shead{display:flex;align-items:baseline;gap:1.1rem;margin-bottom:2.2rem;flex-wrap:wrap;}
+.shead h2{font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(1.5rem,3.4vw,2.5rem);line-height:.95;letter-spacing:.01em;margin:0;}
+.shead__line{flex:1 1 60px;height:3px;background:var(--ink);align-self:center;min-width:40px;}
+
+/* context */
+.ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.4rem,3vw,2.4rem);}
+.ctx--two{grid-template-columns:repeat(2,1fr);}
+.ctx__block{border-top:3px solid var(--ink);padding-top:1rem;}
+.ctx__block:nth-child(3n+1){border-top-color:var(--red);}
+.ctx__block:nth-child(3n+2){border-top-color:var(--blue);}
+.ctx__block:nth-child(3n+3){border-top-color:var(--ochre);}
+.ctx__block h3{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:0 0 .6rem;letter-spacing:-0.01em;}
+.ctx__block p,.ctx__block ul{color:var(--ink-2);font-size:1rem;margin:0;}
+.ctx__block ul{padding-left:1.05rem;} .ctx__block li{margin-bottom:.3rem;}
+@media (max-width:760px){.ctx,.ctx--two{grid-template-columns:1fr;}}
+
+/* ===== research spine — constructivist bar composition ===== */
+.spine{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
+.spine .eyebrow{color:var(--ochre);}
+.spine .eyebrow::before{background:var(--ochre);}
+.spine__track{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem .4rem;margin-top:2rem;}
+.spine__track::before{content:"";position:absolute;top:25px;left:var(--rail-inset,12%);right:var(--rail-inset,12%);height:2px;background:var(--ochre);opacity:.45;}
+.spine__node{flex:1 1 0;min-width:116px;max-width:210px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;}
+.spine__icon{width:52px;height:52px;border:2px solid var(--ochre);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--ink);}
+.spine__icon svg{width:25px;height:25px;stroke:var(--paper);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.spine__n{font-family:var(--mono);font-size:.7rem;color:var(--ochre);letter-spacing:.1em;margin-top:.8rem;}
+.spine__label{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:-0.01em;line-height:1.2;color:var(--paper);margin-top:.35rem;max-width:15ch;}
+.spine__node{transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);}
+.js .spine__node:not(.in){opacity:0;transform:translateY(12px);}
+.spine__through{margin-top:2.6rem;font-family:var(--mono);font-size:.8rem;letter-spacing:.03em;color:color-mix(in srgb,var(--paper) 80%,var(--ink));display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:center;}
+.spine__through .ar{color:var(--red);}
+.spine__through b{font-weight:700;color:var(--ochre);}
+@media (prefers-reduced-motion:reduce){.js .spine__node:not(.in){opacity:1;transform:none;}}
+@media (max-width:680px){.spine__node{min-width:88px;}.spine__label{font-size:.76rem;}.spine__track::before{display:none;}}
+
+/* methods */
+.method{padding-block:clamp(1.8rem,3.5vw,2.8rem);border-bottom:1px solid var(--line);}
+.method:last-of-type{border-bottom:0;}
+.method__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(1.4rem,4vw,3.5rem);align-items:start;}
+.method__n{font-family:var(--anton);font-weight:400;font-size:2.4rem;color:var(--red);line-height:1;letter-spacing:.02em;}
+.method__name{font-family:var(--display);font-weight:800;font-size:clamp(1.25rem,2.4vw,1.7rem);letter-spacing:-0.02em;margin:.4rem 0 .7rem;color:var(--ink);}
+.method__goal{color:var(--ink-2);font-size:1.02rem;}
+.method__detail h4{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin:0 0 .55rem;font-weight:700;}
+.method__detail h4+ul{margin-top:0;}
+.method__detail ul{margin:0 0 1.3rem;padding-left:1.05rem;color:var(--ink-2);font-size:1rem;}
+.method__detail li{margin-bottom:.35rem;}
+@media (max-width:720px){.method__grid{grid-template-columns:1fr;}}
+
+/* findings — inverted */
+.findings{background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);}
+.findings .eyebrow{color:var(--ochre);} .findings .eyebrow::before{background:var(--ochre);}
+.findings__list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem clamp(2rem,4vw,3.5rem);margin-top:2rem;counter-reset:f;}
+.findings__item{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding-bottom:1.4rem;border-bottom:1px solid color-mix(in srgb,var(--paper) 18%,transparent);}
+.findings__item::before{counter-increment:f;content:counter(f,decimal-leading-zero);font-family:var(--mono);font-size:.8rem;color:var(--ochre);padding-top:.15rem;}
+.findings__item p{margin:0;color:color-mix(in srgb,var(--paper) 88%,var(--ink));font-size:1.04rem;}
+@media (max-width:760px){.findings__list{grid-template-columns:1fr;}}
+
+/* impact — geometric blocks */
+.impact__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,3vw,1.6rem);margin-top:1.5rem;}
+.impact__card{background:var(--plate);border:2px solid var(--ink);padding:1.5rem 1.4rem;position:relative;}
+.impact__card::before{content:"";position:absolute;top:-2px;left:-2px;width:26px;height:26px;background:var(--red);}
+.impact__card:nth-child(2)::before{background:var(--blue);}
+.impact__card:nth-child(3)::before{background:var(--ochre);}
+.impact__metric{font-family:var(--anton);font-weight:400;font-size:2.6rem;line-height:1;letter-spacing:.01em;color:var(--blue);margin-top:.5rem;}
+.impact__metric.is-qual{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1.15;letter-spacing:-0.02em;color:var(--ink);}
+.impact__label{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin:.75rem 0 .55rem;}
+.impact__card p{margin:0;color:var(--ink-2);font-size:.98rem;}
+@media (max-width:800px){.impact__grid{grid-template-columns:1fr;}}
+
+/* lessons */
+.lessons{background:var(--paper-2);border-top:2px solid var(--ink);}
+.lessons__list{display:grid;gap:1.6rem;max-width:62ch;margin-top:1.4rem;padding:0;}
+.lessons__list li{list-style:none;padding-left:1.6rem;position:relative;color:var(--ink-2);}
+.lessons__list li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:11px;background:var(--red);}
+.lessons__list strong{color:var(--ink);font-weight:600;}
+
+/* pager */
+.pager{border-top:2px solid var(--ink);}
+.pager__row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.pager a{text-decoration:none;color:var(--ink);display:grid;gap:.35rem;max-width:26ch;}
+.pager a.next{text-align:right;margin-left:auto;}
+.pager .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);}
+.pager .t{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-0.01em;color:var(--ink);transition:color .25s ease;}
+.pager a:hover .t,.pager a:focus-visible .t{color:var(--red);}
+
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.15rem;}
+.tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1.5px solid var(--line);padding:.22rem .6rem;white-space:nowrap;}
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);}
+.js .reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;}}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+.plate--img{aspect-ratio:auto;}
+.plate--img img{width:100%;height:auto;display:block;object-fit:contain;}
+.method__shot{margin:1.1rem 0 0;border:2px solid var(--ink);background:var(--plate);box-shadow:5px 5px 0 var(--ink);max-width:340px;}
+.method__shot img{width:100%;height:auto;display:block;}
+@media (max-width:720px){.method__shot{max-width:none;}}
+.findings__item .fi-body{min-width:0;}
+.rec{margin-top:.85rem;padding-top:.8rem;border-top:1px dashed color-mix(in srgb,var(--paper) 28%,transparent);}
+.rec__lab{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ochre);display:inline-flex;align-items:center;gap:.45rem;}
+.rec__lab::before{content:"";width:8px;height:8px;background:var(--red);display:inline-block;}
+.rec__txt{margin-top:.45rem;}
+.rec__txt p{margin:.25rem 0;color:color-mix(in srgb,var(--paper) 86%,var(--ink));font-size:.98rem;}
+@media print{.topbar{display:none;}body{background:#fff;}.plate{box-shadow:none;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar__row">
+    <a class="brand" href="index.html"><span class="brand__mark"></span>Claire&nbsp;Economopoulou</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="index.html#work">Work</a>
+      <a class="hide-sm" href="index.html#about">About</a>
+      <a class="is-cta" href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="p-hero">
+    <div class="wrap p-hero__grid">
+      <div>
+        <a class="backlink" href="index.html#work">&larr; All work</a>
+        <p class="eyebrow">Google · Pixel Watch</p>
+        <h1 class="p-hero__title">Pixel Watch<br>&amp; Wear OS</h1>
+        <div class="p-hero__rule"></div>
+        <p class="p-hero__tagline">
+Pre-launch research for Google's first Pixel Watch: making Fitbit native to Wear OS without making its users relearn their own watch.</p>
+        <div class="tags"><span class="tag">Mixed Methods</span><span class="tag">Wearables</span><span class="tag">Segmentation</span><span class="tag">Pre-launch</span></div>
+        <div class="p-hero__meta"><div><span class="k">Role</span><span class="v">UX Researcher</span></div><div><span class="k">Product</span><span class="v">Pixel Watch · Wear OS 3 · Fitbit integration</span></div><div><span class="k">STAKEHOLDERS</span><span class="v">PMs, UX & Content design, Engineers, Marketing</span></div><div><span class="k">Context</span><span class="v"> 0→1 · Google's first in-house watch</span></div></div>
+      </div>
+<div>
+  <figure class="plate plate--img" style="margin:0">
+    <img src="https://klaire03.github.io/images/google1.png"
+         alt="Pixel Watch and Wear OS interface">
+  </figure>
+
+  <figure class="plate plate--img" style="margin-top:1.5rem">
+    <img src="https://klaire03.github.io/images/google2.png"
+         alt="Pixel Watch and Wear OS interface">
+  </figure>
+</div>
+    </div>
+  </section>
+<section class="section">
+    <div class="wrap">
+      <div class="ctx"><div class="ctx__block reveal"><h3>Background</h3><p>The first Pixel Watch — pre-launch and unannounced, hardware under NDA. The brief was to bring Fitbit into Wear OS 3 (co-built with Samsung and Fitbit) and ship Google's first watch built entirely in-house — the smartwatch equivalent of a Pixel phone.</p></div>
+<div class="ctx__block reveal"><h3>Challenge</h3><p>Two jobs at once: carry existing Fitbit users into the new ecosystem without losing them, and define a "pure Google" watch that could compete with Apple and Samsung. Where could a Google watch win? Deep Fitbit integration — health and fitness native to Wear OS for the first time — became the wedge.</p></div>
+<div class="ctx__block reveal"><h3>Research questions</h3><ul><li><strong>Who</strong> are we building for, and what do they want from a smartwatch — how should it relate to their phone and health data?</li><li>Where can a Google watch win against competitors, and how seamlessly does <strong>Fitbit integration</strong> fit into the Wear OS experience?</li><li>Can users get through the <strong>make-or-break journeys</strong> — pairing, starting a workout, handling a notification, customising faces and tiles?</li></ul></div></div>
+    </div>
+  </section>
+
+  
+<section class="spine section--tight">
+  <div class="wrap">
+    <p class="eyebrow">Research spine · methods in sequence</p>
+    <div class="spine__track" style="--rail-inset:16.5%"><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 20h12M5 8h14"/><path d="M5 8L2.6 13a3 3 0 0 0 4.8 0L5 8M19 8l-2.4 5a3 3 0 0 0 4.8 0L19 8"/></svg></span><span class="spine__n">01</span><div class="spine__label">Competitor benchmark</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2"/><circle cx="17.5" cy="6.5" r="2"/><circle cx="9" cy="17.5" r="2"/><circle cx="18" cy="16.5" r="2"/><path d="M7.6 8.6l6.6 6.4M16 8l-5.6 8.2"/></svg></span><span class="spine__n">02</span><div class="spine__label">Attitudes &amp; segmentation survey</div></div><div class="spine__node"><span class="spine__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h12v8H8l-4 3z"/><path d="M9 13v3h7l4 3v-9h-3"/></svg></span><span class="spine__n">03</span><div class="spine__label">Segment interviews + usability</div></div></div>
+    
+  </div>
+</section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="shead"><h2>How I worked</h2><span class="shead__line"></span></div>
+      
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">01</span>
+          <h3 class="method__name">Competitor benchmark</h3>
+          <p class="method__goal">Map the field and find where a Google watch could win.</p><figure class="method__shot">
+        <img
+          src="https://klaire03.github.io/images/google_01.png"
+          alt="Usage analysis and reporting research findings">
+      </figure>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Heuristic walkthrough of Apple Watch, Galaxy Watch 4 and Fitbit, scoring each on the core journeys</li><li>Built a feature-and-experience matrix to pinpoint the gap Google could own</li></ul><h4>What it showed</h4><ul><li>Android users felt underserved vs Apple’s tight hardware–software–health integration</li><li>Pointed to depth of health tracking and seamless Fitbit integration as the differentiator — not watch faces, which set the focus for the survey</li></ul></div>
+      </div>
+    </article>
+
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">02</span>
+          <h3 class="method__name">Attitudes &amp; segmentation survey</h3>
+          <p class="method__goal">Map who we’re building for, by motivation and attitude.</p><figure class="method__shot">
+        <img
+          src="https://klaire03.github.io/images/google_02.png"
+          alt="Usage analysis and reporting research findings">
+      </figure>
+          
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Designed off the benchmark and existing user understanding — measuring health motivation, attitudes and watch habits with validated rating batteries</li><li>Sampled across internal dogfooders, current smartwatch owners and non-owners (n ≈ 300–800), screened by ownership so habit could be separated from preference</li><li>Analysis: k-means clustering in Python to find the natural groups (chosen for interpretable, distance-based segments on the attitudinal items)</li><li>Mapped clusters onto existing personas (Excel / VLOOKUP) to make them actionable for the team</li></ul><h4>What it showed</h4><ul><li>Four motivation-based segments emerged: Serious-fitness, Health-curious casual, Glance-and-notifications-first, and Quantified-self</li><li>Gave the team a sized, shared picture of the user base — and the recruitment frame for the sessions that followed</li></ul></div>
+      </div>
+    </article>
+
+    <article class="method reveal">
+      <div class="method__grid">
+        <div>
+          <span class="method__n">03</span>
+          <h3 class="method__name">Segment interviews + usability</h3>
+          <p class="method__goal">Go deep with each segment and test the make-or-break journeys.</p><figure class="method__shot">
+        <img
+          src="https://klaire03.github.io/images/google_03.png"
+          alt="Usage analysis and reporting research findings">
+      </figure>
+        </div>
+        <div class="method__detail"><h4>Approach</h4><ul><li>Recruited from the survey segments, so every session represented a real motivation group</li><li>Generative interview first, then task-based usability on prototype Wear OS — interview before the prototype so it didn’t prime their answers</li><li>Make-or-break journeys under test: pairing, starting a workout, notifications, faces and tiles</li><li>Iterative rounds (5–8 per round — internal dogfooders plus a small NDA’d panel); think-aloud, task-success and ease ratings, severity-rated issues; Fitbit tested in real conditions (treadmill, multitasking)</li></ul><h4>What it showed</h4><ul><li>The gap was mental models, not features — Fitbit-habit users and Wear OS power users wanted different things from the same watch</li><li>Fixes re-tested the following round to confirm they held</li></ul></div>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  
+<section class="findings section">
+  <div class="wrap">
+    <p class="eyebrow">Insights &amp; recommendations</p>
+    <div class="findings__list reveal"><div class="findings__item"><div class="fi-body"><p>The watch lived or died on its link to the Android phone — when pairing or sync stumbled, people lost trust in the whole device, not just that one task.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Make pairing and reconnection bulletproof and visible — a clear, always-available connection status — since every other feature depends on it.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Customising watch faces and tiles was where people made the watch feel like theirs, but first-run setup buried it under too many options at once.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Lead with a few strong default faces and a simple guided edit; reveal the full customisation depth later, not during onboarding.</p></div></div></div></div><div class="findings__item"><div class="fi-body"><p>Day to day, the watch earned its place through two glances — Fitbit health metrics and phone notifications — but notifications easily crowded out the health data people came for.</p><div class="rec"><span class="rec__lab">Recommendation</span><div class="rec__txt"><p>Keep it health-first and calm: glanceable Fitbit metrics by default, with granular per-app notification controls so the screen never gets noisy.</p></div></div></div></div></div>
+  </div>
+</section>
+  
+<section class="section">
+  <div class="wrap">
+    <div class="shead"><h2>Impact</h2><span class="shead__line"></span></div>
+    <div class="impact__grid"><div class="impact__card reveal"><div class="impact__metric is-qual">4 personas, one language</div><div class="impact__label">Adopted across the team</div><p>The four health-motivation personas became the shared reference across PM, design and engineering — and the targeting frame for recruiting every study that followed.</p></div><div class="impact__card reveal"><div class="impact__metric is-qual">Pre-launch fixes</div><div class="impact__label">Make-or-break journeys</div><p>First-run pairing, starting a workout and notification handling were redesigned off the usability findings before the watch shipped.</p></div><div class="impact__card reveal"><div class="impact__metric is-qual">Reframed the brief</div><div class="impact__label">Problem redefined</div><p>Research moved the team from ‘which features to integrate’ to ‘how to match existing mental models’ — changing what got built, not just how it looked.</p></div></div>
+  </div>
+</section>
+  
+  
+
+  <section class="lessons section">
+    <div class="wrap">
+      <div class="shead"><h2>Lessons learnt</h2><span class="shead__line"></span></div>
+      <ul class="lessons__list reveal">
+        <li><strong>Design personas to be maintained, not just delivered.</strong> They got adopted across PM, design and engineering, but I left no owner or refresh cadence — so they risked going stale as the product evolved. I’d build that in from day one.</li>
+        <li><strong>Share as you go, not all at once.</strong> Regular debriefs and live observation throughout the study kept stakeholders bought in and let fixes start mid-research — rather than landing everything in one final readout they could nod at and park.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="pager section--tight">
+    <div class="wrap pager__row">
+      <a class="prev" href="meta.html"><span class="k">&larr; Previous</span><span class="t">Meta — VR Workrooms Spatial Research</span></a>
+      <a class="next" href="avast.html"><span class="k">Next &rarr;</span><span class="t">Avast — Upsell Journey Optimisation</span></a>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  "use strict";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nodes=Array.prototype.slice.call(document.querySelectorAll(".reveal, .sup-el, .spine__node"));
+  if(reduce||!("IntersectionObserver" in window)){nodes.forEach(function(n){n.classList.add("in");});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+  },{rootMargin:"0px 0px -6% 0px",threshold:0.06});
+  nodes.forEach(function(n){io.observe(n);});
+  setTimeout(function(){ nodes.forEach(function(n){ n.classList.add("in"); }); }, 2500);
+  var sup=document.querySelectorAll(".sup-el");
+  sup.forEach(function(el,i){ setTimeout(function(){el.classList.add("in");},120+i*100); });
+})();
+</script>
+</body>
+</html>
